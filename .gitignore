@@ -1,0 +1,34 @@
+HELP.md
+/desgin/target/
+deepfakeLearning.md
+# !.mvn/wrapper/maven-wrapper.jar
+# !**/src/main/**
+# !**/src/test/**
+/desgin/.idea/
+/desgin/mylog
+# ### STS ###
+# .apt_generated
+# .classpath
+# .factorypath
+# .project
+# .settings
+# .springBeans
+# .sts4-cache
+
+# ### IntelliJ IDEA ###
+ .idea
+# *.iws
+# *.iml
+# *.ipr
+
+# ### NetBeans ###
+# /nbproject/private/
+# /nbbuild/
+/design-front/dist/
+/design-front/node_modules
+# /nbdist/
+# /.nb-gradle/
+build/
+
+# ### VS Code ###
+.vscode/

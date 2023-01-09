@@ -15,8 +15,10 @@
     "element-ui": "^2.15.10",
     "jquery": "^3.6.1",
     "popper.js": "^1.16.1",
+    "spark-md5": "^3.0.2",
     "vue": "^2.6.14",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vue-simple-uploader": "^0.7.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

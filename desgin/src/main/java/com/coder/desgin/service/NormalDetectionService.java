@@ -1,9 +1,7 @@
 package com.coder.desgin.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.NormalDetectionFile;
-import com.coder.desgin.entity.UploadFile;
 import com.coder.desgin.util.HttpUtil;
 import com.coder.desgin.util.ImageUtil;
 import com.coder.desgin.util.ZipUtil;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.List;
 
 /**
  * @author Pengfei Yue

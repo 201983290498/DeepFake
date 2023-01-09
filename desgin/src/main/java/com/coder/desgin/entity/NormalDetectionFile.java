@@ -9,11 +9,8 @@ import lombok.Data;
  * @description 普通检测上传文件Bean
  */
 @Data
-public class NormalDetectionFile {
-    private String type;
-    private String name;
-    private Integer size;
-    private String base64;
+public class NormalDetectionFile extends BaseFile {
+
     /**
      * 普通检测类型：copymove、splicing、general
      */

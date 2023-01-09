@@ -4,7 +4,7 @@ import com.coder.desgin.entity.NormalDetectionFile;
 import com.coder.desgin.service.NormalDetectionService;
 import com.coder.desgin.service.UploadFileService;
 import com.coder.desgin.entity.ImgDetectorResult;
-import com.coder.desgin.entity.UploadFile;
+import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.util.RespMessageUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class UploadFileController {
      */
     @ResponseBody
     @PostMapping("/deepfake/upload")
-    public String uploadFile(@RequestBody UploadFile file, HttpServletRequest request) {
+    public String uploadFile(@RequestBody BaseFile file, HttpServletRequest request) {
         // 处理压缩文件
         if (file.getType().contains("zip")) {
             String resultsFile = uploadFileService.detectZip(file, request);

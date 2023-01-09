@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.coder.desgin.entity.DetectorRect;
 import com.coder.desgin.entity.ImgDetectorResult;
-import com.coder.desgin.entity.UploadFile;
+import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.util.HttpUtil;
 import com.coder.desgin.util.ImageUtil;
 import com.coder.desgin.util.ZipUtil;
@@ -42,7 +42,7 @@ public class UploadFileService {
      * @param request request请求，获取项目地址
      * @return 返回检测文档的地址
      */
-    public String detectZip(UploadFile file, HttpServletRequest request) {
+    public String detectZip(BaseFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
         String zipPath = ZipUtil.Base64File(file.getBase64(), file.getName(), request);
         // 打包参数
@@ -62,7 +62,7 @@ public class UploadFileService {
      * @param request request请求，获取项目地址
      * @return 返回检测框的结果
      */
-    public ImgDetectorResult detectImg(UploadFile file, HttpServletRequest request) {
+    public ImgDetectorResult detectImg(BaseFile file, HttpServletRequest request) {
         // filePath 解压的文件地址
         String filePath = ImageUtil.generateImage(file.getName(), file.getBase64(), request);
         log.info("解压文件地址为:".concat(filePath));

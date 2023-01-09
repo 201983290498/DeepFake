@@ -4,6 +4,7 @@
     <ServiceModule></ServiceModule>
     <ServiceDisplay :disImgs='disImgs' @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero"></ServiceUpload>
+    <UploadFile></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->
@@ -13,6 +14,7 @@ import ServiceDisplay from '../components/ServiceDisplay'
 import ServiceModule from '../components/ServiceModule'
 import ServiceUpload from '../components/ServiceUpload'
 import ServiceTitle from '../components/ServiceTitle'
+import UploadFile from '../components/UploadFile'
 import $ from 'jquery'
 
 export default {
@@ -21,7 +23,8 @@ export default {
     ServiceDisplay,
     ServiceModule,
     ServiceTitle,
-    ServiceUpload
+    ServiceUpload,
+    UploadFile
   },
   data () {
     return {

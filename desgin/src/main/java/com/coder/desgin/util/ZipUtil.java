@@ -43,7 +43,7 @@ public class ZipUtil {
      * @param request  http的请求，获取项目在本地的地址
      * @return 返回压缩文件的地址
      */
-    public static String Base64File(String base64, String filename, HttpServletRequest request) {
+    public static String Base64ToFile(String base64, String filename, HttpServletRequest request) {
         filename = filename.substring(0, filename.lastIndexOf('.'));
 
         String contentPath = request.getSession().getServletContext().getRealPath("/");
@@ -59,20 +59,29 @@ public class ZipUtil {
 
         // 解压文件夹
         String filePath = dir.getAbsolutePath().concat("\\").concat(filename);
-        dir = new File(filePath);
         if (!dir.exists()) {
             dir.mkdir();
         }
 
-        try {
-            // 先将文件写出来在解压
+        // 先将文件写出来在解压, 将base64去掉文件头
+        base64 = base64.substring(base64.indexOf(',') + 1);
+        byte[] bytes = Base64.getDecoder().decode(base64);
+        UnZipFile(bytes, filePath);
+        return filePath;
+    }
 
-            // 将base64去掉文件头
-            base64 = base64.substring(base64.indexOf(',') + 1);
-            byte[] bytes = Base64.getDecoder().decode(base64);
-            ByteArrayInputStream byteArray = new ByteArrayInputStream(bytes);
-            ZipInputStream zipInput = new ZipInputStream(byteArray);
-            ZipEntry entry = zipInput.getNextEntry();
+    /**
+     * 获取压缩文件的字节, 和解压路径, 将文件解压。
+     * @param bytes 压缩文件字节
+     * @param unZipPath 解压路径
+     */
+    public static void UnZipFile(byte[] bytes, String unZipPath){
+        File dir = new File(unZipPath);
+        ByteArrayInputStream byteArray = new ByteArrayInputStream(bytes);
+        ZipInputStream zipInput = new ZipInputStream(byteArray);
+        ZipEntry entry = null;
+        try {
+            entry = zipInput.getNextEntry();
             File fout = null;
             while(entry != null ){
                 if (!entry.isDirectory()){
@@ -95,16 +104,15 @@ public class ZipUtil {
             }
             zipInput.close();
             byteArray.close();
-        } catch (Exception e) {
-            throw new RuntimeException("解压流出现异常", e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return filePath;
     }
 
     /**
-     * todo 待检测 该函数还未检测
+     * todo 待检测 待拆分, 需要将函数拆分成生成zip文件和读取文件变成base64
      *
-     * @param arcFiles
+     * @param arcFiles 需要压缩的文件列表
      * @return
      * @throws RuntimeException
      */
@@ -123,7 +131,8 @@ public class ZipUtil {
             for (File srcFile : arcFiles) {
                 byte[] buf = new byte[BUFFER_SIZE];
                 log.info("压缩的文件名称 [{}]", srcFile.getName() + "压缩的文件大小    [{}]", srcFile.length());
-                zos.putNextEntry(new ZipEntry(srcFile.getName())); // 创建一个zip项目
+                /* 创建一个zip项目 */
+                zos.putNextEntry(new ZipEntry(srcFile.getName()));
                 int len;
                 // 读取文件，并写入到zip文件夹中
                 FileInputStream in = new FileInputStream(srcFile);
@@ -247,7 +256,7 @@ public class ZipUtil {
         fileList.add(new File(filePath[2]));
         String base64 = ZipToBase64(fileList);
         log.info("文件Base64加密为" + base64);
-        Base64File(base64, zipPath, null);
+        Base64ToFile(base64, zipPath, null);
     }
 
 }

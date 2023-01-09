@@ -41,7 +41,7 @@ public class NormalDetectionService {
 
     public String detectZip(NormalDetectionFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
-        String zipPath = ZipUtil.Base64File(file.getBase64(), file.getName(), request);
+        String zipPath = ZipUtil.Base64ToFile(file.getBase64(), file.getName(), request);
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         zipPath = zipPath.replace("\\", "/");

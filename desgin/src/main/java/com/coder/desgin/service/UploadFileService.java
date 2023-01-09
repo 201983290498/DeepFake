@@ -33,8 +33,12 @@ import java.util.*;
 @Slf4j
 public class UploadFileService {
 
-    @Autowired
     private HttpUtil httpUtil;
+
+    @Autowired
+    public UploadFileService(HttpUtil httpUtil) {
+        this.httpUtil = httpUtil;
+    }
 
     /**
      * 检测压缩文件zip
@@ -44,16 +48,25 @@ public class UploadFileService {
      */
     public String detectZip(BaseFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
-        String zipPath = ZipUtil.Base64File(file.getBase64(), file.getName(), request);
+        String unZipPath = ZipUtil.Base64ToFile(file.getBase64(), file.getName(), request);
+        return detectDir(unZipPath);
+    }
+
+    /**
+     * 对文件夹进行检测
+     * @param dir 文件夹路径
+     * @return 返回检测文本的结果
+     */
+    public String detectDir(String dir){
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("path", zipPath);
+        params.add("path", dir);
         // url 使用默认参数
         JSONObject jsonObject = httpUtil.sendPost(null, params);
         log.info(jsonObject.toString());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
-        log.info("Analysis result: path".concat(zipPath).concat(";  detections:").concat(analysisResult.toString()));
-        return mkResultText(analysisResult, zipPath.substring(0, zipPath.lastIndexOf('\\')));
+        log.info("Analysis result: path".concat(dir).concat(";  detections:").concat(analysisResult.toString()));
+        return mkResultText(analysisResult, dir.substring(0, dir.lastIndexOf('\\')));
     }
 
     /**

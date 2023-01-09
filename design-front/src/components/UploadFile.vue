@@ -25,7 +25,12 @@ import SparkMD5 from 'spark-md5'
 export default {
   name: 'UploadFile',
   data () {
-
+    return {
+      options: {
+        headers: {},
+        target: {}
+      }
+    }
   }
 }
 </script>

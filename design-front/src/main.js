@@ -5,8 +5,11 @@ import 'bootstrap3/dist/css/bootstrap.min.css'
 import 'bootstrap3/dist/js/bootstrap.min.js'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import uploader from 'vue-simple-uploader'
 import axios from 'axios'
 Vue.use(ElementUI)
+Vue.use(uploader)
+
 Vue.prototype.axios = axios
 
 Vue.config.productionTip = false

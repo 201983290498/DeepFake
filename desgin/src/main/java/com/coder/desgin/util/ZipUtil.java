@@ -31,7 +31,7 @@ public class ZipUtil {
     /**
      * detector文件夹
      */
-    private static String detectDir = "detectFile/";
+    private static final String detectDir = "detectFile/";
 
     /**
      * 将zip文件的base64转换成相应的文件
@@ -256,6 +256,11 @@ public class ZipUtil {
         }else{
             zipDir = unZipPath;
         }
+        File tem = new File(zipDir);
+        if(!tem.exists()) {
+            tem.mkdirs();
+        }
+
         String name = "";
         try {
             BufferedOutputStream dest = null;

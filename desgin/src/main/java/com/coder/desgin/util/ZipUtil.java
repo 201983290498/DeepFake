@@ -5,11 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -245,7 +243,62 @@ public class ZipUtil {
         }
     }
 
+    /**
+     * 解压大文件压缩包
+     * @param filePath 大文件压缩路径
+     * @param unZipPath 解压路径
+     * @return 返回解压路径
+     */
+    public static String UnZip(String filePath, String unZipPath) {
+        String zipDir = "";
+        if (unZipPath == null) {
+            zipDir = filePath.substring(0, filePath.lastIndexOf("."));
+        }else{
+            zipDir = unZipPath;
+        }
+        String name = "";
+        try {
+            BufferedOutputStream dest = null;
+            BufferedInputStream is = null;
+            ZipEntry entry;
+            ZipFile zipfile = new ZipFile(filePath);
 
+            Enumeration dir = zipfile.entries();
+            while (dir.hasMoreElements()){
+                entry = (ZipEntry) dir.nextElement();
+
+                if( entry.isDirectory()){
+                    name = entry.getName();
+                    name = name.substring(0, name.length() - 1);
+                    File fileObject = new File(zipDir + name);
+                    fileObject.mkdir();
+                }
+            }
+
+            Enumeration e = zipfile.entries();
+            while (e.hasMoreElements()) {
+                entry = (ZipEntry) e.nextElement();
+                if( entry.isDirectory()){
+                    continue;
+                }else{
+                    is = new BufferedInputStream(zipfile.getInputStream(entry));
+                    int count;
+                    byte[] dataByte = new byte[BUFFER_SIZE];
+                    FileOutputStream fos = new FileOutputStream(zipDir+entry.getName());
+                    dest = new BufferedOutputStream(fos, BUFFER_SIZE);
+                    while ((count = is.read(dataByte, 0, BUFFER_SIZE)) != -1) {
+                        dest.write(dataByte, 0, count);
+                    }
+                    dest.flush();
+                    dest.close();
+                    is.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return zipDir;
+    }
     public static void main(String[] args) {
         // 文件压缩
         List<File> fileList = new ArrayList<File>();
@@ -258,5 +311,4 @@ public class ZipUtil {
         log.info("文件Base64加密为" + base64);
         Base64ToFile(base64, zipPath, null);
     }
-
 }

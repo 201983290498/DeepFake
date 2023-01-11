@@ -2,7 +2,7 @@ package com.coder.desgin.controller;
 
 import com.coder.desgin.entity.NormalDetectionFile;
 import com.coder.desgin.service.NormalDetectionService;
-import com.coder.desgin.service.UploadFileService;
+import com.coder.desgin.service.FileService;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.util.RespMessageUtils;
@@ -25,12 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 @Controller(value = "uploadFileController")
 public class FileController {
 
-    private final UploadFileService uploadFileService;
+    private final FileService uploadFileService;
     private final NormalDetectionService normalDetectionService;
 
     private static String ZIP = "zip";
 
-    public FileController(UploadFileService uploadFileService, NormalDetectionService normalDetectionService) {
+    public FileController(FileService uploadFileService, NormalDetectionService normalDetectionService) {
         this.uploadFileService = uploadFileService;
         this.normalDetectionService = normalDetectionService;
     }

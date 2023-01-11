@@ -31,12 +31,12 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @Slf4j
-public class UploadFileService {
+public class FileService {
 
     private HttpUtil httpUtil;
 
     @Autowired
-    public UploadFileService(HttpUtil httpUtil) {
+    public FileService(HttpUtil httpUtil) {
         this.httpUtil = httpUtil;
     }
 
@@ -49,6 +49,11 @@ public class UploadFileService {
     public String detectZip(BaseFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
         String unZipPath = ZipUtil.Base64ToFile(file.getBase64(), file.getName(), request);
+        return detectDir(unZipPath);
+    }
+
+    public String detectZip(String filePath){
+        String unZipPath = ZipUtil.UnZip(filePath, null);
         return detectDir(unZipPath);
     }
 

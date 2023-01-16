@@ -1,4 +1,4 @@
-package com.coder.desgin.service.inter;
+package com.coder.desgin.service;
 
 import javax.mail.MessagingException;
 

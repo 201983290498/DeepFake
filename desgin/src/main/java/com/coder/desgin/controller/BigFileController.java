@@ -6,7 +6,6 @@ import com.coder.desgin.service.FileService;
 import com.coder.desgin.util.RespMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +53,7 @@ public class BigFileController {
     @PostMapping("/chunk")
     public String uploadChunk(@RequestBody TempChunkInfo chunk, HttpServletRequest request) throws IOException {
         String contentPath = request.getSession().getServletContext().getRealPath("/");
-        MultipartFile file = chunk.getFileContent();
+        MultipartFile file = chunk.getFile();
         String uid = chunk.getIdentifier();
         Integer chunkNumber = chunk.getChunkNumber();
         log.info("上传文件标识符uid:" + uid);

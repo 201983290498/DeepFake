@@ -1,8 +1,7 @@
-package com.coder.desgin.service;
+package com.coder.desgin.service.impl;
 
-import com.coder.desgin.service.inter.SendMailService;
+import com.coder.desgin.service.SendMailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

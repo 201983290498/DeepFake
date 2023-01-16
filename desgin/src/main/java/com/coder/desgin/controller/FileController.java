@@ -1,8 +1,8 @@
 package com.coder.desgin.controller;
 
 import com.coder.desgin.entity.NormalDetectionFile;
-import com.coder.desgin.service.NormalDetectionService;
 import com.coder.desgin.service.FileService;
+import com.coder.desgin.service.impl.NormalDetectionServiceImpl;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.util.RespMessageUtils;
@@ -26,11 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 public class FileController {
 
     private final FileService uploadFileService;
-    private final NormalDetectionService normalDetectionService;
+    private final NormalDetectionServiceImpl normalDetectionService;
 
     private static String ZIP = "zip";
 
-    public FileController(FileService uploadFileService, NormalDetectionService normalDetectionService) {
+    public FileController(FileService uploadFileService, NormalDetectionServiceImpl normalDetectionService) {
         this.uploadFileService = uploadFileService;
         this.normalDetectionService = normalDetectionService;
     }

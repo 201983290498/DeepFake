@@ -271,8 +271,7 @@ public class ZipUtil {
             Enumeration dir = zipfile.entries();
             while (dir.hasMoreElements()){
                 entry = (ZipEntry) dir.nextElement();
-
-                if( entry.isDirectory()){
+                if(entry.isDirectory()){
                     name = entry.getName();
                     name = name.substring(0, name.length() - 1);
                     File fileObject = new File(zipDir + name);
@@ -289,7 +288,7 @@ public class ZipUtil {
                     is = new BufferedInputStream(zipfile.getInputStream(entry));
                     int count;
                     byte[] dataByte = new byte[BUFFER_SIZE];
-                    FileOutputStream fos = new FileOutputStream(zipDir+entry.getName());
+                    FileOutputStream fos = new FileOutputStream(zipDir+ "/" +entry.getName());
                     dest = new BufferedOutputStream(fos, BUFFER_SIZE);
                     while ((count = is.read(dataByte, 0, BUFFER_SIZE)) != -1) {
                         dest.write(dataByte, 0, count);
@@ -302,6 +301,7 @@ public class ZipUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        new File(filePath).delete(); // 删除压缩包
         return zipDir;
     }
     public static void main(String[] args) {

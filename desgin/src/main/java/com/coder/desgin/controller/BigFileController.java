@@ -64,6 +64,7 @@ public class BigFileController {
 
     @GetMapping("/chunk")
     public Object checkChunk(TempFileInfoVO chunk, HttpServletResponse response) {
+        // todo 维护一张大文件表格
         return chunk;
     }
 
@@ -71,6 +72,8 @@ public class BigFileController {
     public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request) throws Exception{
         String contentPath = request.getSession().getServletContext().getRealPath("/");
         File bigFileDirPath = new File(contentPath+bigFileDir);
+        log.warn("Merging file exists in:" + bigFileDirPath);
+        String finalFilePath = contentPath + bigFileDir + File.separator + fileInfoVO.getName();
         if (!bigFileDirPath.exists()) {
             bigFileDirPath.mkdirs();
         }
@@ -80,7 +83,7 @@ public class BigFileController {
         if (fileDir.isDirectory()) {
             File[] subFiles = fileDir.listFiles();
             if (subFiles != null && subFiles.length > 0) {
-                File partFile = new File(contentPath + bigFileDir + File.separator + fileInfoVO.getName());
+                File partFile = new File(finalFilePath);
                 for (int i = 1; i <= subFiles.length; i++) {
                     File s = new File(contentPath+bigFileDirTemp+File.separator+md5, i + ".part");
                     FileOutputStream destTempfos = new FileOutputStream(partFile, true);
@@ -90,7 +93,7 @@ public class BigFileController {
                 FileUtils.deleteDirectory(fileDir);
             }
         }
-//        fileService.detectZip(contentPath + bigFileDir + File.separator + fileInfoVO.getName());
+        fileService.detectZip(finalFilePath);
         return RespMessageUtils.SUCCESS();
     }
 }

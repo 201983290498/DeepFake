@@ -13,7 +13,7 @@
     <uploader-unsupport></uploader-unsupport>
     <uploader-drop>
       <div>
-        <uploader-btn id="global-uploader-btn" :attrs="attrs" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
+        <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
       </div>
     </uploader-drop>
     <uploader-list></uploader-list>
@@ -28,16 +28,25 @@ export default {
   data () {
     return {
       options: {
-        target: 'localhost:8081/uploader', // todo 上传的url, 需要修改
+        target: window.server.COMMONS.bigFileUpload + '/chunk', // todo 上传的url, 需要修改
         chunkSize: '20971520', // 分块大小
         testChunks: false,
-        singleFile: true // 一次只允许上传一个文件
+        fileParameterName: 'upfile',
+        singleFile: true, // 一次只允许上传一个文件
+        // eslint-disable-next-line camelcase
+        checkChunkUploadedByResponse: function (chunk, response_msg) {
+          const objMessage = JSON.parse(response_msg)
+          if (objMessage.skipUpload) {
+            return true
+          }
+          return (objMessage.uploadedChunks || []).indexOf(chunk.offset + 1) >= 0
+        }
       },
       statusText: {
         success: '上传成功！',
         error: '出错了！',
         uploading: '上传中...',
-        paused: '等待中...',
+        paused: '暂停中...',
         waiting: '等待中...'
       },
       isUploadOk: true, // 是否还有没有上传完成的文件
@@ -47,33 +56,32 @@ export default {
   },
   methods: {
     computeMD5: function (file) {
+      file.pause()
       const fileReader = new FileReader()
       const blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
-      let currentChunk = 0
+      var currentChunk = 0
       const chunkSize = 20 * 1024 * 1024
-      const chunks = Math.ceil(file.size / chunkSize)
       const spark = new SparkMD5.ArrayBuffer()
-      file.paused()
-      loadNext()
-      fileReader.onload = (e => {
+      loadNext(file)
+      fileReader.onload = (e) => {
         spark.append(e.target.result)
-        if (currentChunk < chunks) { // 文件太大会怎样呢
-          currentChunk += 1
-          loadNext()
-          this.$nextTick(() => {}) // todo 有什么用呢?
+        if (currentChunk < 1) { // 文件太大会怎样呢
+          loadNext(file)
         } else {
           file.uniqueIdentifier = spark.end() // 设置文件的识别码
           file.resume() // 开始上传
         }
-      })
-      function loadNext () {
+      }
+      function loadNext (file) {
         const start = currentChunk * chunkSize
         const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize
         fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
-        currentChunk++
+        currentChunk += 1
+        console.log('计算第' + currentChunk + '块')
       }
     },
     onFileAdded: function (file) {
+      console.log('onFileAdded')
       const fileSizeLimit = 20 * 1024 * 1024 * 1024
       if (file.size > fileSizeLimit) {
         this.$message({
@@ -88,9 +96,21 @@ export default {
       this.computeMD5(file) // md验证上传
     },
     onFileSuccess: function (rootFile, file, response, chunk) {
-      mergeFile
+      const _this = this
+      console.log('onFileSuccess')
+      _this.mergeFile(file).then(response => {
+        if (response.data.result) {
+          console.log('合并成功')
+        } else {
+          _this.$message({
+            message: '合并异常' + response.data.msg,
+            type: 'error'
+          })
+        }
+      })
     },
     onFileError: function (rootFile, file, response, chunk) {
+      console.log(file)
       this.$message({
         message: '上传失败, 请重新上传',
         type: 'error'
@@ -102,6 +122,14 @@ export default {
       } else {
         this.isUploadOk = true
       }
+    },
+    mergeFile: function (data) {
+      console.log('mergeFile')
+      return this.axios({
+        url: window.server.COMMONS.bigFileUpload + '/mergeFile',
+        method: 'post',
+        data: data
+      })
     }
   }
 }

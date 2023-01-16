@@ -8,13 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,9 +49,9 @@ public class BigFileController {
      * @return 返回上传是否正确字符窜
      */
     @PostMapping("/chunk")
-    public String uploadChunk(@RequestBody TempChunkInfo chunk, HttpServletRequest request) throws IOException {
+    public String uploadChunk(TempChunkInfo chunk, HttpServletRequest request) throws IOException {
         String contentPath = request.getSession().getServletContext().getRealPath("/");
-        MultipartFile file = chunk.getFile();
+        MultipartFile file = chunk.getUpfile();
         String uid = chunk.getIdentifier();
         Integer chunkNumber = chunk.getChunkNumber();
         log.info("上传文件标识符uid:" + uid);
@@ -64,9 +62,18 @@ public class BigFileController {
         return RespMessageUtils.SUCCESS();
     }
 
+    @GetMapping("/chunk")
+    public Object checkChunk(TempFileInfoVO chunk, HttpServletResponse response) {
+        return chunk;
+    }
+
     @PostMapping("/mergeFile")
     public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request) throws Exception{
         String contentPath = request.getSession().getServletContext().getRealPath("/");
+        File bigFileDirPath = new File(contentPath+bigFileDir);
+        if (!bigFileDirPath.exists()) {
+            bigFileDirPath.mkdirs();
+        }
         String md5 = fileInfoVO.getUniqueIdentifier();
         System.out.println("merge:"+ md5);
         File fileDir = new File(contentPath+bigFileDirTemp+File.separator+ md5);
@@ -77,13 +84,13 @@ public class BigFileController {
                 for (int i = 1; i <= subFiles.length; i++) {
                     File s = new File(contentPath+bigFileDirTemp+File.separator+md5, i + ".part");
                     FileOutputStream destTempfos = new FileOutputStream(partFile, true);
-                    FileUtils.copyFile(s,destTempfos );
+                    FileUtils.copyFile(s,destTempfos);
                     destTempfos.close();
                 }
                 FileUtils.deleteDirectory(fileDir);
             }
         }
-        fileService.detectZip(contentPath + bigFileDir + File.separator + fileInfoVO.getName());
+//        fileService.detectZip(contentPath + bigFileDir + File.separator + fileInfoVO.getName());
         return RespMessageUtils.SUCCESS();
     }
 }

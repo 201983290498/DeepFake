@@ -1,8 +1,11 @@
 window.server = {
   DEEPFAKE: {
-    detectUrl: 'http://localhost:8088/detector/deepfake/upload'
+    detectUrl: '/api/deepfake/upload'
   },
   NORMAL: {
-    detectUrl: 'http://localhost:8088/detector/normal/upload'
+    detectUrl: 'http://localhost:8080/detector/normal/upload'
+  },
+  COMMONS: {
+    bigFileUpload: '/api/bigfile'
   }
 }

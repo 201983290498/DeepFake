@@ -67,7 +67,7 @@ public class TempChunkInfo implements Serializable{
     /**
      * 块内容
      */
-    private transient MultipartFile file;
+    private transient MultipartFile upfile;
 
 
 }

@@ -19,8 +19,11 @@ import java.util.Objects;
 @Service
 public class SendMailServiceImpl implements SendMailService {
 
-    @Autowired
-    private JavaMailSenderImpl javaMailSender;
+    private final JavaMailSenderImpl javaMailSender;
+
+    public SendMailServiceImpl(JavaMailSenderImpl javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     @Override
     public void sendMail(String to,String title, String text) throws MessagingException {

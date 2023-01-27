@@ -1,6 +1,7 @@
 package com.coder.desgin.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Pengfei Yue
@@ -8,7 +9,9 @@ import lombok.Data;
  * @date 2022/11/8
  * @description 普通检测上传文件Bean
  */
+
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class NormalDetectionFile extends BaseFile {
 
     /**

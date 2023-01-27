@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
@@ -53,7 +55,7 @@ public class ImageUtil {
                 }
             }
             //保存图片
-            OutputStream out = new FileOutputStream(filePath);
+            OutputStream out = Files.newOutputStream(Paths.get(filePath));
             out.write(bytes);
             out.flush();
             out.close();
@@ -68,13 +70,13 @@ public class ImageUtil {
      * @param imgPath 输入的文件路径
      * @return 返回base64字符串
      */
-    public static String GenImageStr(String imgPath){
+    public static String genImageStr(String imgPath){
         InputStream in = null;
-        byte[] data = null;
+        byte[] data;
         String encode = "";
         Encoder encoder = Base64.getEncoder();
         try{
-            in = new FileInputStream(imgPath);
+            in = Files.newInputStream(Paths.get(imgPath));
             data = new byte[in.available()];
             in.read(data);
             encode = "data:image/jpg;base64," + new String(encoder.encode(data));
@@ -82,6 +84,7 @@ public class ImageUtil {
             e.printStackTrace();
         }finally{
             try {
+                assert in != null;
                 in.close();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -48,7 +48,9 @@ public class FileServiceImpl implements FileService {
     }
 
     public String detectZip(String filePath){
-        String unZipPath = ZipUtil.UnZip(filePath, null);
+        String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
+        unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("/"), filePath.lastIndexOf("\\")) + 1);
+        unZipPath = ZipUtil.UnZip(filePath, unZipPath);
         return detectDir(unZipPath);
     }
 

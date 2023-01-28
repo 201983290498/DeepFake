@@ -12,6 +12,7 @@ import com.coder.desgin.util.ZipUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -47,10 +48,10 @@ public class FileServiceImpl implements FileService {
         return detectDir(unZipPath);
     }
 
-    public String detectZip(String filePath){
+    public String detectZip(@NotNull String filePath){
         String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
         unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("/"), filePath.lastIndexOf("\\")) + 1);
-        unZipPath = ZipUtil.UnZip(filePath, unZipPath);
+        unZipPath = ZipUtil.unZip(filePath, unZipPath);
        return detectDir(unZipPath);
     }
 

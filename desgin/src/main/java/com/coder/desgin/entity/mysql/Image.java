@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.ibatis.type.JdbcType;
 import java.io.Serializable;
+import java.util.Arrays;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 
 /**
@@ -51,5 +53,14 @@ public class Image implements Serializable {
     public Image(byte[] imageBytes, String imageUrl){
         this.imageBytes = imageBytes;
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "imageId='" + imageId + '\'' +
+                ", imageBytes=" + Arrays.toString(imageBytes) +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }

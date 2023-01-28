@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * @author coder
+ */
 @Controller
 @RequestMapping(value = "/images")
 public class ImageController {
@@ -56,10 +59,5 @@ public class ImageController {
         /* 传递回去上传成功的信息 */
         Image upload = imageService.insertOne(new Image(photo.getBytes()));
         return RespMessageUtils.SUCCESS(upload.getImageId());
-    }
-
-    @PostMapping("/register/generateMsg")
-    public String generateMsg(String msg){
-        return null;
     }
 }

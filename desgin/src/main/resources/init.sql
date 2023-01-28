@@ -1,6 +1,6 @@
 create database if not exists graduate_design;
 use graduate_design;
-drop table if exists `image`, `usr_tbl`;
+drop table if exists  `usr_tbl`,`image`;
 create table if not exists `image`(
     image_id nvarchar(255) not null primary key,
     image_bytes mediumblob not null comment '图片的二进制字节',

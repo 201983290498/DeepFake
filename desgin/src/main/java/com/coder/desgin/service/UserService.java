@@ -1,7 +1,11 @@
 package com.coder.desgin.service;
 
 import com.coder.desgin.entity.mysql.User;
+import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * @author coder
+ */
 public interface UserService {
 
     /**
@@ -10,6 +14,15 @@ public interface UserService {
      * @return 返回新的用户
      */
     User insertUser(User entity);
+
+    /**
+     * 插入用户, 同时上传图片
+     * @param entity 需要注册的用户
+     * @param photo 用户的头像
+     * @return 返回是否注册成功
+     * @throws Exception 注册可能失败, 主要是头像上传可能存在问题
+     */
+    User insertUser(User entity, MultipartFile photo) throws Exception;
 
     /**
      * 检查用户

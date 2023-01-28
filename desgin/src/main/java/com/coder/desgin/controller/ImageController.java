@@ -58,4 +58,8 @@ public class ImageController {
         return RespMessageUtils.SUCCESS(upload.getImageId());
     }
 
+    @PostMapping("/register/generateMsg")
+    public String generateMsg(String msg){
+        return null;
+    }
 }

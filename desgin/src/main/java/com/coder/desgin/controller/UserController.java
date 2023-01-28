@@ -5,11 +5,13 @@ import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.service.UserService;
 import com.coder.desgin.util.RespMessageUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +46,21 @@ public class UserController {
         }
     }
 
-    public String login(String username, String password){
-        return null;
+    /**
+     * 用户登入
+     * @param username 用户名
+     * @param password 密码
+     * @return 失败提示错误信息, 成功记录session,并且记录登入时间。
+     */
+    @PostMapping("/login")
+    @ResponseBody
+    public String login(String username, String password, HttpServletRequest request){
+        User user = new User(username, password);
+        User login = userService.checkAccount(user);
+        if(login == null){
+            return RespMessageUtils.ERROR("账号或者密码错误");
+        }
+        request.getSession().setAttribute("user",new User(username,new Date(System.currentTimeMillis()),user.getImageId()));
+        return RespMessageUtils.SUCCESS(user);
     }
 }

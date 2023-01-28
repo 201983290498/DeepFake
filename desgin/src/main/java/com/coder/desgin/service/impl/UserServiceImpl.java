@@ -21,15 +21,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkAccount(User user) {
+    public User checkAccount(User user) {
         String account = user.getId();
         if (account == null && account.equals(""))
             account = user.getUsername();
         User temUser = userdao.selectOne(account);
         if (temUser.getPassword().equals(user.getPassword()))
-            return true;
+            return temUser;
         else
-            return false;
+            return null;
     }
 
     @Override

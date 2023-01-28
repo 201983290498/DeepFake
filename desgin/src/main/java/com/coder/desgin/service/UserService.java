@@ -14,9 +14,9 @@ public interface UserService {
     /**
      * 检查用户
      * @param user 待检查的用户, 至少填充username和password属性
-     * @return 是否存在该用户
+     * @return 如果存在返回用户信息
      */
-    Boolean checkAccount(User user);
+    User checkAccount(User user);
 
     /**
      * 查看账户是否存在

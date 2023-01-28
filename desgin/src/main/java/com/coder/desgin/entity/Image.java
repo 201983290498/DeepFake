@@ -20,8 +20,7 @@ public class Image implements Serializable {
     /**
      * 图片的id
      */
-    @TableId(type = IdType.ASSIGN_UUID)
-    @TableField("image_id")
+    @TableId(value="image_id", type = IdType.ASSIGN_UUID)
     private String imageId;
 
     /**

@@ -26,8 +26,7 @@ public class User implements Serializable {
     /**
      * 用户的id
      */
-    @TableId(type= IdType.ASSIGN_UUID)
-    @TableField("user_id")
+    @TableId(type = IdType.ASSIGN_UUID, value = "user_id")
     private String id;
 
     /**
@@ -39,7 +38,7 @@ public class User implements Serializable {
     /**
      * 用户名
      */
-    @TableField("password")
+    @TableField("username")
     private String username;
 
     /**

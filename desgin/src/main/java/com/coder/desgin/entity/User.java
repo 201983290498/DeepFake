@@ -1,6 +1,6 @@
 package com.coder.desgin.entity;
 
-import com.coder.desgin.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,45 +19,52 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("usr_tbl")
 public class User implements Serializable {
 
     public static final Integer PAGE_SIZE = 15;
     /**
      * 用户的id
      */
+    @TableId(type= IdType.ASSIGN_UUID)
+    @TableField("user_id")
     private String id;
 
     /**
      * 邮箱验证
      */
+    @TableField("email")
     private String email;
 
     /**
      * 用户名
      */
+    @TableField("password")
     private String username;
 
     /**
      * 密码
      */
+    @TableField("password")
     private String password;
 
     /**
      * 人物的头像
      */
-    @TableField(column = "img_id")
+    @TableField("image_id")
     private String imageId;
 
     /**
      * 用户的状态，1表示活跃有效，0表示冻结，-1表示删除
      */
+    @TableField("status")
     private Integer status;
 
     /**
      * 入园的年龄
      */
     @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
-    @TableField(column = "create_time")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
 
@@ -80,10 +87,9 @@ public class User implements Serializable {
      * @param username     the username
      * @param password     the password
      * @param imageId      the image id
-     * @param personalInfo the personal info
-     * @param createTime   the create time
+     * @param createTime   the creat time
      */
-    public User(String id, String email, String username, String password, String imageId, String personalInfo, Date createTime) {
+    public User(String id, String email, String username, String password, String imageId, Date createTime) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -96,7 +102,7 @@ public class User implements Serializable {
      * Instantiates a new User.
      *
      * @param username   the username
-     * @param createTime the create time
+     * @param createTime the creat time
      */
     public User(String username, Date createTime, String imageId) {
         this.username = username;

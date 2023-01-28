@@ -1,12 +1,11 @@
 package com.coder.desgin.entity;
 
-import com.coder.desgin.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import org.apache.ibatis.type.JdbcType;
 import java.io.Serializable;
-import java.util.UUID;
+import com.baomidou.mybatisplus.annotation.IdType;
 
 /**
  * @Author coder
@@ -15,24 +14,26 @@ import java.util.UUID;
  */
 @Data
 @AllArgsConstructor
+@TableName("image")
 public class Image implements Serializable {
     public static final Integer PAGE_SIZE = 15;
     /**
      * 图片的id
      */
-    @TableField(column = "img_id")
+    @TableId(type = IdType.ASSIGN_UUID)
+    @TableField("image_id")
     private String imageId;
 
     /**
      * 图片的具体字节
      */
-    @TableField(column = "img_bytes")
+    @TableField(value = "image_bytes", jdbcType = JdbcType.BLOB, insertStrategy= FieldStrategy.NOT_NULL)
     private byte[] imageBytes;
 
     /**
      * 图片的连接地址
      */
-    @TableField(column = "img_url")
+    @TableField(value = "image_url")
     private String imageUrl;
 
     /**
@@ -41,7 +42,6 @@ public class Image implements Serializable {
      */
     private Image(byte[] imageBytes){
         this.imageBytes = imageBytes;
-        this.imageId = UUID.randomUUID().toString().substring(0, 25);
     }
 
     /**
@@ -52,6 +52,5 @@ public class Image implements Serializable {
     private Image(byte[] imageBytes, String imageUrl){
         this.imageBytes = imageBytes;
         this.imageUrl = imageUrl;
-        this.imageId = UUID.randomUUID().toString().substring(0, 25);
     }
 }

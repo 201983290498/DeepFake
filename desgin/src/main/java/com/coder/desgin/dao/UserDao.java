@@ -1,7 +1,7 @@
 package com.coder.desgin.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.coder.desgin.entity.User;
+import com.coder.desgin.entity.mysql.User;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

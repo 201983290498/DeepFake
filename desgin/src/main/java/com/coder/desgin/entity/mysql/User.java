@@ -1,4 +1,4 @@
-package com.coder.desgin.entity;
+package com.coder.desgin.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;

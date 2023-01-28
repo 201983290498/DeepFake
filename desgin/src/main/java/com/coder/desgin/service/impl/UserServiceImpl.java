@@ -31,4 +31,9 @@ public class UserServiceImpl implements UserService {
         else
             return false;
     }
+
+    @Override
+    public User isExist(String account) {
+        return userdao.selectOne(account);
+    }
 }

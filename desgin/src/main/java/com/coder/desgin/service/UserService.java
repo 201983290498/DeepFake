@@ -17,4 +17,11 @@ public interface UserService {
      * @return 是否存在该用户
      */
     Boolean checkAccount(User user);
+
+    /**
+     * 查看账户是否存在
+     * @param account 账户
+     * @return 返回相应的用户
+     */
+    User isExist(String account);
 }

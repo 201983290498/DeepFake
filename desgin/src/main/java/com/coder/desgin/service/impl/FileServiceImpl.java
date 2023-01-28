@@ -43,7 +43,7 @@ public class FileServiceImpl implements FileService {
 
     public String detectZip(BaseFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
-        String unZipPath = ZipUtil.Base64ToFile(file.getBase64(), file.getName(), request);
+        String unZipPath = ZipUtil.base64ToFile(file.getBase64(), file.getName(), request);
         return detectDir(unZipPath);
     }
 
@@ -51,7 +51,7 @@ public class FileServiceImpl implements FileService {
         String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
         unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("/"), filePath.lastIndexOf("\\")) + 1);
         unZipPath = ZipUtil.UnZip(filePath, unZipPath);
-        return detectDir(unZipPath);
+       return detectDir(unZipPath);
     }
 
 

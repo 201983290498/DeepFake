@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -31,7 +33,7 @@ public class ZipUtil {
     /**
      * detector文件夹
      */
-    private static final String detectDir = "detectFile/";
+    private static final String DETECT_DIR = "detectFile/";
 
     /**
      * 将zip文件的base64转换成相应的文件
@@ -41,11 +43,11 @@ public class ZipUtil {
      * @param request  http的请求，获取项目在本地的地址
      * @return 返回压缩文件的地址
      */
-    public static String Base64ToFile(String base64, String filename, HttpServletRequest request) {
+    public static String base64ToFile(String base64, String filename, HttpServletRequest request) {
         filename = filename.substring(0, filename.lastIndexOf('.'));
 
         String contentPath = request.getSession().getServletContext().getRealPath("/");
-        File dir = new File(contentPath + detectDir + UUID.randomUUID().toString().substring(0, 6));
+        File dir = new File(contentPath + DETECT_DIR + UUID.randomUUID().toString().substring(0, 6));
         // 查看检测文件夹/context/detectFile是否存在
         if (!dir.getParentFile().exists()) {
             dir.getParentFile().mkdir();
@@ -64,7 +66,7 @@ public class ZipUtil {
         // 先将文件写出来在解压, 将base64去掉文件头
         base64 = base64.substring(base64.indexOf(',') + 1);
         byte[] bytes = Base64.getDecoder().decode(base64);
-        UnZipFile(bytes, filePath);
+        unZipFile(bytes, filePath);
         return filePath;
     }
 
@@ -73,14 +75,14 @@ public class ZipUtil {
      * @param bytes 压缩文件字节
      * @param unZipPath 解压路径
      */
-    public static void UnZipFile(byte[] bytes, String unZipPath){
+    public static void unZipFile(byte[] bytes, String unZipPath){
         File dir = new File(unZipPath);
         ByteArrayInputStream byteArray = new ByteArrayInputStream(bytes);
         ZipInputStream zipInput = new ZipInputStream(byteArray);
-        ZipEntry entry = null;
+        ZipEntry entry;
         try {
             entry = zipInput.getNextEntry();
-            File fout = null;
+            File fout;
             while(entry != null ){
                 if (!entry.isDirectory()){
                     log.info("文件名称： [{}]", entry.getName());
@@ -89,11 +91,11 @@ public class ZipUtil {
                         fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
                     }
                     fout = new File(dir, fileName);
-                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fout));
-                    int offo = -1;
+                    BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(fout.toPath()));
+                    int offset;
                     byte[] buffer = new byte[BUFFER_SIZE];
-                    while ((offo = zipInput.read(buffer)) != -1) {
-                        bos.write(buffer, 0, offo);
+                    while ((offset = zipInput.read(buffer)) != -1) {
+                        bos.write(buffer, 0, offset);
                     }
                     bos.close();
                     // 获取下一个文件
@@ -111,10 +113,9 @@ public class ZipUtil {
      * todo 待检测 待拆分, 需要将函数拆分成生成zip文件和读取文件变成base64
      *
      * @param arcFiles 需要压缩的文件列表
-     * @return
-     * @throws RuntimeException
+     * @return 返回base64字符串
      */
-    public static String ZipToBase64(List<File> arcFiles) throws RuntimeException {
+    public static String zipToBase64(List<File> arcFiles) throws RuntimeException {
         log.info("开始压缩文件 [{}]", arcFiles);
         // 获取压缩文件的时间
         long start = System.currentTimeMillis();
@@ -154,12 +155,8 @@ public class ZipUtil {
             }
         }
 
-        byte[] refereFileBase64Bytes = Base64.getEncoder().encode(baos.toByteArray());
-        try {
-            base64toZip = new String(refereFileBase64Bytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("压缩流出现异常", e);
-        }
+        byte[] referFileBase64Bytes = Base64.getEncoder().encode(baos.toByteArray());
+        base64toZip = new String(referFileBase64Bytes, StandardCharsets.UTF_8);
         return "data:application/zip;base64," + base64toZip;
     }
 
@@ -168,17 +165,17 @@ public class ZipUtil {
      *
      * @param srcDir           压缩文件夹的路径
      * @param out              压缩文件输出流
-     * @param KeepDirStructure 是否保留原来的目录结构,true:保留目录结构;
+     * @param keepDirStructure 是否保留原来的目录结构,true:保留目录结构;
      *                         false:所有文件跑到压缩包根目录下(注意：不保留目录结构可能会出现同名文件,会压缩失败)
      * @throws RuntimeException 压缩失败会抛出运行时异常
      */
-    public static void folderToZip(String srcDir, OutputStream out, boolean KeepDirStructure) throws RuntimeException {
+    public static void folderToZip(String srcDir, OutputStream out, boolean keepDirStructure) throws RuntimeException {
         long start = System.currentTimeMillis();
         ZipOutputStream zos = null;
         try {
             zos = new ZipOutputStream(out);
             File sourceFile = new File(srcDir);
-            compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure);
+            compress(sourceFile, zos, sourceFile.getName(), keepDirStructure);
             long end = System.currentTimeMillis();
             System.out.println("压缩完成，耗时：" + (end - start) + " ms");
         } catch (Exception e) {
@@ -201,10 +198,10 @@ public class ZipUtil {
      * @param sourceFile       源文件
      * @param zos              输出流
      * @param name             压缩后的文件名称
-     * @param KeepDirStructure 是否保留原来的目录结构,
+     * @param keepDirStructure 是否保留原来的目录结构,
      * @throws Exception 抛出异常
      */
-    private static void compress(File sourceFile, ZipOutputStream zos, String name, boolean KeepDirStructure)
+    private static void compress(File sourceFile, ZipOutputStream zos, String name, boolean keepDirStructure)
             throws Exception {
         byte[] buf = new byte[BUFFER_SIZE];
         if (sourceFile.isFile()) {
@@ -222,7 +219,7 @@ public class ZipUtil {
             File[] listFiles = sourceFile.listFiles();
             if (listFiles == null || listFiles.length == 0) {
                 // 保留原来的文件结构,并对空文件夹进行处理
-                if (KeepDirStructure) {
+                if (keepDirStructure) {
                     // 空文件夹的处理
                     zos.putNextEntry(new ZipEntry(name + "/"));
                     // 没有文件，不需要文件的copy
@@ -231,12 +228,12 @@ public class ZipUtil {
             } else {
                 for (File file : listFiles) {
                     // 是否需要保留原来的文件结构
-                    if (KeepDirStructure) {
+                    if (keepDirStructure) {
                         // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
                         // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
-                        compress(file, zos, name + "/" + file.getName(), KeepDirStructure);
+                        compress(file, zos, name + "/" + file.getName(), keepDirStructure);
                     } else {
-                        compress(file, zos, file.getName(), KeepDirStructure);
+                        compress(file, zos, file.getName(), keepDirStructure);
                     }
                 }
             }
@@ -249,7 +246,7 @@ public class ZipUtil {
      * @param unZipPath 解压路径
      * @return 返回解压路径
      */
-    public static String UnZip(String filePath, String unZipPath) {
+    public static String unZip(String filePath, String unZipPath) {
         String zipDir = "";
         if (unZipPath == null) {
             zipDir = filePath.substring(0, filePath.lastIndexOf("."));
@@ -263,14 +260,14 @@ public class ZipUtil {
 
         String name = "";
         try {
-            BufferedOutputStream dest = null;
-            BufferedInputStream is = null;
+            BufferedOutputStream dest;
+            BufferedInputStream is;
             ZipEntry entry;
             ZipFile zipfile = new ZipFile(filePath);
 
-            Enumeration dir = zipfile.entries();
+            Enumeration<? extends ZipEntry> dir = zipfile.entries();
             while (dir.hasMoreElements()){
-                entry = (ZipEntry) dir.nextElement();
+                entry = dir.nextElement();
                 if(entry.isDirectory()){
                     name = entry.getName();
                     name = name.substring(0, name.length() - 1);
@@ -279,12 +276,10 @@ public class ZipUtil {
                 }
             }
 
-            Enumeration e = zipfile.entries();
+            Enumeration<? extends ZipEntry> e = zipfile.entries();
             while (e.hasMoreElements()) {
-                entry = (ZipEntry) e.nextElement();
-                if( entry.isDirectory()){
-                    continue;
-                }else{
+                entry = e.nextElement();
+                if(!entry.isDirectory()){
                     is = new BufferedInputStream(zipfile.getInputStream(entry));
                     int count;
                     byte[] dataByte = new byte[BUFFER_SIZE];
@@ -301,19 +296,20 @@ public class ZipUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        new File(filePath).delete(); // 删除压缩包
+        /* 删除压缩包 */
+        new File(filePath).delete();
         return zipDir;
     }
     public static void main(String[] args) {
         // 文件压缩
-        List<File> fileList = new ArrayList<File>();
+        List<File> fileList = new ArrayList<>();
         String zipPath = "新文件夹";
         String[] filePath = new String[3];
         fileList.add(new File(filePath[0]));
         fileList.add(new File(filePath[1]));
         fileList.add(new File(filePath[2]));
-        String base64 = ZipToBase64(fileList);
+        String base64 = zipToBase64(fileList);
         log.info("文件Base64加密为" + base64);
-        Base64ToFile(base64, zipPath, null);
+        base64ToFile(base64, zipPath, null);
     }
 }

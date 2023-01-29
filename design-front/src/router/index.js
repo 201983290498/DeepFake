@@ -16,7 +16,7 @@ const routes = [
     component: DetectorPage,
     children: [
       {
-        path: '',
+        path: 'deepfakeDetector',
         name: 'DeepFakeDetector',
         component: DeepFakeDetector
       },
@@ -27,6 +27,10 @@ const routes = [
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import('@/views/NormalDetector.vue')
+      },
+      {
+        path: '',
+        redirect: 'deepfakeDetector'
       }
     ]
   },
@@ -38,7 +42,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: routes
 })
-
 export default router

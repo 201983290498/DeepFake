@@ -14,16 +14,16 @@
           <!--主要功能-->
           <ul class="nav navbar-nav mg-auto">
             <li>
-              <router-link to="/DeepFakeDetector" active-class="func-active">deepfake篡改检测</router-link>
+              <router-link to="deepfakeDetector" active-class="func-active">deepfake篡改检测</router-link>
             </li>
             <li class="active">
-              <router-link to="/NormalDetector" active-class="func-active">普通篡改检测</router-link>
+              <router-link to="normalDetector" active-class="func-active">普通篡改检测</router-link>
             </li>
           </ul>
           <!--用户信息栏-->
           <ul class="nav navbar-nav ml-auto">
             <li class="active">
-              <a><img class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px"><span class="align-middle" >{{userStatus}}</span></a>
+              <a><img class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
             </li>
           </ul>
         </div>
@@ -36,11 +36,16 @@
 
 <script>
 export default {
-  name: 'DetectorPage'
+  name: 'DetectorPage',
+  data () {
+    return {
+      userStatus: 'Login in'
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="less">
 .content-mg{
   margin-left: 10%;
   margin-right: 10%;

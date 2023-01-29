@@ -7,12 +7,7 @@
 <script>
 export default {
 // name 属性指向的是当前组件的名称(建议:每个单词的首字母大写)
-  name: 'App',
-  data () {
-    return {
-      userStatus: 'Login in'
-    }
-  }
+  name: 'App'
 }
 </script>
 

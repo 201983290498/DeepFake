@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="right-container">
-          <div class="regist-container">
+          <div class="title">
             <span class="regist">注册</span>
           </div>
 <!--          todo 需要转到register页面-->
@@ -146,15 +146,13 @@ export default {
   margin-top: 90px;
   font-weight: bold;
   font-size: 30px;
-  color: black;
+  color: rgba(255,255,250);
 }
 #signIn .login-container{
   border-radius: 15px;
   background-color: rgb(95,76,194);
-  position: absolute;
-  left: 50%;
-  top: 60%;
-  transform: translate(-50%,-50%);
+  margin: 20px auto;
+  display: inline-block;
 }
 #signIn .login-container .left-container{
   display: inline-block;
@@ -202,22 +200,20 @@ export default {
 #signIn .login-container .left-container .message-container:hover{
   color: #fff;
 }
-
 #signIn .login-container .right-container{
   width: 145px;
-  display: inline-block;
-  height: calc(100% - 120px);
   vertical-align: top;
+  display: inline-block;
   padding: 60px 0;
 }
-#signIn .login-container .right-container .regist-container{
+#signIn .login-container .right-container .title{
   text-align: center;
   color:#fff;
   font-size: 18px;
   font-weight: 200;
   transition: .2s;
 }
-#signIn .login-container .right-container .regist-container:hover{
+#signIn .login-container .right-container .title:hover{
   font-weight: 400;
   cursor: pointer;
 }

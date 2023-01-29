@@ -43,7 +43,6 @@
           <div class="title">
             <span class="regist">注册</span>
           </div>
-<!--          todo 需要转到register页面-->
           <a href="/signUp" style="display: none">注册页面</a>
           <div class="photo-container">
             <div class="photo" id="photo"></div>
@@ -64,14 +63,16 @@ export default {
   name: 'SignIn',
   methods: {
     getPhoto: function (event) {
+      // todo ajax需要修改
       $.ajax({
         url: $('#form').attr('action') + '/username?account=' + event.target.value,
         method: 'get',
         dataType: 'json',
         success (resp) {
           if (resp.result && resp.data != null) {
+            console.log(resp)
             const url = '/images/' + resp.data.imageId
-            const context = `<img src='${url}' style="width:65px;height:65px;"/>`
+            const context = `<img src='${url}' style="width:100%;height: 100%;"/>`
             $('#photo').html(context)
           }
         },
@@ -93,24 +94,34 @@ export default {
         $('#photo').html('&#xe65b;')
       }
     })
+    $('.left-container .title span').addClass('font_underline')
     $('#submit').click(() => {
-      $('#submit + .btn').click()// 代替提交表单的结果
+      $('#submit + .btn').click()// todo 需要写异步提交表单
     })
-    $('.regist-container').click(() => {
-      $('.regist-container + a')[0].click()
+    $('.right-container .title').click(() => {
+      $('.right-container a')[0].click()
+    })
+    $('.right-container .title span').hover(function () {
+      $('.right-container .title span').addClass('font_underline')
+      $('.left-container .title span').removeClass('font_underline')
+    }, function () {
+      $('.right-container .title span').removeClass('font_underline')
+      $('.left-container .title span').addClass('font_underline')
     })
   }
 }
 </script>
 
 <style scoped lang="less">
+@import '@/assets/font/iconfont1/iconfont.css';
 #signIn {
   position: fixed;
   height: 100%;
   width: 100%;
+  //noinspection CssUnknownTarget
   background-image: url('https://s2.loli.net/2022/12/16/VkMoJWY9y6daCq2.jpg');
   background-repeat: no-repeat;
-  bakcground-size: cover;
+  bakcground-size: 100% 100%;
   background-position: 50% 50%;
 }
 .logo-pic{
@@ -151,29 +162,26 @@ export default {
 #signIn .login-container{
   border-radius: 15px;
   background-color: rgb(95,76,194);
-  margin: 20px auto;
+  margin: 10px auto;
   display: inline-block;
 }
-#signIn .login-container .left-container{
+#signIn .left-container{
   display: inline-block;
   width: 380px;
   border-top-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
   padding: 60px;
   background-image: linear-gradient(to bottom right,rgb(118,76,163),rgb(92,103,211));
 }
-#signIn .login-container .left-container .title{
+#signIn .left-container .title{
   color: #fff;
   font-size: 18px;
   font-weight: 200;
 }
-#signIn .login-container .left-container .title span{
-  border-bottom: 3px solid rgb(237,221,22);
-}
-#signIn .login-container .left-container .input-container{
+#signIn .left-container .input-container{
   padding: 20px 0;
 }
-#signIn .login-container .left-container .input-container input{
+#signIn .left-container .input-container input{
   border:0;
   background: none;
   outline: 0;
@@ -185,86 +193,81 @@ export default {
   transition: .2s;
   border-bottom: 1px solid rgb(199,191,219);
 }
-#signIn .login-container .left-container .input-container input:hover{
+#signIn .left-container .input-container input:hover{
   border-bottom-color: #fff;
 }
 ::-webkit-input-placeholder{
   color:rgb(199,191,219);
 }
-#signIn .login-container .left-container .message-container{
+#signIn .left-container .message-container{
   font-size: 14px;
   transition: .2s;
   color: rgb(199,191,219);
   cursor: pointer;
 }
-#signIn .login-container .left-container .message-container:hover{
+#signIn .left-container .message-container:hover{
   color: #fff;
 }
-#signIn .login-container .right-container{
+#signIn .right-container{
   width: 145px;
   vertical-align: top;
   display: inline-block;
-  padding: 60px 0;
+  padding: 60px 0 55px;
 }
-#signIn .login-container .right-container .title{
+#signIn .right-container .title{
   text-align: center;
   color:#fff;
   font-size: 18px;
   font-weight: 200;
   transition: .2s;
 }
-#signIn .login-container .right-container .title:hover{
+.font_underline{
+  border-bottom: 3px solid rgb(237,221,22);
   font-weight: 400;
   cursor: pointer;
+  transition: .2s;
 }
-#signIn .login-container .right-container .photo-container{
-  padding: 20px 0;
+#signIn .right-container .photo-container{
+  padding: 20px 0 0;
   width: 100%;
-  height: 153px;
+  margin-top: 20px;
 }
-#signIn .login-container .right-container .photo-container .photo{
-  width: 65px;
-  height: 65px;
+#signIn .right-container .photo-container .photo{
+  width: 70px;
+  height: 70px;
   overflow: hidden;
   display: block;
   background-color: rgba(225, 225, 225, 0.137);
-  border-radius: 33px;
-  margin: 20px auto 0;
-  font-size: 30px;
+  border-radius: 35px;
+  margin: 0 auto;
+  font-size: 40px;
   font-weight: 600;
 }
 
-#signIn .login-container .right-container .regist-container span{
-  border-bottom: 3px solid rgb(237,221,22);
-}
-
-#signIn .login-container  .right-container .action-container{
-  font-size: 10px;
+#signIn  .right-container .action-container{
+  font-size: 12px;
   color: #fff;
-  height: calc(100% - 190px);
   position: relative;
 }
 #signIn .login-container  .right-container .action-container span{
   border: 1px solid rgb(237,221,22);
   padding: 10px;
-  display: inline;
+  display: inline-block;
+  margin: 30px auto 0;
   line-height: 25px;
   border-radius: 25px;
-  position: absolute;
-  bottom: 10px;
-  left: calc(72px - 20px);
-  transition: .2s;
+  transition: .4s;
   cursor: pointer;
+  vert-align: top;
 }
 #signIn .login-container .right-container .action-container span:hover{
   background-color: rgb(237,221,22);
   color: rgb(95,76,194);
+  transition: .4s;
 }
-
 .empty-photo{
   text-align: center;
-  line-height: 65px;
+  line-height: 75px;
   color: rgb(199,191,219);
-  transition: .4s;
 }
 </style>

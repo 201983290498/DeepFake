@@ -1,5 +1,28 @@
 <template>
   <div id="signIn">
+    <nav class="navbar navbar-fixed-top content-pd">
+      <div class="container-fluid">
+        <!--Logo加上商标名-->
+        <div class="navbar-header  font-weight-bolder">
+          <div class="navbar-brand">
+            <img alt="logo" src="@/../static/imgs/logo(1).png" class="logo-pic">
+            DeepFake Detector
+          </div>
+        </div>
+        <!--功能栏-->
+        <div class="collapse navbar-collapse ">
+          <!--主要功能-->
+          <ul class="nav navbar-nav mg-auto">
+            <li>
+              <router-link to="/" active-class="func-active">主站</router-link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="description">
+      Sign in to Deepfake Detector
+    </div>
 <!--    todo 需要写清楚具体的form表单提交的地址-->
     <form action="/" id="form" method="post">
       <div class="login-container">
@@ -80,25 +103,57 @@ export default {
 }
 </script>
 
-<style scoped>
-*{
-  padding: 0;
-  margin: 0;
-}
+<style scoped lang="less">
 #signIn {
+  position: fixed;
   height: 100%;
   width: 100%;
-  background-image:linear-gradient(to bottom right,rgb(114,135,254),rgb(130,88,186));
+  background-image: url('https://s2.loli.net/2022/12/16/VkMoJWY9y6daCq2.jpg');
+  background-repeat: no-repeat;
+  bakcground-size: cover;
+  background-position: 50% 50%;
+}
+.logo-pic{
+  float: left;
+  margin-top: -6%;
+  margin-right: 1rem;
+}
+.navbar{
+  padding: 0.5rem 2rem;
+  align-items: center;
+  box-shadow: 0 0 0.5rem 0 rgba(230,230,230,50%);
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    &.router-link-exact-active {
+      color: #42b983;
+      background-color: #eee;
+    }
+  }
+}
+.mg-auto{
+  position: relative;
+  left: auto !important;
+}
+.navbar-brand{
+  font-weight: bold;
+  color: #2c3e50;
+}
+.navbar-header:hover{
+  cursor: pointer;
+}
+.description {
+  margin-top: 90px;
+  font-weight: bold;
+  font-size: 30px;
+  color: black;
 }
 #signIn .login-container{
-  width: 650px;
-  height: 315px;
   border-radius: 15px;
-  box-shadow: 0 10px 50px 0px rgb(59,45,159);
   background-color: rgb(95,76,194);
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 60%;
   transform: translate(-50%,-50%);
 }
 #signIn .login-container .left-container{

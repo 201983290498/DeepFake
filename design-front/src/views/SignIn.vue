@@ -118,11 +118,7 @@ export default {
   position: fixed;
   height: 100%;
   width: 100%;
-  //noinspection CssUnknownTarget
-  background-image: url('https://s2.loli.net/2022/12/16/VkMoJWY9y6daCq2.jpg');
-  background-repeat: no-repeat;
-  bakcground-size: 100% 100%;
-  background-position: 50% 50%;
+  background-color: #F7F7F7;
 }
 .logo-pic{
   float: left;
@@ -132,6 +128,8 @@ export default {
 .navbar{
   padding: 0.5rem 2rem;
   align-items: center;
+  background-color:#fff !important;
+  border: 1px solid #f1f1f1 !important;
   box-shadow: 0 0 0.5rem 0 rgba(230,230,230,50%);
   a {
     font-weight: bold;
@@ -154,20 +152,20 @@ export default {
   cursor: pointer;
 }
 .description {
-  margin-top: 90px;
+  margin-top: 150px;
   font-weight: bold;
   font-size: 30px;
-  color: rgba(255,255,250);
+  color: rgba(0,0,0);
 }
 #signIn .login-container{
   border-radius: 15px;
   background-color: rgb(95,76,194);
-  margin: 10px auto;
+  margin: 30px auto 0;
   display: inline-block;
 }
 #signIn .left-container{
   display: inline-block;
-  width: 380px;
+  width: 480px;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   padding: 60px;
@@ -177,6 +175,7 @@ export default {
   color: #fff;
   font-size: 18px;
   font-weight: 200;
+  text-align: left;
 }
 #signIn .left-container .input-container{
   padding: 20px 0;
@@ -204,6 +203,7 @@ export default {
   transition: .2s;
   color: rgb(199,191,219);
   cursor: pointer;
+  text-align: left;
 }
 #signIn .left-container .message-container:hover{
   color: #fff;

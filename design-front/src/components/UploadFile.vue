@@ -59,7 +59,7 @@ export default {
       file.pause()
       const fileReader = new FileReader()
       const blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
-      var currentChunk = 0
+      let currentChunk = 0
       const chunkSize = 20 * 1024 * 1024
       const spark = new SparkMD5.ArrayBuffer()
       loadNext(file)

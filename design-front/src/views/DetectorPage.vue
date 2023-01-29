@@ -39,7 +39,7 @@ export default {
   name: 'DetectorPage',
   data () {
     return {
-      userStatus: 'Login in'
+      userStatus: 'Sign in'
     }
   }
 }

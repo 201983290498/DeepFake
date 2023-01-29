@@ -1,8 +1,8 @@
-package com.coder.desgin.util.login;
+package com.coder.common.util.login;
 
+import com.coder.common.util.JavaEmail;
 import com.coder.desgin.entity.ValidationInfo;
 import com.coder.desgin.exception.MailMessageException;
-import com.coder.desgin.util.JavaEmail;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;

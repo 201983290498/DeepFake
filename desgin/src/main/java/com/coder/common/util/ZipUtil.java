@@ -1,4 +1,4 @@
-package com.coder.desgin.util;
+package com.coder.common.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

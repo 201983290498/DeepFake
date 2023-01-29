@@ -1,4 +1,4 @@
-package com.coder.desgin.util;
+package com.coder.common.util;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 /**
  * @Description 负责发送Http请求，负责与python交换数据

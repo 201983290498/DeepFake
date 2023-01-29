@@ -1,4 +1,4 @@
-package com.coder.desgin.util;
+package com.coder.common.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

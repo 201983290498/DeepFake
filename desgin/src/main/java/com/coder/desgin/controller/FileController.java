@@ -5,7 +5,7 @@ import com.coder.desgin.service.FileService;
 import com.coder.desgin.service.impl.NormalDetectionServiceImpl;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
-import com.coder.desgin.util.RespMessageUtils;
+import com.coder.common.util.RespMessageUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

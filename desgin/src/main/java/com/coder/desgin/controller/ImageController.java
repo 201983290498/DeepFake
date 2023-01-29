@@ -2,7 +2,7 @@ package com.coder.desgin.controller;
 
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.service.ImageService;
-import com.coder.desgin.util.RespMessageUtils;
+import com.coder.common.util.RespMessageUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

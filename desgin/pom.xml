@@ -92,6 +92,19 @@
             <version>22.0.0</version>
         </dependency>
         <!--        集成邮箱验证-->
+
+        <!-- 集成redis用于文件上传, 防止短期内重复访问 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- redis需要配合commons-pool2 对象池依赖 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- 集成redis用于文件上传, 防止短期内重复访问 -->
+
     </dependencies>
 
     <dependencyManagement>

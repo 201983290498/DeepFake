@@ -1,4 +1,4 @@
-package com.coder.desgin.util;
+package com.coder.common.util;
 
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package com.coder.desgin.controller;
 import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.TempChunkInfo;
 import com.coder.desgin.service.FileService;
-import com.coder.desgin.util.RespMessageUtils;
+import com.coder.common.util.RespMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;

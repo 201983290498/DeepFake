@@ -13,4 +13,12 @@ spring:
     host: smtp.qq.com
     username: 1023668958@qq.com
     password: flujtaexoaulbbda
-
+  redis:
+    host: 106.15.176.6
+    port: 6379
+    password: 123456
+    timeout: 5000
+    database: 0
+    lettuce:
+      pool:
+        max-wait: 5000

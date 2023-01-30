@@ -62,17 +62,23 @@
 import $ from 'jquery'
 export default {
   name: 'SignIn',
+  data () {
+    return {
+      userUrl: window.server.COMMONS.userUrl,
+      imageUrl: window.server.COMMONS.imageUrl
+    }
+  },
   methods: {
     getPhoto: function (event) {
-      // todo ajax需要修改
+      const _this = this
+      // todo 需要看是通过url否能直接获取到
       $.ajax({
-        url: $('#form').attr('action') + '/username?account=' + event.target.value,
+        url: _this.userUrl + '/users/account/isExist?account=' + event.target.value,
         method: 'get',
         dataType: 'json',
         success (resp) {
           if (resp.result && resp.data != null) {
-            console.log(resp)
-            const url = '/images/' + resp.data.imageId
+            const url = _this.imageUrl + '/search/' + resp.data.imageId
             const context = `<img src='${url}' style="width:100%;height: 100%;"/>`
             $('#photo').html(context)
           }

@@ -64,7 +64,7 @@
             <div class="form-group">
               <div class="validateMsgBox">
                 <input type="text" name="validateData" placeholder="验证码" style="display: inline-block;width: 61.8%;border-bottom-right-radius: 0;border-top-right-radius: 0;"  id="validateData"/>
-                <input type="button" value="发送验证信息" style="display: inline-block;width: 38.2%; border-bottom-left-radius: 0;border-top-left-radius: 0;"/>
+                <input type="button" value="发送验证信息" style="display: inline-block;width: 38.2%; border-bottom-left-radius: 0;border-top-left-radius: 0;" @/>
               </div>
               <div class="index-item" id="validateMsg">
                 <label class="control-label"></label>
@@ -99,6 +99,11 @@
 import $ from 'jquery'
 export default {
   name: 'SignUp',
+  data () {
+    return {
+      userUrl: window.server.COMMONS.userUrl
+    }
+  },
   methods: {
     checkPwd: function (value) {
       const pattern = /^[A-Z]/
@@ -157,8 +162,7 @@ export default {
         let style = ''
         if (_this.checkAccount(account)) { // 查看样式是否符号规范
           $.ajax({
-            // todo 需要修改url的指向
-            url: '',
+            url: _this.userUrl + '/account/isExist?account=' + account,
             method: 'get',
             dataType: 'json',
             success: (rs) => {
@@ -236,84 +240,83 @@ export default {
       }
       $('#emailMsg').addClass(style)
       $('#emailMsg .tip').empty().html(msg)
-
-      // 验证码
-      $('input[name=validateData]').focus(() => {
-        const msg = '6位验证码'
-        $('#validateMsg').removeClass('success error')
-        $('#validateMsg').addClass('focus')
-        $('#validateMsg .tip').empty().text(msg)
-      })
-      $('input[name=validateData]').blur(function () {
-        const value = this.value
-        $('#validateMsg').removeClass('focus')
-        if (value && value.length === 6) {
-          let style = ''
-          let msg = ''
-          $.ajax({
-            // todo 需要更新
-            url: '',
-            type: 'post',
-            dataType: 'json',
-            data: {
-              email: $('input[name=email]').val(),
-              message: value
-            },
-            success: function (rq) {
-              style = rq.result ? 'success' : 'error'
-              msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.result ? '验证码通过!' : '验证码错误!')
-              $('#validateMsg').addClass(style)
-              $('#validateMsg .tip').empty().html(msg)
+    })
+    // 验证码
+    $('input[name=validateData]').focus(() => {
+      const msg = '6位验证码'
+      $('#validateMsg').removeClass('success error')
+      $('#validateMsg').addClass('focus')
+      $('#validateMsg .tip').empty().text(msg)
+    })
+    $('input[name=validateData]').blur(function () {
+      const value = this.value
+      $('#validateMsg').removeClass('focus')
+      if (value && value.length === 6) {
+        let style = ''
+        let msg = ''
+        $.ajax({
+          // todo 需要更新
+          url: '',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            email: $('input[name=email]').val(),
+            message: value
+          },
+          success: function (rq) {
+            style = rq.result ? 'success' : 'error'
+            msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.result ? '验证码通过!' : '验证码错误!')
+            $('#validateMsg').addClass(style)
+            $('#validateMsg .tip').empty().html(msg)
+          }
+        })
+      }
+    })
+    $('#submit').on('click', function () {
+      let flag = 0
+      flag = flag + (($('#username').hasClass('error') || $('#username').val() === '') ? 1 : 0)
+      flag = flag + (($('#pwd').hasClass('error') || $('#pwd').val() === '') ? 1 : 0)
+      flag = flag + (($('#repeatPwd').hasClass('error') || $('#repeatPwd').val() === '') ? 1 : 0)
+      flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
+      flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
+      console.log(flag)
+      if (flag === 0) {
+        $('#submit + input[type=submit]').click()
+      } else {
+        alert('注册信息错误!')
+      }
+    })
+    $('input[type=button]').click(function () {
+      console.log($('email').val())
+      if (!$('input[type=button]').hasClass('avoid')) {
+        $.ajax({
+          // todo 有待修改
+          url: '?email=' + $('#email').val(),
+          type: 'get',
+          success: function (resp) {
+            if (resp.result) {
+              console.info('验证信息已经发送到邮箱')
             }
-          })
-        }
-      })
-      $('#submit').on('click', function () {
-        let flag = 0
-        flag = flag + (($('#username').hasClass('error') || $('#username').val() === '') ? 1 : 0)
-        flag = flag + (($('#pwd').hasClass('error') || $('#pwd').val() === '') ? 1 : 0)
-        flag = flag + (($('#repeatPwd').hasClass('error') || $('#repeatPwd').val() === '') ? 1 : 0)
-        flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
-        flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
-        console.log(flag)
-        if (flag === 0) {
-          $('#submit + input[type=submit]').click()
-        } else {
-          alert('注册信息错误!')
-        }
-      })
-      $('input[type=button]').click(function () {
-        console.log($('email').val())
-        if (!$('input[type=button]').hasClass('avoid')) {
-          $.ajax({
-            // todo 有待修改
-            url: '?email=' + $('#email').val(),
-            type: 'get',
-            success: function (resp) {
-              if (resp.result) {
-                console.info('验证信息已经发送到邮箱')
-              }
-            }
-          })
-          $('input[type=button]').addClass('avoid')
-          $('input[type=button]').val('重新发送(60s)')
-          waitProcess = setInterval(() => {
-            const content = $('input[type=button]').val()
-            let time = parseInt(content.substr(5, 2))
-            time = time - 1
-            if (time < 10) {
-              $('input[type=button]').val('重新发送(0' + time + 's)')
-            } else {
-              $('input[type=button]').val('重新发送(' + time + 's)')
-            }
-          }, 1000)// 每隔一段时间修改时间
-          setTimeout(() => {
-            clearInterval(waitProcess)
-            $('input[type=button]').removeClass('avoid')
-            $('input[type=button]').val('发送验证信息')
-          }, 60000)
-        }
-      })
+          }
+        })
+        $('input[type=button]').addClass('avoid')
+        $('input[type=button]').val('重新发送(60s)')
+        waitProcess = setInterval(() => {
+          const content = $('input[type=button]').val()
+          let time = parseInt(content.substr(5, 2))
+          time = time - 1
+          if (time < 10) {
+            $('input[type=button]').val('重新发送(0' + time + 's)')
+          } else {
+            $('input[type=button]').val('重新发送(' + time + 's)')
+          }
+        }, 1000)// 每隔一段时间修改时间
+        setTimeout(() => {
+          clearInterval(waitProcess)
+          $('input[type=button]').removeClass('avoid')
+          $('input[type=button]').val('发送验证信息')
+        }, 60000)
+      }
     })
   }
 }
@@ -461,7 +464,6 @@ export default {
   margin: 197px auto -70px;
 }
 #signUp .login-container  .right-container .action-container span{
-  border: 1px solid rgb(52, 58, 64);
   padding: 10px;
   display: inline-block;
   line-height: 35px;
@@ -474,6 +476,7 @@ export default {
   background-color: rgba(17, 126, 248, 0.89);
   color: rgba(255, 255, 255);
   transition: .4s;
+  border: 1px solid rgb(52, 58, 64);
 }
 .empty-photo{
   text-align: center;

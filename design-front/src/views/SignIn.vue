@@ -44,7 +44,7 @@
             <span class="regist">注册</span>
           </div>
           <a href="/signUp" style="display: none">注册页面</a>
-          <div class="photo-container">
+          <div class="photo-container" @click="choosePic">
             <div class="photo" id="photo"></div>
           </div>
           <div class="action-container" id="submit">
@@ -54,6 +54,7 @@
         </div>
       </div>
     </form>
+    <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
   </div>
 </template>
 
@@ -80,6 +81,28 @@ export default {
           alert('用户不存在')
         }
       })
+    },
+    choosePic: function () {
+      $('input[name=photo]').click()
+    },
+    readPic: function (event) {
+      if (event.target.files.length === 0) {
+        $('#photo').html('&#xe65b;')
+      } else {
+        const file = event.target.files[0]
+        if (!/^image\/\w*$/.test(file.type)) {
+          event.target.value = ''
+          alert('上传的并非图片,请重新选择')
+        } else {
+          const rd = new FileReader()
+          rd.readAsDataURL(file) // 记载图片，加载完成之后
+          rd.onload = function (e) {
+            const url = e.target.result
+            const context = `<img src='${url}' style="width:100%;height:100%;margin-top: -11.5px"/>`
+            $('#photo').html(context)
+          }
+        }
+      }
     }
   },
   mounted () {

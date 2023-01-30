@@ -46,6 +46,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+#detector {
+  background-color:#F8F8F9 !important
+}
 .content-mg{
   margin-left: 10%;
   margin-right: 10%;

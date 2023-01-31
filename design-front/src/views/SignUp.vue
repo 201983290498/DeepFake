@@ -140,7 +140,7 @@ export default {
     }
   },
   mounted () {
-    let waitProcess = ''
+    let waitProcess = 0
     const _this = this
     $('#photo').html('&#xe65b;')
     $('#photo').addClass('empty-photo')
@@ -249,19 +249,19 @@ export default {
       $('#validateMsg .tip').empty().text(msg)
     })
     $('input[name=validateData]').blur(function () {
-      const value = this.value
+      const message = this.value
+      const email = $('input[name=email]').val()
       $('#validateMsg').removeClass('focus')
-      if (value && value.length === 6) {
+      if (message && message.length === 6 && _this.checkEmail(email)) {
         let style = ''
         let msg = ''
         $.ajax({
-          // todo 需要更新
-          url: '',
+          url: _this.userUrl + 'register/checkMsg',
           type: 'post',
           dataType: 'json',
           data: {
-            email: $('input[name=email]').val(),
-            message: value
+            email,
+            message
           },
           success: function (rq) {
             style = rq.result ? 'success' : 'error'
@@ -287,15 +287,17 @@ export default {
       }
     })
     $('input[type=button]').click(function () {
-      console.log($('email').val())
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
-          // todo 有待修改
-          url: '?email=' + $('#email').val(),
-          type: 'get',
+          url: _this.userUrl + '/register/genMsg',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            email: $('#email').val()
+          },
           success: function (resp) {
             if (resp.result) {
-              console.info('验证信息已经发送到邮箱')
+              _this.$message.info('验证信息已经发送到邮箱!')
             }
           }
         })

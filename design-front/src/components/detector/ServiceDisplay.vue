@@ -160,7 +160,7 @@ export default {
 }
 
 .display-main .scan {
-  background-image: url('../../static/imgs/scan.png');
+  background-image: url('@/../static/imgs/scan.png');
   background-repeat: no-repeat;
   background-size: 100% 20%;
   background-attachment: fixed;

@@ -10,11 +10,11 @@
 <!--components为啥要用大括号呢-->
 
 <script>
-import ServiceDisplay from '../components/ServiceDisplay'
-import ServiceModule from '../components/ServiceModule'
-import ServiceUpload from '../components/ServiceUpload'
-import ServiceTitle from '../components/ServiceTitle'
-import UploadFile from '../components/UploadFile'
+import ServiceDisplay from '../components/detector/ServiceDisplay.vue'
+import ServiceModule from '../components/detector/ServiceModule.vue'
+import ServiceUpload from '../components/detector/ServiceUpload.vue'
+import ServiceTitle from '../components/detector/ServiceTitle.vue'
+import UploadFile from '../components/detector/UploadFile.vue'
 import $ from 'jquery'
 
 export default {

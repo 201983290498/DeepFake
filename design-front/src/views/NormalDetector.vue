@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import ServiceDisplay from '../components/ServiceDisplay'
-import ServiceModule2 from '../components/ServiceModule2'
-import ServiceUpload from '../components/ServiceUpload'
-import ServiceTitle from '../components/ServiceTitle'
+import ServiceDisplay from '../components/detector/ServiceDisplay.vue'
+import ServiceModule2 from '../components/detector/ServiceModule2.vue'
+import ServiceUpload from '../components/detector/ServiceUpload.vue'
+import ServiceTitle from '../components/detector/ServiceTitle.vue'
 import $ from 'jquery'
 
 export default {

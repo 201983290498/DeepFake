@@ -78,7 +78,7 @@ export default {
         dataType: 'json',
         success (resp) {
           if (resp.result && resp.data != null) {
-            const url = _this.imageUrl + '/search/' + resp.data.imageId
+            const url = resp.data.imageUrl
             const context = `<img src='${url}' style="width:100%;height: 100%;"/>`
             $('#photo').html(context)
           }

@@ -3,11 +3,8 @@ package com.coder.desgin.controller;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.service.ImageService;
 import com.coder.common.util.RespMessageUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.coder.desgin.service.OssService;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +18,7 @@ import java.io.IOException;
 public class ImageController {
 
     private final ImageService imageService;
+
 
     /**
      * Instantiates a new Image controller.
@@ -38,12 +36,9 @@ public class ImageController {
      * @return the response entity
      */
     @GetMapping("/search/{imageId}")
-    public ResponseEntity<byte[]> loginFigureImage(@PathVariable("imageId") String id){
+    public String loginFigureImage(@PathVariable("imageId") String id){
         Image image = imageService.selectById(id);
-        MultiValueMap<String,String> header = new HttpHeaders();
-        header.add("Content-Disposition", "attachment;filename=figureImage.jpg");
-        HttpStatus ok = HttpStatus.OK;
-        return new ResponseEntity<>(image.getImageBytes(),header,ok);
+        return RespMessageUtils.SUCCESS(image.getImageUrl());
     }
 
     /**
@@ -51,13 +46,17 @@ public class ImageController {
      *
      * @param photo the photo
      * @return the string
-     * @throws IOException the io exception
      */
     @ResponseBody
     @PostMapping("/upload")
-    public String upLoadImage(MultipartFile photo) throws IOException {
+    public String upLoadImage(MultipartFile photo){
         /* 传递回去上传成功的信息 */
-        Image upload = imageService.insertOne(new Image(photo.getBytes()));
+        Image upload = null;
+        try {
+            upload = imageService.insertOne(photo);
+        } catch (IOException e) {
+            return RespMessageUtils.ERROR("文件上传失败, 请稍后尝试。");
+        }
         return RespMessageUtils.SUCCESS(upload.getImageId());
     }
 }

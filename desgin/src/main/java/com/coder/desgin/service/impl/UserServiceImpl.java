@@ -1,9 +1,9 @@
 package com.coder.desgin.service.impl;
 
-import com.coder.desgin.dao.ImageDao;
 import com.coder.desgin.dao.UserDao;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.User;
+import com.coder.desgin.service.ImageService;
 import com.coder.desgin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,12 @@ import java.io.IOException;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userdao;
-    private final ImageDao imageDao;
+    private final ImageService imageService;
 
-    public UserServiceImpl(UserDao userdao, ImageDao imageDao) {
+
+    public UserServiceImpl(UserDao userdao, ImageService imageService) {
         this.userdao = userdao;
-        this.imageDao = imageDao;
+        this.imageService = imageService;
     }
 
     @Override
@@ -36,8 +37,7 @@ public class UserServiceImpl implements UserService {
     public User insertUser(User entity, MultipartFile photo) throws Exception {
         if(photo.getSize() != 0){
             try {
-                Image image = new Image(photo.getBytes());
-                imageDao.insert(image);
+                Image image = imageService.insertOne(photo);
                 // todo 检测是否自动给image赋值
                 log.info(String.valueOf(image));
                 entity.setImageId(image.getImageId());

@@ -3,7 +3,6 @@ use graduate_design;
 drop table if exists  `usr_tbl`,`image`;
 create table if not exists `image`(
     image_id nvarchar(255) not null primary key,
-    image_bytes mediumblob not null comment '图片的二进制字节',
     image_url nvarchar(255) default ''
 );
 create table if not exists `usr_tbl`(

@@ -63,9 +63,10 @@ public class User implements Serializable {
      * 入园的年龄
      */
     @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    @TableField(value = "create_time")
     private Date createTime;
 
+    private String imageUrl;
 
     /**
      * Instantiates a new User.

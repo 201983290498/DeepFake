@@ -4,7 +4,7 @@
       Sign up to Deepfake Detector
     </div>
     <!--    todo 修改form的action-->
-    <form id="form" action="/design-front/static" method="post" enctype="multipart/form-data">
+    <form id="form" action="/" enctype="multipart/form-data" ref="reluForm">
       <div class="login-container">
         <div class="left-container">
           <div class="title" style="text-align:left;">
@@ -62,14 +62,13 @@
           <div class="photo-container" id="photo-container" v-on:click="chooseFile">
             <div class="photo" id="photo"></div>
           </div>
+          <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
           <div class="action-container" id="submit">
             <span>注册</span>
           </div>
-          <input type="submit" style="display: none;" />
         </div>
       </div>
     </form>
-    <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
   </div>
 </template>
 
@@ -99,6 +98,7 @@ export default {
       $('input[name=photo]').click()
     },
     readPic: function (event) {
+      const _this = this
       if (event.target.files.length === 0) {
         $('#photo').html('&#xe65b;')
         return
@@ -106,7 +106,7 @@ export default {
       const file = event.target.files[0]
       if (!/^image\/\w*$/.test(file.type)) {
         event.target.value = ''
-        alert('上传的并非图片,请重新选择')
+        _this.$message.warning('上传的并非图片,请重新选择')
         return
       }
       const rd = new FileReader()
@@ -162,7 +162,6 @@ export default {
 
     $('.password').focus(function () {
       const msg = '6～16个字符，首字母必须大写,并包含数字和字母'
-      // todo 需要观察为什么
       const tip = this.dataset.tip
       $(`#${tip} .tip`).empty().text(msg)// 将内容清空
       $(`#${tip}`).removeClass('success error')
@@ -235,7 +234,7 @@ export default {
         let style = ''
         let msg = ''
         $.ajax({
-          url: _this.userUrl + 'register/checkMsg',
+          url: _this.userUrl + '/register/checkMsg',
           type: 'post',
           dataType: 'json',
           data: {
@@ -258,11 +257,26 @@ export default {
       flag = flag + (($('#repeatPwd').hasClass('error') || $('#repeatPwd').val() === '') ? 1 : 0)
       flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
       flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
-      console.log(flag)
       if (flag === 0) {
-        $('#submit + input[type=submit]').click()
+        console.log(_this.$refs.reluForm)
+        $.ajax({
+          url: _this.userUrl + '/register',
+          type: 'post',
+          data: new FormData(_this.$refs.reluForm),
+          processData: false,
+          contentType: false,
+          success: function (resp) {
+            if (resp.result) {
+              _this.$message.success('注册成功。')
+              _this.router.push({ path: '/signIn' })
+            }
+          },
+          error: function () {
+            _this.$message.warning('注册失败, 请稍后重试')
+          }
+        })
       } else {
-        alert('注册信息错误!')
+        _this.$message.warning('注册信息错误!')
       }
     })
     $('input[type=button]').click(function () {

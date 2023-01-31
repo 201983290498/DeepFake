@@ -24,7 +24,7 @@
       Sign in to Deepfake Detector
     </div>
 <!--    todo 需要写清楚具体的form表单提交的地址-->
-    <form action="/" id="form" method="post">
+    <form action="/" id="form" ref="reluForm">
       <div class="login-container">
         <div class="left-container">
           <div class="title">
@@ -71,15 +71,14 @@ export default {
   methods: {
     getPhoto: function (event) {
       const _this = this
-      // todo 需要看是通过url否能直接获取到
       $.ajax({
-        url: _this.userUrl + '/users/account/isExist?account=' + event.target.value,
+        url: _this.userUrl + '/account/isExist?account=' + event.target.value,
         method: 'get',
         dataType: 'json',
         success (resp) {
           if (resp.result && resp.data != null) {
             const url = resp.data.imageUrl
-            const context = `<img src='${url}' style="width:100%;height: 100%;"/>`
+            const context = `<img src='${url}' style="width:100%;height: 100%;margin-top: -11.5px"/>`
             $('#photo').html(context)
           }
         },
@@ -125,7 +124,22 @@ export default {
     })
     $('.left-container .title span').addClass('font_underline')
     $('#submit').click(() => {
-      $('#submit + .btn').click()// todo 需要写异步提交表单
+      $.ajax({
+        type: 'post',
+        url: _this.userUrl + '/login',
+        data: new FormData(_this.$refs.reluForm),
+        processData: false,
+        contentType: false,
+        success: function (resp) {
+          if (resp.result) {
+            _this.$message.success('登入成功!')
+            _this.$router.push({ path: '/' }) // todo 需要管理状态
+          }
+        },
+        error: function () {
+          _this.$message.warning('账号密码错误!')
+        }
+      })
     })
     $('.right-container .title').click(() => {
       $('.right-container a')[0].click()

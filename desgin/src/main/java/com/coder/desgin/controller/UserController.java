@@ -49,7 +49,7 @@ public class UserController {
         }else{
             Map<String,Object> data = new HashMap<>();
             if(user.getImageId()!=null){
-                data.put("imageId",user.getImageId());
+                data.put("imageUrl",user.getImageUrl());
             }else{
                 data =null;
             }

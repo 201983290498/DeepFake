@@ -55,9 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User checkAccount(User user) {
-        String account = user.getId();
+        String account = user.getUsername();
         if(account == null && account.equals("")){
-            account = user.getUsername();
+            account = user.getId();
         }
         User temUser = userdao.selectOne(account);
         if(temUser.getPassword().equals(user.getPassword())){

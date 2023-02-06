@@ -1,5 +1,6 @@
 <template>
   <div id="signIn">
+    <div>&nbsp;</div>
     <nav class="navbar navbar-fixed-top content-pd">
       <div class="container-fluid">
         <!--Logo加上商标名-->
@@ -43,7 +44,7 @@
           <div class="title">
             <span class="regist">注册</span>
           </div>
-          <a href="/signUp" style="display: none">注册页面</a>
+          <a href="/signUp/register" style="display: none">注册页面</a>
           <div class="photo-container" @click="choosePic">
             <div class="photo" id="photo"></div>
           </div>
@@ -55,6 +56,7 @@
       </div>
     </form>
     <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
+    <div style="height: 100px;"> </div>
   </div>
 </template>
 
@@ -158,10 +160,12 @@ export default {
 <style scoped lang="less">
 @import '@/assets/font/iconfont1/iconfont.css';
 #signIn {
-  position: fixed;
   height: 100%;
   width: 100%;
-  background-color: #F7F7F7;
+  background-image: url('https://s2.loli.net/2022/12/16/VkMoJWY9y6daCq2.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
 }
 .logo-pic{
   float: left;
@@ -171,8 +175,6 @@ export default {
 .navbar{
   padding: 0.5rem 2rem;
   align-items: center;
-  background-color:#fff !important;
-  border: 1px solid #f1f1f1 !important;
   box-shadow: 0 0 0.5rem 0 rgba(230,230,230,50%);
   a {
     font-weight: bold;
@@ -195,10 +197,10 @@ export default {
   cursor: pointer;
 }
 .description {
-  margin-top: 150px;
+  margin-top: 100px;
   font-weight: bold;
   font-size: 30px;
-  color: rgba(0,0,0);
+  color: #343A40;
 }
 #signIn .login-container{
   border-radius: 15px;

@@ -21,17 +21,32 @@
         </div>
       </div>
     </nav>
-    <RegisterCard style="margin-top: 80px;"></RegisterCard>
+    <RegisterCard v-show="showCard!=='forgetPwd'" style="margin-top: 80px;"></RegisterCard>
+    <ForgetPwd v-show="showCard==='forgetPwd'"></ForgetPwd>
     <div style="height: 100px;"></div>
   </div>
 </template>
 
 <script>
 import RegisterCard from '@/components/account/RegisterCard.vue'
+import ForgetPwd from '@/components/account/ForgetPwd.vue'
 export default {
   name: 'SignUp',
   components: {
+    ForgetPwd,
     RegisterCard
+  },
+  data () {
+    return {
+      showCard: 'register'
+    }
+  },
+  mounted () {
+    console.log(this.$route.query.mode)
+    if (this.$route.query.mode) {
+      this.showCard = this.$route.query.page
+      console.log(this.showCard)
+    }
   }
 }
 </script>
@@ -48,7 +63,6 @@ export default {
   background-size: cover;
   background-position: 50% 50%;
 }
-
 // navbar的样式
 .logo-pic{
   float: left;

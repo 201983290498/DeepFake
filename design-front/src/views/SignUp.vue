@@ -21,7 +21,7 @@
         </div>
       </div>
     </nav>
-    <RegisterCard v-show="showCard!=='forgetPwd'" style="margin-top: 80px;"></RegisterCard>
+    <RegisterCard v-show="showCard=='register'" style="margin-top: 80px;"></RegisterCard>
     <ForgetPwd v-show="showCard==='forgetPwd'"></ForgetPwd>
     <div style="height: 100px;"></div>
   </div>
@@ -42,10 +42,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.query.mode)
-    if (this.$route.query.mode) {
-      this.showCard = this.$route.query.page
-      console.log(this.showCard)
+    if (this.$route.params.page) {
+      this.showCard = this.$route.params.page
     }
   }
 }

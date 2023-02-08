@@ -3,7 +3,7 @@
     <div class="description">
       Sign up to Deepfake Detector
     </div>
-    <!--    todo 修改form的action-->
+    <!-- todo 修改form的action -->
     <form id="form" action="/" enctype="multipart/form-data" ref="reluForm">
       <div class="login-container">
         <div class="left-container">

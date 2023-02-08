@@ -43,6 +43,10 @@ const routes = [
     path: '/signUp/:page',
     name: 'SignUp',
     component: () => import('@/views/SignUp.vue')
+  },
+  {
+    path: '/signUp',
+    redirect: '/signUp/register'
   }
 ]
 

@@ -36,8 +36,7 @@
             <input type="password" id="password" name="password" placeholder="密码"/>
           </div>
           <div class="message-container">
-            <!-- TODO modal框实现找回密码 -->
-            <span>忘记密码</span>
+            <span @click="$router.push({path: '/signUp/forgetPwd'})">忘记密码</span>
           </div>
         </div>
         <div class="right-container">
@@ -56,7 +55,7 @@
       </div>
     </form>
     <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
-    <div style="height: 100px;"> </div>
+    <div style="height: 150px;"> </div>
   </div>
 </template>
 

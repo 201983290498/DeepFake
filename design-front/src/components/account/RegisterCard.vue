@@ -78,7 +78,8 @@ export default {
   name: 'RegisterCard',
   data () {
     return {
-      userUrl: window.server.COMMONS.userUrl
+      userUrl: window.server.COMMONS.userUrl,
+      validEmail: false
     }
   },
   methods: {
@@ -215,12 +216,25 @@ export default {
         msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;邮箱格式错误!'
         style = 'error'
       }
-      $('#emailMsg').addClass(style)
-      $('#emailMsg .tip').empty().html(msg)
-      // todo 检查邮箱
-      $.ajax({
-        url: ''
-      }).then()
+      if (style === 'success') {
+        $.ajax({
+          url: _this.userUrl + '/account/emailExist?email=' + value,
+          type: 'get',
+          dataType: 'json',
+          success: function (resp) {
+            style = resp.result ? 'error' : 'success'
+            if (resp.result) {
+              // 用户已经存在
+              msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + resp.data
+            }
+            $('#emailMsg').addClass(style)
+            $('#emailMsg .tip').empty().html(msg)
+          }
+        })
+      } else {
+        $('#emailMsg').addClass(style)
+        $('#emailMsg .tip').empty().html(msg)
+      }
     })
     // 验证码
     $('input[name=validateData]').focus(() => {
@@ -271,7 +285,9 @@ export default {
           success: function (resp) {
             if (resp.result) {
               _this.$message.success('注册成功。')
-              _this.router.push({ path: '/signIn' })
+              _this.$router.push({ path: '/signIn' })
+            } else {
+              _this.$message.warning(resp.msg)
             }
           },
           error: function () {

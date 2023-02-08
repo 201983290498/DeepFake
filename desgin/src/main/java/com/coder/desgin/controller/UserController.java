@@ -47,7 +47,7 @@ public class UserController {
         if(user==null){
             return RespMessageUtils.ERROR("用户不存在");
         }else{
-            Map<String,Object> data = new HashMap<>();
+            Map<String,Object> data = new HashMap<>(10);
             if(user.getImageId()!=null){
                 data.put("imageUrl",user.getImageUrl());
             }else{
@@ -121,7 +121,10 @@ public class UserController {
     public String register(User user, String repeatPwd, MultipartFile photo, String validateData){
         //验证失败，或者密码重复不正确
         if(!repeatPwd.equals(user.getPassword())) {
-            return RespMessageUtils.ERROR("两次输入的密码不正确");
+            return RespMessageUtils.ERROR("两次输入的密码不正确!");
+        }
+        if (userService.checkEmail(user.getEmail()) != null) {
+            return RespMessageUtils.ERROR("这个邮箱已经被注册了!");
         }
         try {
             verificationCodeFactory.checkValidationInfo(user.getEmail(),validateData);

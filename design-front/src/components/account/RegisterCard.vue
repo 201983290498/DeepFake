@@ -3,7 +3,6 @@
     <div class="description">
       Sign up to Deepfake Detector
     </div>
-    <!-- todo 修改form的action -->
     <form id="form" action="/" enctype="multipart/form-data" ref="reluForm">
       <div class="login-container">
         <div class="left-container">
@@ -218,6 +217,10 @@ export default {
       }
       $('#emailMsg').addClass(style)
       $('#emailMsg .tip').empty().html(msg)
+      // todo 检查邮箱
+      $.ajax({
+        url: ''
+      }).then()
     })
     // 验证码
     $('input[name=validateData]').focus(() => {

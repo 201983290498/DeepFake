@@ -57,6 +57,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/account/emailExist")
+    @ResponseBody
+    public String emailExist(String email){
+        User user = userService.checkEmail(email);
+        if (user == null) {
+            return RespMessageUtils.ERROR("邮箱没有注册任何账号。");
+        } else {
+            return RespMessageUtils.SUCCESS("邮箱已经被注册。");
+        }
+    }
+
     /**
      * 用户登入
      * @param username 用户名

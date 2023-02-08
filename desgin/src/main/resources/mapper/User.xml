@@ -5,4 +5,7 @@
 
 <mapper namespace="com.coder.desgin.dao.UserDao">
 
+    <select id="selectOneByEmail" resultType="com.coder.desgin.entity.mysql.User">
+        select * from usr_tbl where email = #{param1}
+    </select>
 </mapper>

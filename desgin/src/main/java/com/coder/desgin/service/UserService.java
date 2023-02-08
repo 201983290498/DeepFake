@@ -37,4 +37,11 @@ public interface UserService {
      * @return 返回相应的用户
      */
     User isExist(String account);
+
+    /**
+     * 查看邮箱是否存在, 每个邮箱只能注册一次
+     * @param email 邮箱地址
+     * @return 返回对应的用户
+     */
+    User checkEmail(String email);
 }

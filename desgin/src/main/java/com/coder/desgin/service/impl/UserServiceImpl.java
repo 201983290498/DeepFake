@@ -72,4 +72,9 @@ public class UserServiceImpl implements UserService {
     public User isExist(String account) {
         return userdao.selectOne(account);
     }
+
+    @Override
+    public User checkEmail(String email) {
+        return  userdao.selectOneByEmail(email);
+    }
 }

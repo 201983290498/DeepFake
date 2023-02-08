@@ -7,11 +7,11 @@
       <div class="login-container">
         <div class="left-container">
           <div class="title" style="text-align:left;">
-            <span>注册</span>
+            <span>找回密码</span>
           </div>
           <div class="input-container">
             <div class="form-group">
-              <input type="text" id="username" name="username" placeholder="用户名" />
+              <input type="text" id="username" name="username" placeholder="注册邮箱" />
               <div class="index-item" id="accountMsg">
                 <div>
                   <div class="tip fd"></div>
@@ -19,7 +19,7 @@
               </div>
             </div>
             <div class="form-group">
-              <!--              todo 使用data-tip存储数据-->
+              <!-- todo 使用data-tip存储数据-->
               <input class="password" type="password" id="pwd" name="password" placeholder="密码" data-tip="pwdMsg" data-pwd="repeatPwd"/>
               <div class="index-item" id="pwdMsg">
                 <label class="control-label"></label>
@@ -51,7 +51,7 @@
             </div>
           </div>
           <div class="message-container">
-            <span @click="$router.push({path: '/signIn'})">登录</span>
+            <span @click="$router.push({path: '/signIn'})">返回登入</span>
           </div>
         </div>
       </div>

@@ -337,7 +337,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-
 // 输入框的样式
 .description {
   font-weight: bold;
@@ -391,7 +390,6 @@ export default {
   background-color: #E5E5E5;
   color: #000;
 }
-
 #signUp .left-container .message-container{
   font-size: 18px;
   font-weight: 700;

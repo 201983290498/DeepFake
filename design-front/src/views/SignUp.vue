@@ -22,7 +22,7 @@
       </div>
     </nav>
     <RegisterCard v-show="showCard=='register'" style="margin-top: 80px;"></RegisterCard>
-    <ForgetPwd v-show="showCard==='forgetPwd'"></ForgetPwd>
+    <ForgetPwd v-show="showCard==='forgetPwd'" style="margin-top: 80px;"></ForgetPwd>
     <div style="height: 100px;"></div>
   </div>
 </template>

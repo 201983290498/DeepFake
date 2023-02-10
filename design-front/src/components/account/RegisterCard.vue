@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="registerCard">
     <div class="description">
       Sign up to Deepfake Detector
     </div>
@@ -51,7 +51,7 @@
             </div>
           </div>
           <div class="message-container">
-            <span @click="$router.push({path: '/signIn'})">登录</span>
+            <span @click="$router.push({path: '/signIn'})">返回登录</span>
           </div>
         </div>
         <div class="right-container">
@@ -121,6 +121,7 @@ export default {
   mounted () {
     let waitProcess = 0
     const _this = this
+    $('input[type=button]').addClass('avoid')
     $('#photo').html('&#xe65b;')
     $('#photo').addClass('empty-photo')
     $('#photo').addClass('iconfont')
@@ -159,7 +160,6 @@ export default {
         }
       }
     })
-
     $('.password').focus(function () {
       const msg = '6～16个字符，首字母必须大写,并包含数字和字母'
       const tip = this.dataset.tip
@@ -195,7 +195,6 @@ export default {
         $(`#${tip2} .tip`).empty().html(msg)
       }
     })
-
     // 邮箱的聚焦和失去焦点
     $('input[name=email]').focus(() => {
       const msg = '邮箱地址: xx@xx.xx'
@@ -226,6 +225,10 @@ export default {
             if (resp.result) {
               // 用户已经存在
               msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + resp.data
+              _this.validEmail = false
+            } else {
+              _this.validEmail = true
+              $('input[type=button]').removeClass('avoid')
             }
             $('#emailMsg').addClass(style)
             $('#emailMsg .tip').empty().html(msg)
@@ -274,6 +277,10 @@ export default {
       flag = flag + (($('#repeatPwd').hasClass('error') || $('#repeatPwd').val() === '') ? 1 : 0)
       flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
       flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
+      if (!_this.validEmail) {
+        _this.$message.warning('邮箱还未校验成功, 请稍后尝试!')
+        return
+      }
       if (flag === 0) {
         console.log(_this.$refs.reluForm)
         $.ajax({
@@ -305,7 +312,8 @@ export default {
           type: 'post',
           dataType: 'json',
           data: {
-            email: $('#email').val()
+            email: $('#email').val(),
+            type: 'register'
           },
           success: function (resp) {
             if (resp.result) {
@@ -337,6 +345,9 @@ export default {
 </script>
 
 <style scoped lang="less">
+#registerCard {
+  margin-bottom: 50px;
+}
 // 输入框的样式
 .description {
   font-weight: bold;

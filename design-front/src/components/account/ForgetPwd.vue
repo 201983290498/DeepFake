@@ -21,7 +21,7 @@
             <div class="form-group">
               <div class="validateMsgBox">
                 <input type="text" name="validateData" placeholder="验证码" style="display: inline-block;width: 61.8%;border-bottom-right-radius: 0;border-top-right-radius: 0;"  id="validateData"/>
-                <input type="button" value="发送验证信息" style="display: inline-block;width: 38.2%; border-bottom-left-radius: 0;border-top-left-radius: 0;" @/>
+                <input type="button" value="发送验证信息" style="display: inline-block;width: 38.2%; border-bottom-left-radius: 0;border-top-left-radius: 0;" />
               </div>
               <div class="index-item" id="validateMsg">
                 <label class="control-label"></label>
@@ -29,20 +29,21 @@
               </div>
             </div>
             <div class="form-group" >
-              <input class="password" type="password" id="pwd" name="password" placeholder="请输入密码" data-tip="pwdMsg" data-pwd="repeatPwd" disabled="disabled"/>
+              <input class="password" type="password" id="pwd" name="password" placeholder="请输入密码" data-tip="pwdMsg" data-pwd="repeatPwd"/>
               <div class="index-item" id="pwdMsg">
                 <div class="tip fd"></div>
               </div>
             </div>
             <div class="form-group">
-              <input class="password" type="password" name="repeatPwd" id="repeatPwd" placeholder="重复密码" data-tip="repeatPwdMsg" data-pwd="pwd" disabled="disabled"/>
+              <input class="password" type="password" name="repeatPwd" id="repeatPwd" placeholder="重复密码" data-tip="repeatPwdMsg" data-pwd="pwd"/>
               <div class="index-item" id="repeatPwdMsg">
                 <div class="tip fd"></div>
               </div>
             </div>
           </div>
           <div class="message-container">
-            <span @click="$router.push({path: '/signIn'})">返回登入</span>
+            <div class="message-box" ><span @click="$router.push({path: '/signIn'})">返回登录</span></div>
+            <div class="message-box" ><span @click="$router.push({path: '/signIn'})">提交</span></div>
           </div>
         </div>
       </div>
@@ -70,17 +71,27 @@ export default {
     checkEmail: function (value) {
       return /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
     },
-    validCheck: function () {
+    removeDisabled: function () {
+      console.log($('#forgetPwd input[type=button]'))
+      $('.validateMsgBox input[type=button]').removeClass('avoid')
+      $('.validateMsgBox input[type=text]').attr('disabled', false)
+      $('#forgetPwd input[name=password]').attr('disabled', false)
+      $('#forgetPwd input[name=repeatPwd]').attr('disabled', false)
+    },
+    addDisabled: function () {
+      $('.validateMsgBox input[type=button]').addClass('avoid')
+      $('.validateMsgBox input[type=text]').attr('disabled', true)
+      $('#forgetPwd input[name=password]').attr('disabled', true)
+      $('#forgetPwd input[name=repeatPwd]').attr('disabled', true)
+    },
+    changePassWD: function () {
       console.log(1)
-      if (!this.validEmail) {
-        this.$message.info('请先输入邮箱')
-      }
     }
   },
   mounted () {
     let waitProcess = 0
     const _this = this
-    $('input[type=button]').addClass('avoid')
+    _this.addDisabled()
     $('.password').focus(function () {
       const msg = '6～16个字符，首字母必须大写,并包含数字和字母'
       const tip = this.dataset.tip
@@ -144,6 +155,10 @@ export default {
             $('#validateMsg .tip').empty().html(msg)
           }
         })
+      } else {
+        $('#validateMsg').addClass('error')
+        const msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;验证码有误!'
+        $('#validateMsg .tip').empty().html(msg)
       }
     })
     // 邮箱的聚焦和失去焦点
@@ -155,6 +170,7 @@ export default {
       $('#emailMsg .tip').empty().text(msg)
     })
     $('input[name=email]').blur(function () {
+      _this.addDisabled()
       $('#emailMsg').removeClass('focus')
       const value = this.value
       let style = ''
@@ -173,11 +189,11 @@ export default {
           dataType: 'json',
           success: function (resp) {
             style = resp.result ? 'success' : 'error'
-            if (!resp.result) {
-              // 需要已经注册好了
-              msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱没有注册任何账号'
+            if (resp.result) {
+              console.log(1)
+              _this.removeDisabled()
             } else {
-              // todo 需要二次处理
+              msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱没有注册任何账号'
             }
             $('#emailMsg').addClass(style)
             $('#emailMsg .tip').empty().html(msg)
@@ -188,14 +204,15 @@ export default {
         $('#emailMsg .tip').empty().html(msg)
       }
     })
-    $('input[type=button]').click(function () {
+    $('#forgetPwd input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
           url: _this.userUrl + '/register/genMsg',
           type: 'post',
           dataType: 'json',
           data: {
-            email: $('#email').val()
+            email: $('#email').val(),
+            type: 'forgetPwd'
           },
           success: function (resp) {
             if (resp.result) {
@@ -288,7 +305,7 @@ export default {
   cursor: pointer;
   text-align: center;
 }
-#forgetPwd .left-container .message-container:hover{
+#forgetPwd .left-container .message-container span:hover{
   color: #2C96C4;
   transition: .2s;
 }
@@ -326,7 +343,10 @@ export default {
 .form-group .error .tip{
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAY1BMVEVHcEz/Z2f/XFz/W1v/XFz/XV3/XFz/W1v/cnL/X1//XFz/W1v/W1v/XFz/XV3/XFz/W1v/XFz/XV3/XFz/W1v/////fHz/2dn/7e3/s7P/xsb/8vL/mpr/iYn/bGz/p6f/Y2NsZYSPAAAAFHRSTlMAELjPcS3F8ggd6t2XgTmsVEhCoJXLaSEAAADrSURBVCjPjZPrFoIgEIQXARHSSl1v2e39nzI0pV3MTvPL4TvALjsCrLIqkc4c0rzMYKNjikGmEByKEzK5M6X6gLEKQs2y1vV9f1u+83By2Ns1TbNiVAv+3Msw6nfNyHAbXDJj0tGFYaym18BdXHusInwn3Xuc7GO0AJLYweMn8b529wMfAUyEkWP63I8Ia9b2hEfkpeXEXiPsx14Se29b8iqY+r4zg3uaZ1Z8fDsMD5KpOVLC0bv7aDPA+TuWa2DD8ddx7MI8bAhbvi3LaRJVFVNpWdA1nSsatflRqnrtIFUCvkkIa63I4H+9AItiMgck4VeDAAAAAElFTkSuQmCC) no-repeat 0 1px;
 }
-#pwdMsg, #emailMsg, #validateMsg{
+#emailMsg {
+  top: 41px !important;
+}
+#validateMsg {
   top: 23px !important;
 }
 #forgetPwd .left-container .form-group input[type=button]  {
@@ -334,5 +354,17 @@ export default {
 }
 #forgetPwd .form-group{
   position: relative;
+}
+#forgetPwd .left-container .form-group input[type=button].avoid{
+  cursor: default;
+  border-radius: 10px;
+  background: fixed rgb(200, 200, 200);
+}
+#forgetPwd .left-container input[disabled=disabled] {
+  background: fixed rgb(200, 200, 200);
+}
+.message-container .message-box{
+  display: inline-block;
+  width: 50%;
 }
 </style>

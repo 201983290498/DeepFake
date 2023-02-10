@@ -21,31 +21,14 @@
         </div>
       </div>
     </nav>
-    <RegisterCard v-show="showCard=='register'" style="margin-top: 80px;"></RegisterCard>
-    <ForgetPwd v-show="showCard==='forgetPwd'" style="margin-top: 80px;"></ForgetPwd>
-    <div style="height: 100px;"></div>
+    <router-view style="margin-top: 80px;"></router-view>
+    <div style="height: 50px;"></div>
   </div>
 </template>
 
 <script>
-import RegisterCard from '@/components/account/RegisterCard.vue'
-import ForgetPwd from '@/components/account/ForgetPwd.vue'
 export default {
-  name: 'SignUp',
-  components: {
-    ForgetPwd,
-    RegisterCard
-  },
-  data () {
-    return {
-      showCard: 'register'
-    }
-  },
-  mounted () {
-    if (this.$route.params.page) {
-      this.showCard = this.$route.params.page
-    }
-  }
+  name: 'SignUp'
 }
 </script>
 

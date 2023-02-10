@@ -93,7 +93,8 @@ public class VerificationCodeFactory {
      * @param email the email
      * @return Boolean
      */
-    public Boolean sendValidationInfo(String email){
+    public Boolean sendValidationInfo(String email, String type){
+        // todo 需要修改传递的事情类型
         clearOutdatedInfo();
         // 获取验证码，先查看是否已经存在，不存在创建一个验证码
         String msg = messageMap.get(email);

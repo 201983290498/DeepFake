@@ -5,18 +5,18 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd} ---- %-5level [%thread] %logger{10}:%msg%n"
   file:
-    path: E:\\code\\github\\desgin\\mylog
-    name: E:\\code\\github\\desgin\\mylog\\design.log
+    path: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog
+    name: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog\\design.log
 
 spring:
   mail:
     host: smtp.qq.com
-    username: 1023668958@qq.com
-    password: flujtaexoaulbbda
+    username: ${QQ_EMAIL}
+    password: ${QQ_EMAIL_PWD}
   redis:
-    host: 106.15.176.6
-    port: 6379
-    password: 123456
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWD}
     timeout: 5000
     database: 0
     lettuce:

@@ -93,8 +93,8 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/register/genMsg")
-    public String generateMsg(String email){
-        verificationCodeFactory.sendValidationInfo(email);
+    public String generateMsg(String email, String type){
+        verificationCodeFactory.sendValidationInfo(email, type);
         return RespMessageUtils.SUCCESS("验证码已发送, 请注意查收!");
     }
 

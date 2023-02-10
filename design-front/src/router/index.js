@@ -40,9 +40,25 @@ const routes = [
     component: () => import('@/views/SignIn.vue')
   },
   {
-    path: '/signUp/:page',
+    path: '/signUp',
     name: 'SignUp',
-    component: () => import('@/views/SignUp.vue')
+    component: () => import('@/views/SignUp.vue'),
+    children: [
+      {
+        path: 'register',
+        name: 'RegisterCard',
+        component: () => import('@/components/account/RegisterCard.vue')
+      },
+      {
+        path: 'forgetPwd',
+        name: 'ForgetPwd',
+        component: () => import('@/components/account/ForgetPwd.vue')
+      },
+      {
+        path: '',
+        redirect: 'register'
+      }
+    ]
   },
   {
     path: '/signUp',

@@ -4,7 +4,7 @@
     <ServiceModule></ServiceModule>
     <ServiceDisplay :disImgs='disImgs' @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero"></ServiceUpload>
-    <UploadFile></UploadFile>
+    <UploadFile style="margin-top: 35px"></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->

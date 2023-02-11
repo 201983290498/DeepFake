@@ -90,7 +90,7 @@ export default {
         }
       }
     },
-    uploadFile: function (event) {
+    uploadFile: function () {
       const _this = this
       if (_this.uploadImages.size === 0) {
         _this.$message.warning('未选中任何文件，无法检测')

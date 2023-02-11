@@ -7,6 +7,7 @@
                    :uploaded="uploaded"
                    @uploadZip="uploadZip"
                    ref="serviceUpload"></ServiceUpload>
+    <UploadFile style="margin-top: 35px"></UploadFile>
   </div>
 </template>
 

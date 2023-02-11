@@ -1,23 +1,26 @@
 <template>
   <!-- 上传器 -->
-  <uploader
-    ref="uploader"
-    :options="options"
-    :autoStart=false
-    :file-status-text="statusText"
-    @file-added="onFileAdded"
-    @file-success="onFileSuccess"
-    @file-progress="fileProgress"
-    @file-error="onFileError"
-    class="uploader-ui">
-    <uploader-unsupport></uploader-unsupport>
-    <uploader-drop>
-      <div>
-        <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
-      </div>
-    </uploader-drop>
-    <uploader-list></uploader-list>
-  </uploader>
+  <div>
+    <div class="uploaderTitle">大文件上传(>100M):</div>
+    <uploader
+      ref="uploader"
+      :options="options"
+      :autoStart=false
+      :file-status-text="statusText"
+      @file-added="onFileAdded"
+      @file-success="onFileSuccess"
+      @file-progress="fileProgress"
+      @file-error="onFileError"
+      class="uploader-ui">
+      <uploader-unsupport></uploader-unsupport>
+      <uploader-drop>
+        <div>
+          <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
+        </div>
+      </uploader-drop>
+      <uploader-list></uploader-list>
+    </uploader>
+  </div>
 </template>
 
 <script>
@@ -117,11 +120,8 @@ export default {
       })
     },
     fileProgress: function (rootFile, file, chunk) {
-      if (file.isUploading()) {
-        this.isUploadOk = false // 禁止上传
-      } else {
-        this.isUploadOk = true
-      }
+      console.log(chunk)
+      this.isUploadOk = !file.isUploading() // 禁止上传
     },
     mergeFile: function (data) {
       console.log('mergeFile')
@@ -136,5 +136,11 @@ export default {
 </script>
 
 <style scoped>
-
+.uploaderTitle {
+  text-align: left;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
 </style>

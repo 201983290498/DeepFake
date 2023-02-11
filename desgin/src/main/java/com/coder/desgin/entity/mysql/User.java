@@ -27,7 +27,7 @@ public class User implements Serializable {
      * 用户的id
      */
     @TableId(type = IdType.ASSIGN_UUID, value = "user_id")
-    private String id;
+    private String userId;
 
     /**
      * 邮箱验证
@@ -82,15 +82,15 @@ public class User implements Serializable {
     /**
      * Instantiates a new User.
      *
-     * @param id           the id
+     * @param userId           the id
      * @param email        the email
      * @param username     the username
      * @param password     the password
      * @param imageId      the image id
      * @param createTime   the creat time
      */
-    public User(String id, String email, String username, String password, String imageId, Date createTime) {
-        this.id = id;
+    public User(String userId, String email, String username, String password, String imageId, Date createTime) {
+        this.userId = userId;
         this.email = email;
         this.username = username;
         this.password = password;

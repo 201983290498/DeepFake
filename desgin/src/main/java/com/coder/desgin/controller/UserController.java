@@ -139,4 +139,28 @@ public class UserController {
         }
         return RespMessageUtils.SUCCESS("登入成功!");
     }
+
+    @PostMapping("/forgetPwd")
+    @ResponseBody
+    public String changePwd(User user, String repeatPwd, String validateData) {
+        if (!user.getPassword().equals(repeatPwd)) {
+            return RespMessageUtils.ERROR("两次密码输入不符合。");
+        }
+        try {
+            Boolean emailExist = verificationCodeFactory.checkValidationInfo(user.getEmail(), validateData, "forgetPwd");
+            if (!emailExist) {
+                return RespMessageUtils.ERROR("验证码错误!");
+            }
+        } catch (MailMessageException e) {
+            return RespMessageUtils.ERROR(e.getMessage());
+        }
+        User newUser = userService.checkEmail(user.getEmail());
+        if (newUser != null) {
+            newUser.setPassword(user.getPassword());
+            userService.updateOne(newUser);
+            return RespMessageUtils.SUCCESS("修改成功!");
+        } else {
+            return RespMessageUtils.ERROR("邮箱对应的账号不存在。");
+        }
+    }
 }

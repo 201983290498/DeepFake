@@ -92,11 +92,12 @@ export default {
       flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
       flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
       flag = flag + (($('#pwd').hasClass('error') || $('#pwd').val() === '') ? 1 : 0)
-      if (_this.validEmail) {
+      if (!_this.validEmail) {
         _this.$message.warning('邮箱还未校验成功, 请稍后尝试!')
         return
       }
       if (flag === 0) {
+        console.log(new FormData(_this.$refs.forgetForm))
         $.ajax({
           url: _this.userUrl + '/forgetPwd',
           type: 'post',
@@ -112,10 +113,12 @@ export default {
             }
           },
           error: function () {
+            console.log(1)
             _this.$message.warning('修改密码失败, 请稍后尝试.')
           }
         })
       } else {
+        console.log(2)
         _this.$message.warning('修改密码信息有误, 请检查.')
       }
     }
@@ -140,8 +143,8 @@ export default {
       const val1 = this.value
       const val2 = $(`#${pwd}`).val() // 另外一个输入框的密码
       if (val1 !== '') { // 输入的内容需要验证
-        let msg = ''
-        let style = ''
+        let msg
+        let style
         if (_this.checkPwd(val1) && val1 === val2) {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜，该密码可用!'
           style = 'success'

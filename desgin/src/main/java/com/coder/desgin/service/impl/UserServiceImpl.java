@@ -38,10 +38,9 @@ public class UserServiceImpl implements UserService {
         if(photo.getSize() != 0){
             try {
                 Image image = imageService.insertOne(photo);
-                // todo 检测是否自动给image赋值
                 log.info(String.valueOf(image));
                 entity.setImageId(image.getImageId());
-                userdao.insert(entity);
+                entity = insertUser(entity);
                 log.warn(String.valueOf(entity));
                 return entity;
             } catch (IOException e) {
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public User checkAccount(User user) {
         String account = user.getUsername();
         if(account == null && account.equals("")){
-            account = user.getId();
+            account = user.getUserId();
         }
         User temUser = userdao.selectOne(account);
         if(temUser.getPassword().equals(user.getPassword())){
@@ -76,5 +75,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User checkEmail(String email) {
         return  userdao.selectOneByEmail(email);
+    }
+
+    @Override
+    public void updateOne(User user) {
+        userdao.updateById(user);
     }
 }

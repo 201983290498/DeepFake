@@ -44,4 +44,10 @@ public interface UserService {
      * @return 返回对应的用户
      */
     User checkEmail(String email);
+
+    /**
+     * 更新用户
+     * @param user 用户对象
+     */
+    void updateOne(User user);
 }

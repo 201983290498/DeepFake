@@ -106,9 +106,9 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/register/checkMsg")
-    public String checkMsg(String email, String message) {
+    public String checkMsg(String email, String message, String type) {
         try {
-            verificationCodeFactory.checkValidationInfo(email, message);
+            verificationCodeFactory.checkValidationInfo(email, message, type);
             return RespMessageUtils.SUCCESS();
         } catch (MailMessageException e) {
             log.info(e.getMessage());
@@ -127,7 +127,7 @@ public class UserController {
             return RespMessageUtils.ERROR("这个邮箱已经被注册了!");
         }
         try {
-            verificationCodeFactory.checkValidationInfo(user.getEmail(),validateData);
+            verificationCodeFactory.checkValidationInfo(user.getEmail(),validateData, "register");
         } catch (MailMessageException e) {
             return RespMessageUtils.ERROR(e.getMessage());
         }

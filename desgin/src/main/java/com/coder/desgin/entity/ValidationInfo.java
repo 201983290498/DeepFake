@@ -28,9 +28,15 @@ public class ValidationInfo {
      */
     private String email;
 
-    public ValidationInfo(String email) {
+    /**
+     * 邮件的类型, 可以是forgetPwd和register
+     */
+    private String type;
+
+    public ValidationInfo(String email, String type) {
         this.email = email;
         this.message = UUID.randomUUID().toString().substring(0, 6);
         this.createTime = System.currentTimeMillis();
+        this.type = type;
     }
 }

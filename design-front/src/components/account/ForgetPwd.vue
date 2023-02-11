@@ -3,7 +3,7 @@
     <div class="description">
       Forget Password
     </div>
-    <form id="form" action="/" enctype="multipart/form-data" ref="reluForm">
+    <form id="form" action="/" enctype="multipart/form-data" ref="forgetForm">
       <div class="login-container">
         <div class="left-container">
           <div class="title" style="text-align:left;">
@@ -43,7 +43,7 @@
           </div>
           <div class="message-container">
             <div class="message-box" ><span @click="$router.push({path: '/signIn'})">返回登录</span></div>
-            <div class="message-box" ><span @click="$router.push({path: '/signIn'})">提交</span></div>
+            <div class="message-box" ><span @click="changePassWD">提交</span></div>
           </div>
         </div>
       </div>
@@ -72,20 +72,52 @@ export default {
       return /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
     },
     removeDisabled: function () {
-      console.log($('#forgetPwd input[type=button]'))
+      this.validEmail = true
       $('.validateMsgBox input[type=button]').removeClass('avoid')
       $('.validateMsgBox input[type=text]').attr('disabled', false)
       $('#forgetPwd input[name=password]').attr('disabled', false)
       $('#forgetPwd input[name=repeatPwd]').attr('disabled', false)
     },
     addDisabled: function () {
+      this.validEmail = false
       $('.validateMsgBox input[type=button]').addClass('avoid')
       $('.validateMsgBox input[type=text]').attr('disabled', true)
       $('#forgetPwd input[name=password]').attr('disabled', true)
       $('#forgetPwd input[name=repeatPwd]').attr('disabled', true)
     },
     changePassWD: function () {
-      console.log(1)
+      const _this = this
+      let flag = 0
+      flag = flag + (($('#repeatPwd').hasClass('error') || $('#repeatPwd').val() === '') ? 1 : 0)
+      flag = flag + (($('#email').hasClass('error') || $('#email').val() === '') ? 1 : 0)
+      flag = flag + (($('#validateData').hasClass('error') || $('#validateData').val() === '') ? 1 : 0)
+      flag = flag + (($('#pwd').hasClass('error') || $('#pwd').val() === '') ? 1 : 0)
+      if (_this.validEmail) {
+        _this.$message.warning('邮箱还未校验成功, 请稍后尝试!')
+        return
+      }
+      if (flag === 0) {
+        $.ajax({
+          url: _this.userUrl + '/forgetPwd',
+          type: 'post',
+          data: new FormData(_this.$refs.forgetForm),
+          processData: false,
+          contentType: false,
+          success: function (resp) {
+            if (resp.result) {
+              _this.$message.success('密码修改成功!')
+              _this.$router.push({ path: '/signIn' })
+            } else {
+              _this.$message.warning(resp.msg)
+            }
+          },
+          error: function () {
+            _this.$message.warning('修改密码失败, 请稍后尝试.')
+          }
+        })
+      } else {
+        _this.$message.warning('修改密码信息有误, 请检查.')
+      }
     }
   },
   mounted () {
@@ -146,7 +178,8 @@ export default {
           dataType: 'json',
           data: {
             email,
-            message
+            message,
+            type: 'forgetPwd'
           },
           success: function (rq) {
             style = rq.result ? 'success' : 'error'
@@ -155,7 +188,7 @@ export default {
             $('#validateMsg .tip').empty().html(msg)
           }
         })
-      } else {
+      } else if (message) {
         $('#validateMsg').addClass('error')
         const msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;验证码有误!'
         $('#validateMsg .tip').empty().html(msg)
@@ -190,7 +223,6 @@ export default {
           success: function (resp) {
             style = resp.result ? 'success' : 'error'
             if (resp.result) {
-              console.log(1)
               _this.removeDisabled()
             } else {
               msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱没有注册任何账号'

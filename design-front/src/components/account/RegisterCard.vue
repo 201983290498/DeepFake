@@ -259,7 +259,8 @@ export default {
           dataType: 'json',
           data: {
             email,
-            message
+            message,
+            type: 'register'
           },
           success: function (rq) {
             style = rq.result ? 'success' : 'error'
@@ -282,7 +283,6 @@ export default {
         return
       }
       if (flag === 0) {
-        console.log(_this.$refs.reluForm)
         $.ajax({
           url: _this.userUrl + '/register',
           type: 'post',
@@ -298,7 +298,7 @@ export default {
             }
           },
           error: function () {
-            _this.$message.warning('注册失败, 请稍后重试')
+            _this.$message.warning('注册失败, 请稍后重试.')
           }
         })
       } else {

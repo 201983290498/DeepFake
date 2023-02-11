@@ -59,15 +59,22 @@ public class VerificationCodeFactory {
      * @param validationCode 验证码
      * @return 返回生成码页面
      */
-    private String generationValidationHtml(String receiveEmail, String validationCode){
+    private String generationValidationHtml(String receiveEmail, String validationCode, String type){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm::ss");
-        return  "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
-                +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
-                +"<p style='text-indent:2em;font-size:20px'>欢迎注册DeepFakeApplication，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"+
-                "<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
-                +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
+        if ("register".equals(type)) {
+            return  "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
+                    +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
+                    +"<p style='text-indent:2em;font-size:20px'>欢迎注册DeepFakeApplication，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"+
+                    "<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
 
-
+        } else {
+            return  "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
+                    +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
+                    +"<p style='text-indent:2em;font-size:20px'>您的账号正在修改密码，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"+
+                    "<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
+        }
     }
 
     /**
@@ -78,9 +85,9 @@ public class VerificationCodeFactory {
      * @return the boolean
      * @throws MailMessageException the message exception
      */
-    public Boolean checkValidationInfo(String email, String message) throws MailMessageException {
+    public Boolean checkValidationInfo(String email, String message, String type) throws MailMessageException {
         clearOutdatedInfo();
-        String msg = messageMap.get(email);
+        String msg = messageMap.get(email+type);
         if(message!=null&&message.equals(msg)){
             return true;
         }else{
@@ -94,17 +101,16 @@ public class VerificationCodeFactory {
      * @return Boolean
      */
     public Boolean sendValidationInfo(String email, String type){
-        // todo 需要修改传递的事情类型
         clearOutdatedInfo();
         // 获取验证码，先查看是否已经存在，不存在创建一个验证码
-        String msg = messageMap.get(email);
+        String msg = messageMap.get(email+type);
         if(msg==null){
-            ValidationInfo validationInfo = new ValidationInfo(email);
+            ValidationInfo validationInfo = new ValidationInfo(email, type);
             validationInfoQueue.addLast(validationInfo);
             msg = validationInfo.getMessage();
         }
-        messageMap.put(email, msg);
-        emailHandler.sendHtmlMsg(email,generationValidationHtml(email, msg));
+        messageMap.put(email+type, msg);
+        emailHandler.sendHtmlMsg(email,generationValidationHtml(email, msg, type));
         return true;
     }
 }

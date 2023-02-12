@@ -4,7 +4,7 @@
     <ServiceModule></ServiceModule>
     <ServiceDisplay :disImgs='disImgs' @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero"></ServiceUpload>
-    <UploadFile style="margin-top: 35px"></UploadFile>
+    <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->
@@ -31,7 +31,8 @@ export default {
       title: 'DeepFake篡改检测',
       deepfakeDetector: window.server.DEEPFAKE,
       disImgs: [require('../../static/imgs/fake1.jpg'), require('../../static/imgs/fake2.jpg'), require('../../static/imgs/real1.jpg')],
-      uploaded: 0
+      uploaded: 0,
+      loginStatus: window.server.STATUS
     }
   },
   methods: {
@@ -104,7 +105,6 @@ export default {
             xhr.upload.addEventListener('progress', function (event) {
               // 已经上传的进度条
               _this.uploaded = Math.round(event.loaded / event.total * 100)
-              console.log(this.uploaded)
             }, false)
           }
           return xhr

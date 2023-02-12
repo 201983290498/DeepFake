@@ -7,7 +7,7 @@
                    :uploaded="uploaded"
                    @uploadZip="uploadZip"
                    ref="serviceUpload"></ServiceUpload>
-    <UploadFile style="margin-top: 35px"></UploadFile>
+    <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
   </div>
 </template>
 
@@ -32,7 +32,8 @@ export default {
       normalDetector: window.server.NORMAL,
       disImgs: [require('../../static/imgs/copymove1.jpg'), require('../../static/imgs/copymove2.jpg'), require('../../static/imgs/copymove3.jpg')],
       detectType: 'copymove',
-      uploaded: 0
+      uploaded: 0,
+      loginStatus: window.server.STATUS
     }
   },
   methods: {

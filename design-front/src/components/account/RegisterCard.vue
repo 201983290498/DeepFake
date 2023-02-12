@@ -113,7 +113,7 @@ export default {
       rd.readAsDataURL(file) // 记载图片，加载完成之后
       rd.onload = function (e) {
         const url = e.target.result
-        const context = `<img src='${url}' style="width:100%;height:100%;margin-top: -11.5px"/>`
+        const context = `<img src='${url}' style="width:100%;height:100%;margin-top: -11.5px" alt=""/>`
         $('#photo').html(context)
       }
     }
@@ -138,8 +138,8 @@ export default {
       // 正则检验 输入的账号是否合法
       $('#accountMsg').removeClass('focus')
       if (account) {
-        let msg = ''
-        let style = ''
+        let msg
+        let style
         if (_this.checkAccount(account)) { // 查看样式是否符号规范
           $.ajax({
             url: _this.userUrl + '/account/isExist?account=' + account,
@@ -148,6 +148,11 @@ export default {
             success: (rs) => {
               msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + ((!rs.result) ? '恭喜，该用户名可以注册' : '用户名重复')
               style = (!rs.result) ? 'success' : 'error'
+              if (style === 'success') {
+                $('#username').removeClass('error')
+              } else {
+                $('#username').addClass('error')
+              }
               $('#accountMsg').addClass(style)
               $('#accountMsg .tip').empty().html(msg)
             }
@@ -155,6 +160,7 @@ export default {
         } else {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;长度应为6~18个字符'
           style = 'error'
+          $('#username').addClass('error')
           $('#accountMsg').addClass(style)
           $('#accountMsg .tip').empty().html(msg)
         }
@@ -177,17 +183,20 @@ export default {
       const val1 = this.value
       const val2 = $(`#${pwd}`).val() // 另外一个输入框的密码
       if (val1 !== '') { // 输入的内容需要验证
-        let msg = ''
-        let style = ''
+        let msg
+        let style
         if (_this.checkPwd(val1) && val1 === val2) {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜，该密码可用!'
           style = 'success'
+          $('.password').removeClass('error')
         } else if (_this.checkPwd(val1)) {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;两次输入的密码不同!'
           style = 'error'
+          $('.password').addClass('error')
         } else {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;首写字母必须大写，并包含数字和字母!'
           style = 'error'
+          $('.password').addClass('error')
         }
         $(`#${tip}`).addClass(style)
         $(`#${tip} .tip`).empty().html(msg)
@@ -206,14 +215,16 @@ export default {
     $('input[name=email]').blur(function () {
       $('#emailMsg').removeClass('focus')
       const value = this.value
-      let style = ''
-      let msg = ''
+      let style
+      let msg
       if (value && _this.checkEmail(value)) {
         msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱格式有效!'
         style = 'success'
+        $('input[name=email]').removeClass('error')
       } else if (value !== '') {
         msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;邮箱格式错误!'
         style = 'error'
+        $('input[name=email]').addClass('error')
       }
       if (style === 'success') {
         $.ajax({
@@ -222,6 +233,11 @@ export default {
           dataType: 'json',
           success: function (resp) {
             style = resp.result ? 'error' : 'success'
+            if (style === 'success') {
+              $('input[name=email]').removeClass('error')
+            } else {
+              $('input[name=email]').addClass('error')
+            }
             if (resp.result) {
               // 用户已经存在
               msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + resp.data
@@ -251,8 +267,8 @@ export default {
       const email = $('input[name=email]').val()
       $('#validateMsg').removeClass('focus')
       if (message && message.length === 6 && _this.checkEmail(email)) {
-        let style = ''
-        let msg = ''
+        let style
+        let msg
         $.ajax({
           url: _this.userUrl + '/register/checkMsg',
           type: 'post',
@@ -264,6 +280,11 @@ export default {
           },
           success: function (rq) {
             style = rq.result ? 'success' : 'error'
+            if (rq.result) {
+              $('input[name=validateData]').removeClass('error')
+            } else {
+              $('input[name=validateData]').addClass('error')
+            }
             msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.result ? '验证码通过!' : '验证码错误!')
             $('#validateMsg').addClass(style)
             $('#validateMsg .tip').empty().html(msg)
@@ -397,9 +418,12 @@ export default {
   margin-bottom: 4px;
 }
 #signUp input:focus{
-  border: 1px solid #C0C4CC;
+  border: 1.5px solid #1AA9FF;
   background-color: #E5E5E5;
   color: #000;
+}
+#signUp input.error{
+  border: 1.5px solid rgb(255, 0, 0);
 }
 #signUp .left-container .message-container{
   font-size: 18px;
@@ -473,7 +497,7 @@ export default {
 // 设置提示语的特点
 #signUp .index-item{
   position: absolute;
-  top: 39px;
+  top: 40px;
   left: 10px;
   height: 17px;
   line-height: 17px;

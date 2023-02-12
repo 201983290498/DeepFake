@@ -21,7 +21,7 @@ public interface UserDao extends BaseMapper<User> {
      * @param account 用户输入的账号
      * @return 返回在表格中查找到的用户
      */
-    @Select("select a.*, b.image_url as imageUrl from usr_tbl a, image b where a.image_id = b.image_id and (username = #{param1} or user_id = #{param1} or emial=#{param1}})")
+    @Select("select a.*, b.image_url as imageUrl from usr_tbl a, image b where a.image_id = b.image_id and (username = #{param1} or user_id = #{param1} or email = #{param1})")
     User selectOne(String account);
 
     /**

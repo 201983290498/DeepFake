@@ -148,12 +148,15 @@ export default {
         if (_this.checkPwd(val1) && val1 === val2) {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恭喜，该密码可用!'
           style = 'success'
+          $('.password').removeClass('error')
         } else if (_this.checkPwd(val1)) {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;两次输入的密码不同!'
           style = 'error'
+          $('.password').addClass('error')
         } else {
           msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;首写字母必须大写，并包含数字和字母!'
           style = 'error'
+          $('.password').addClass('error')
         }
         $(`#${tip}`).addClass(style)
         $(`#${tip} .tip`).empty().html(msg)
@@ -173,8 +176,8 @@ export default {
       const email = $('input[name=email]').val()
       $('#validateMsg').removeClass('focus')
       if (message && message.length === 6 && _this.checkEmail(email)) {
-        let style = ''
-        let msg = ''
+        let style
+        let msg
         $.ajax({
           url: _this.userUrl + '/register/checkMsg',
           type: 'post',
@@ -187,6 +190,11 @@ export default {
           success: function (rq) {
             style = rq.result ? 'success' : 'error'
             msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.result ? '验证码通过!' : '验证码错误!')
+            if (rq.result) {
+              $('input[name=validateData]').removeClass('error')
+            } else {
+              $('input[name=validateData]').addClass('error')
+            }
             $('#validateMsg').addClass(style)
             $('#validateMsg .tip').empty().html(msg)
           }
@@ -194,6 +202,7 @@ export default {
       } else if (message) {
         $('#validateMsg').addClass('error')
         const msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;验证码有误!'
+        $('input[name=validateData]').addClass('error')
         $('#validateMsg .tip').empty().html(msg)
       }
     })
@@ -209,14 +218,16 @@ export default {
       _this.addDisabled()
       $('#emailMsg').removeClass('focus')
       const value = this.value
-      let style = ''
-      let msg = ''
+      let style
+      let msg
       if (value && _this.checkEmail(value)) {
         msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱格式有效!'
+        $('input[name=email]').removeClass('error')
         style = 'success'
       } else if (value !== '') {
         msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;邮箱格式错误!'
         style = 'error'
+        $('input[name=email]').addClass('error')
       }
       if (style === 'success') {
         $.ajax({
@@ -227,8 +238,10 @@ export default {
             style = resp.result ? 'success' : 'error'
             if (resp.result) {
               _this.removeDisabled()
+              $('input[name=email]').removeClass('error')
             } else {
               msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该邮箱没有注册任何账号'
+              $('input[name=email]').addClass('error')
             }
             $('#emailMsg').addClass(style)
             $('#emailMsg .tip').empty().html(msg)
@@ -330,9 +343,12 @@ export default {
   margin-bottom: 4px;
 }
 #forgetPwd input:focus{
-  border: 1px solid #C0C4CC;
+  border: 1.5px solid #1AA9FF;
   background-color: #E5E5E5;
   color: #000;
+}
+#forgetPwd input.error {
+  border: 1.5px solid rgb(255, 0, 0);
 }
 #forgetPwd .left-container .message-container{
   font-size: 18px;

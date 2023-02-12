@@ -132,6 +132,13 @@
             <version>2.3.3</version>
         </dependency>
         <!--################## 集成OSS软件 ##################-->
+
+        <!--################## 集成支付宝付款 ##################-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.35.45.ALL</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

@@ -134,7 +134,8 @@ export default {
         success: function (resp) {
           if (resp.result) {
             _this.$message.success('登入成功!')
-            _this.$router.push({ path: '/' }) // todo 需要管理状态
+            _this.$router.push({ path: '/' })
+            window.server.STATUS = true
           }
         },
         error: function () {

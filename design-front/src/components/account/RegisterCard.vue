@@ -311,6 +311,7 @@ export default {
           processData: false,
           contentType: false,
           success: function (resp) {
+            resp = JSON.parse(resp)
             if (resp.result) {
               _this.$message.success('注册成功。')
               _this.$router.push({ path: '/signIn' })

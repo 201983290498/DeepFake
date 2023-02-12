@@ -132,6 +132,7 @@ export default {
         processData: false,
         contentType: false,
         success: function (resp) {
+          resp = JSON.parse(resp)
           if (resp.result) {
             _this.$message.success('登入成功!')
             _this.$router.push({ path: '/' })

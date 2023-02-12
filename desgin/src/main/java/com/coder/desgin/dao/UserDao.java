@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Select;
 public interface UserDao extends BaseMapper<User> {
 
     /**
-     * 查找用户信息
+     * 查找用户信息, 包括头像
      * @param account 用户输入的账号
      * @return 返回在表格中查找到的用户
      */

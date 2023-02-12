@@ -8,7 +8,8 @@
       <div class="inb input-btn" @click="openWindow">
         <span style="display: inline-block;">本地上传</span>
       </div>
-      <span class="upload-info">仅支持图片类型('png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp')或压缩文件(.zip)</span>
+      <span class="upload-info" v-show="loginStatus">仅支持图片类型('png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp')或压缩文件(.zip)</span>
+      <span class="upload-info" v-show="!loginStatus">仅支持图片类型('png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp')</span>
     </div>
 <!--上传按钮2-->
     <div class="inb upload-btn">
@@ -51,7 +52,8 @@ export default {
     downToZero: {
       type: Function
     },
-    detectType: [String]
+    detectType: [String],
+    loginStatus: [Boolean, String]
   },
   methods: {
     openWindow: function () {

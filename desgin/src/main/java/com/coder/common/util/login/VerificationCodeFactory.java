@@ -3,6 +3,7 @@ package com.coder.common.util.login;
 import com.coder.common.util.JavaEmail;
 import com.coder.desgin.entity.ValidationInfo;
 import com.coder.desgin.exception.MailMessageException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.HashMap;
  * @author coder
  */
 @Component
+@Scope("singleton")
 public class VerificationCodeFactory {
 
     private final JavaEmail emailHandler;

@@ -35,7 +35,7 @@ export default {
         chunkSize: '20971520', // 分块大小
         testChunks: false,
         fileParameterName: 'upfile',
-        singleFile: true, // 一次只允许上传一个文件
+        singleFile: false, // 一次只允许上传一个文件
         // eslint-disable-next-line camelcase
         checkChunkUploadedByResponse: function (chunk, response_msg) {
           const objMessage = JSON.parse(response_msg)

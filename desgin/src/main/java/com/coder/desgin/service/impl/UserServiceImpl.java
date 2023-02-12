@@ -1,5 +1,6 @@
 package com.coder.desgin.service.impl;
 
+import com.coder.desgin.dao.ImageDao;
 import com.coder.desgin.dao.UserDao;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.User;
@@ -21,10 +22,13 @@ public class UserServiceImpl implements UserService {
     private final UserDao userdao;
     private final ImageService imageService;
 
+    private final ImageDao imageDao;
 
-    public UserServiceImpl(UserDao userdao, ImageService imageService) {
+
+    public UserServiceImpl(UserDao userdao, ImageService imageService, ImageDao imageDao) {
         this.userdao = userdao;
         this.imageService = imageService;
+        this.imageDao = imageDao;
     }
 
     @Override

@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DeepFakeDetector from '@/views/DeepFakeDetector.vue'
 import DetectorPage from '@/views/DetectorPage.vue'
+import Vuex from 'vuex'
 
 Vue.use(VueRouter)
+Vue.use(Vuex)
 
 const routes = [
   {
@@ -65,10 +67,24 @@ const routes = [
     redirect: '/signUp/register'
   }
 ]
-
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: routes
+})
+// 添加一个路由守卫
+router.beforeEach((to, from, next) => {
+  if (to.path === '/signIn') {
+    next()
+  } else if (to.path === '/disBoard') {
+    const token = localStorage.getItem('Authorization')
+    if (token === 'null' || token === '') {
+      next('/signIn')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 export default router

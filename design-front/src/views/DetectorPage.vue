@@ -5,7 +5,7 @@
         <!--Logo加上商标名-->
         <div class="navbar-header  font-weight-bolder">
           <div class="navbar-brand">
-            <img alt="logo" src="@/../static/imgs/logo.png" class="logo-pic">
+            <img alt="logo" src="@/../static/imgs/logo.png" class="logo-pic" >
             DeepFake Detector
           </div>
         </div>
@@ -23,7 +23,7 @@
           <!--用户信息栏-->
           <ul class="nav navbar-nav ml-auto">
             <li class="active">
-              <a href="/signIn"><img class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
+              <a href="/signIn"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
             </li>
           </ul>
         </div>
@@ -35,11 +35,21 @@
 </template>
 
 <script>
+import $ from 'jquery'
 export default {
   name: 'DetectorPage',
   data () {
     return {
-      userStatus: 'Sign in'
+      userStatus: 'Sign in',
+      user: {}
+    }
+  },
+  mounted () {
+    const _this = this
+    if (_this.$store.state.status) {
+      _this.user = _this.$store.state.data
+      _this.userStatus = _this.user.username
+      $('#headPortrait').attr('src', _this.user.imageUrl)
     }
   }
 }

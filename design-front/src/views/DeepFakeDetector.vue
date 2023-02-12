@@ -3,7 +3,7 @@
     <ServiceTitle :titleHeader="title"></ServiceTitle>
     <ServiceModule></ServiceModule>
     <ServiceDisplay :disImgs='disImgs' @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
-    <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero"></ServiceUpload>
+    <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
     <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
   </div>
 </template>

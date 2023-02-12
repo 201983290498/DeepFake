@@ -1,8 +1,10 @@
 package com.coder.desgin.controller;
 
 
+import com.coder.common.util.TokenUtil;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.exception.MailMessageException;
+import com.coder.desgin.interceptor.TokenInterceptor;
 import com.coder.desgin.service.UserService;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.login.VerificationCodeFactory;
@@ -30,9 +32,13 @@ public class UserController {
      * 验证码管理类
      */
     private final VerificationCodeFactory verificationCodeFactory;
-    public UserController(UserService userService, VerificationCodeFactory verificationCodeFactory) {
+
+    private final TokenUtil tokenUtil;
+
+    public UserController(UserService userService, VerificationCodeFactory verificationCodeFactory, TokenUtil tokenUtil) {
         this.userService = userService;
         this.verificationCodeFactory = verificationCodeFactory;
+        this.tokenUtil = tokenUtil;
     }
 
     /**
@@ -82,8 +88,9 @@ public class UserController {
         if(login == null){
             return RespMessageUtils.ERROR("账号或者密码错误");
         }
-        request.getSession().setAttribute("user",new User(username,new Date(System.currentTimeMillis()),user.getImageId()));
-        return RespMessageUtils.SUCCESS(user);
+        User newUser = new User(username, new Date(System.currentTimeMillis()), login.getImageId(), login.getImageUrl());
+        newUser.setToken(tokenUtil.sign(username, password));
+        return RespMessageUtils.SUCCESS(newUser);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.coder.common.util;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -12,9 +13,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author coder
+ */
 @Data
 @Slf4j
 @Component
+@Scope("singleton")
 public class RedisUtil {
 
     @Resource

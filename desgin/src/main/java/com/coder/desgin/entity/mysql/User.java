@@ -66,7 +66,10 @@ public class User implements Serializable {
     @TableField(value = "create_time")
     private Date createTime;
 
+
     private String imageUrl;
+
+    private String token;
 
     /**
      * Instantiates a new User.
@@ -104,10 +107,11 @@ public class User implements Serializable {
      * @param username   the username
      * @param createTime the creat time
      */
-    public User(String username, Date createTime, String imageId) {
+    public User(String username, Date createTime, String imageId, String imageUrl) {
         this.username = username;
         this.createTime = createTime;
         this.imageId = imageId;
+        this.imageUrl = imageUrl;
     }
 
 }

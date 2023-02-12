@@ -6,16 +6,17 @@
     <ServiceUpload :detectType="detectType" @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" :downToZero="downToZero"
                    :uploaded="uploaded"
                    @uploadZip="uploadZip"
-                   ref="serviceUpload"></ServiceUpload>
+                   ref="serviceUpload" :loginStatus="loginStatus"></ServiceUpload>
     <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
   </div>
 </template>
 
 <script>
-import ServiceDisplay from '../components/detector/ServiceDisplay.vue'
-import ServiceModule2 from '../components/detector/ServiceModule2.vue'
-import ServiceUpload from '../components/detector/ServiceUpload.vue'
-import ServiceTitle from '../components/detector/ServiceTitle.vue'
+import ServiceDisplay from '@/components/detector/ServiceDisplay.vue'
+import ServiceModule2 from '@/components/detector/ServiceModule2.vue'
+import ServiceUpload from '@/components/detector/ServiceUpload.vue'
+import ServiceTitle from '@/components/detector/ServiceTitle.vue'
+import UploadFile from '@/components/detector/UploadFile.vue'
 import $ from 'jquery'
 
 export default {
@@ -24,7 +25,8 @@ export default {
     ServiceDisplay,
     ServiceModule2,
     ServiceTitle,
-    ServiceUpload
+    ServiceUpload,
+    UploadFile
   },
   data () {
     return {

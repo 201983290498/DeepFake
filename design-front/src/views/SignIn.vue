@@ -134,9 +134,13 @@ export default {
         success: function (resp) {
           resp = JSON.parse(resp)
           if (resp.result) {
+            window.server.STATUS = true
+            _this.$store.commit('saveData', resp.data)
+            const token = 'Bearer ' + resp.data.token
+            _this.$store.commit('changeLogin', token)
+            _this.$store.commit('changeStatus', true)
             _this.$message.success('登入成功!')
             _this.$router.push({ path: '/' })
-            window.server.STATUS = true
           }
         },
         error: function () {

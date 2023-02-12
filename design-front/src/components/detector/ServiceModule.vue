@@ -1,10 +1,10 @@
 <template>
   <div class="service-module">
     <div class="module">
-      <div class="module-bottom" :class="{'btn-active':isActive1}" @click="isActive1 = true, isActive2 = false">
+      <div class="module-bottom" :class="{'btn-active':isActive1}" @click="accuracyMode">
         <span class="module-text">精准模式</span>
       </div>
-      <div class="module-bottom" :class="{'btn-active':isActive2}" v-on:click="isActive2 = true, isActive1 = false">
+      <div class="module-bottom" :class="{'btn-active':isActive2}" v-on:click="speedMode">
         <span class="module-text">极速模式</span>
       </div>
     </div>
@@ -19,8 +19,20 @@ export default {
       isActive1: true,
       isActive2: false
     }
+  },
+  methods: {
+    speedMode: function () {
+      this.isActive2 = true
+      this.isActive1 = false
+      if (!this.$store.state.status) {
+        this.$router.push({ path: '/signIn' })
+      }
+    },
+    accuracyMode: function () {
+      this.isActive1 = true
+      this.isActive2 = false
+    }
   }
-
 }
 </script>
 

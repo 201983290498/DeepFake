@@ -97,7 +97,6 @@ export default {
         return
       }
       if (flag === 0) {
-        console.log(new FormData(_this.$refs.forgetForm))
         $.ajax({
           url: _this.userUrl + '/forgetPwd',
           type: 'post',
@@ -114,12 +113,10 @@ export default {
             }
           },
           error: function () {
-            console.log(1)
             _this.$message.warning('修改密码失败, 请稍后尝试.')
           }
         })
       } else {
-        console.log(2)
         _this.$message.warning('修改密码信息有误, 请检查.')
       }
     }

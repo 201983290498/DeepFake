@@ -102,7 +102,6 @@ export default {
             xhr.upload.addEventListener('progress', function (event) {
               // 已经上传的进度条
               _this.uploaded = Math.round(event.loaded / event.total * 100)
-              console.log(this.uploaded)
             }, false)
           }
           return xhr

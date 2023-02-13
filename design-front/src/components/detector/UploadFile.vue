@@ -84,7 +84,6 @@ export default {
       }
     },
     onFileAdded: function (file) {
-      console.log('onFileAdded')
       const fileSizeLimit = 20 * 1024 * 1024 * 1024
       if (file.size > fileSizeLimit) {
         this.$message({
@@ -100,7 +99,6 @@ export default {
     },
     onFileSuccess: function (rootFile, file, response, chunk) {
       const _this = this
-      console.log('onFileSuccess')
       _this.mergeFile(file).then(response => {
         if (response.data.result) {
           console.log('合并成功')
@@ -123,6 +121,7 @@ export default {
       this.isUploadOk = !file.isUploading() // 禁止上传
     },
     mergeFile: function (data) {
+      data = new FormData(data)
       return this.axios({
         url: window.server.COMMONS.bigFileUpload + '/mergeFile',
         method: 'post',

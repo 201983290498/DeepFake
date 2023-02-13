@@ -14,11 +14,11 @@ const store = new Vuex.Store({
       localStorage.setItem('Authorization', token)
     },
     saveData (state, data) {
-      state.data = data
+      state.data = JSON.stringify(data)
       localStorage.setItem('data', JSON.stringify(data))
     },
     changeStatus (state, status) {
-      state.status = status
+      state.status = JSON.stringify(status)
       localStorage.setItem('status', JSON.stringify(status))
     }
   }

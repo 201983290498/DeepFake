@@ -1,10 +1,10 @@
 package com.coder.desgin.controller;
 
+import com.alipay.api.internal.util.StringUtils;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.TokenUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -19,7 +19,7 @@ public class TokenController {
     @PostMapping("/authorize")
     @ResponseBody
     public String checkToken(String token) {
-        if (token == null && token.equals("")) {
+        if (StringUtils.isEmpty(token)) {
             return RespMessageUtils.ERROR();
         }
         if (token.lastIndexOf(" ") > 0) {

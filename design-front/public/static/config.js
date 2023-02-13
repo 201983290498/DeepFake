@@ -9,6 +9,5 @@ window.server = {
     bigFileUpload: '/api/bigfile',
     userUrl: '/api/users',
     imageUrl: '/api/images'
-  },
-  STATUS: false
+  }
 }

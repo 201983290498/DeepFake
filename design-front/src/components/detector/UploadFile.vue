@@ -113,7 +113,6 @@ export default {
       })
     },
     onFileError: function (rootFile, file, response, chunk) {
-      console.log(file)
       this.$message({
         message: '上传失败, 请重新上传',
         type: 'error'
@@ -124,7 +123,6 @@ export default {
       this.isUploadOk = !file.isUploading() // 禁止上传
     },
     mergeFile: function (data) {
-      console.log('mergeFile')
       return this.axios({
         url: window.server.COMMONS.bigFileUpload + '/mergeFile',
         method: 'post',

@@ -48,7 +48,7 @@ public class TokenUtil {
         token = JWT.create()
                 .withIssuer("auth0")
                 .withClaim("username", username)
-                .withClaim("password", password)
+                .withClaim("time", System.currentTimeMillis())
                 .withExpiresAt(expiresAt)
                 .sign(Algorithm.HMAC256(TOKEN_SECRET));
         log.info(username + ", token: " + token);

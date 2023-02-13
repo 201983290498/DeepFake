@@ -12,6 +12,7 @@ Vue.use(ElementUI)
 Vue.use(uploader)
 
 Vue.prototype.axios = axios
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 Vue.config.productionTip = false
 

@@ -3,7 +3,6 @@ package com.coder.desgin.controller;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.service.ImageService;
 import com.coder.common.util.RespMessageUtils;
-import com.coder.desgin.service.OssService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

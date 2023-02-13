@@ -10,7 +10,7 @@
           </div>
         </div>
         <!--功能栏-->
-        <div class="collapse navbar-collapse ">
+        <div class="collapse navbar-collapse">
           <!--主要功能-->
           <ul class="nav navbar-nav mg-auto">
             <li>
@@ -22,8 +22,16 @@
           </ul>
           <!--用户信息栏-->
           <ul class="nav navbar-nav ml-auto">
-            <li class="active">
-              <a href="/signIn"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
+            <li class="active" v-show="!status">
+              <a href="/signIn"><img class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
+            </li>
+            <li class="active dropdown" v-show="status">
+              <a class="dropdown-toggle" data-toggle="dropdown"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">控制台</a></li>
+                <li><a href="#">历史项目</a></li>
+                <li><a href="#">运行项目</a></li>
+              </ul>
             </li>
           </ul>
         </div>
@@ -41,12 +49,13 @@ export default {
   data () {
     return {
       userStatus: 'Sign in',
-      user: {}
+      user: {},
+      status: JSON.parse(this.$store.state.status)
     }
   },
   mounted () {
     const _this = this
-    if (JSON.parse(_this.$store.state.status)) {
+    if (_this.status) {
       _this.user = JSON.parse(_this.$store.state.data)
       _this.userStatus = _this.user.username
       $('#headPortrait').attr('src', _this.user.imageUrl)

@@ -89,7 +89,7 @@ public class UserController {
             return RespMessageUtils.ERROR("账号或者密码错误");
         }
         User newUser = new User(username, new Date(System.currentTimeMillis()), login.getImageId(), login.getImageUrl());
-        newUser.setToken(tokenUtil.sign(username, password));
+        newUser.setToken(tokenUtil.sign(username));
         return RespMessageUtils.SUCCESS(newUser);
     }
 

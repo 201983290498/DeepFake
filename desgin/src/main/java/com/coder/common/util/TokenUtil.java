@@ -3,13 +3,10 @@ package com.coder.common.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -38,11 +35,11 @@ public class TokenUtil {
 
     /**
      * 签名生成
+     *
      * @param username 用户名
-     * @param password 密码
      * @return 返回签名
      */
-    public String sign(String username, String password) {
+    public String sign(String username) {
         String token = null;
         Date expiresAt = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         token = JWT.create()

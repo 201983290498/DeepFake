@@ -46,8 +46,8 @@ export default {
   },
   mounted () {
     const _this = this
-    if (_this.$store.state.status) {
-      _this.user = _this.$store.state.data
+    if (JSON.parse(_this.$store.state.status)) {
+      _this.user = JSON.parse(_this.$store.state.data)
       _this.userStatus = _this.user.username
       $('#headPortrait').attr('src', _this.user.imageUrl)
     }

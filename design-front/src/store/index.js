@@ -2,12 +2,11 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 
 Vue.use(Vuex)
-
 const store = new Vuex.Store({
   state: {
     Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
-    data: {},
-    status: false
+    data: localStorage.getItem('data'),
+    status: localStorage.getItem('status')
   },
   mutations: {
     changeLogin (state, token) {
@@ -16,9 +15,11 @@ const store = new Vuex.Store({
     },
     saveData (state, data) {
       state.data = data
+      localStorage.setItem('data', JSON.stringify(data))
     },
     changeStatus (state, status) {
       state.status = status
+      localStorage.setItem('status', JSON.stringify(status))
     }
   }
 })

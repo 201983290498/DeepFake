@@ -35,7 +35,7 @@ export default {
       disImgs: [require('../../static/imgs/copymove1.jpg'), require('../../static/imgs/copymove2.jpg'), require('../../static/imgs/copymove3.jpg')],
       detectType: 'copymove',
       uploaded: 0,
-      loginStatus: window.server.STATUS
+      loginStatus: JSON.parse(this.$store.state.status)
     }
   },
   methods: {

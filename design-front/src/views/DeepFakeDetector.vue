@@ -32,7 +32,7 @@ export default {
       deepfakeDetector: window.server.DEEPFAKE,
       disImgs: [require('../../static/imgs/fake1.jpg'), require('../../static/imgs/fake2.jpg'), require('../../static/imgs/real1.jpg')],
       uploaded: 0,
-      loginStatus: window.server.STATUS
+      loginStatus: JSON.parse(this.$store.state.status)
     }
   },
   methods: {

@@ -134,7 +134,6 @@ export default {
         success: function (resp) {
           resp = JSON.parse(resp)
           if (resp.result) {
-            window.server.STATUS = true
             _this.$store.commit('saveData', resp.data)
             const token = 'Bearer ' + resp.data.token
             _this.$store.commit('changeLogin', token)

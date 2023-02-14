@@ -1,10 +1,10 @@
 <template>
-  <div></div>
+  <div>展示页面</div>
 </template>
 
 <script>
 export default {
-  name: 'Disboard',
+  name: 'ShowBoard',
   data () {
     return {
 

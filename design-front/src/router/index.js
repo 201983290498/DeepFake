@@ -65,6 +65,12 @@ const routes = [
   {
     path: '/signUp',
     redirect: '/signUp/register'
+  },
+  {
+    path: '/showBoard',
+    name: 'ShowBoard',
+    component: () => import('@/views/ShowBoard.vue'),
+    children: []
   }
 ]
 const router = new VueRouter({
@@ -76,7 +82,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.path === '/signIn') {
     next()
-  } else if (to.path === '/disBoard') {
+  } else if (to.path === '/displayBoard') {
     const token = localStorage.getItem('Authorization')
     if (token === 'null' || token === '') {
       next('/signIn')

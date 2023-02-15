@@ -29,8 +29,8 @@
               <a class="dropdown-toggle" data-toggle="dropdown"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
               <ul class="dropdown-menu">
                 <li><a href="/showBoard">控制台</a></li>
-                <li><a href="#">历史项目</a></li>
                 <li><a href="#">运行项目</a></li>
+                <li><a href="#">历史项目</a></li>
               </ul>
             </li>
           </ul>

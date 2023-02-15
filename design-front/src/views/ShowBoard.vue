@@ -4,7 +4,8 @@
     <aside class="lyear-layout-sidebar">
       <!-- logo -->
       <div id="logo" class="sidebar-header">
-        <a href="index.html"><img src="images/logo-sidebar.png" title="LightYear" alt="LightYear" /></a>
+    <!-- todo 返回主站 -->
+        <a href="/"><img src="images/logo-sidebar.png" title="LightYear" alt="LightYear" /></a>
       </div>
       <div class="lyear-layout-sidebar-scroll">
 

@@ -53,6 +53,13 @@ export default {
       status: JSON.parse(this.$store.state.status)
     }
   },
+  created () {
+    this.axios({
+      url: '/api/',
+      method: 'post',
+      data: data
+    })
+  },
   mounted () {
     const _this = this
     if (_this.status) {

@@ -23,7 +23,7 @@ import java.sql.Date;
 @Scope("singleton")
 public class TokenUtil {
     /* 有效时长 */
-    private static final long EXPIRE_TIME = 20*60*1000;
+    private static final long EXPIRE_TIME = 60*60*1000;
     // 密钥
     private static final String TOKEN_SECRET = "ben";
 

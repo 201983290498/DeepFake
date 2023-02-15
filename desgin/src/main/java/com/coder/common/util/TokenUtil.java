@@ -3,6 +3,7 @@ package com.coder.common.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,12 @@ public class TokenUtil {
     public boolean verify(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_SECRET))
                 .withIssuer("auth0").build();
-        DecodedJWT jwt = verifier.verify(token);
+        DecodedJWT jwt = null;
+        try {
+            jwt = verifier.verify(token);
+        } catch (Exception e){
+            return false;
+        }
         String username = jwt.getClaim("username").asString();
         String newToken = (String)redisUtil.get(username);
         if (newToken != null && token.equals(newToken)) {

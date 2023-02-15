@@ -80,12 +80,14 @@ const router = new VueRouter({
 })
 // 添加一个路由守卫
 router.beforeEach((to, from, next) => {
+  const pattern = /^\/showBoard\/.*$/
   if (to.path === '/signIn') {
     next()
-  } else if (to.path === '/displayBoard') {
+  } else if (pattern.test(to.path)) {
     const token = localStorage.getItem('Authorization')
-    if (token === 'null' || token === '') {
-      next('/signIn')
+    console.log(token)
+    if (token === 'null' || token === '' || token === null) {
+      next('/')
     } else {
       next()
     }

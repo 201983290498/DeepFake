@@ -26,11 +26,13 @@
               <a href="/signIn"><img class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
             </li>
             <li class="active dropdown" v-show="status">
-              <a class="dropdown-toggle" data-toggle="dropdown"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}</span></a>
-              <ul class="dropdown-menu">
-                <li><a href="/showBoard">控制台</a></li>
-                <li><a href="#">运行项目</a></li>
-                <li><a href="#">历史项目</a></li>
+              <a class="dropdown-toggle" data-toggle="dropdown"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}<span class="caret"></span></span></a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li> <a href="/showBoard"><i class="mdi mdi-home"></i> 控制台</a> </li>
+                <li> <a href="/showBoard/runningProject"><i class="mdi mdi-palette"></i> 运行项目</a> </li>
+                <li> <a href="/showBoard/historyProject"><i class="mdi mdi-format-align-justify"></i> 历史项目</a></li>
+                <li class="divider"></li>
+                <li> <a @click="loginOut"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
               </ul>
             </li>
           </ul>
@@ -54,11 +56,28 @@ export default {
     }
   },
   created () {
-    this.axios({
-      url: '/api/',
-      method: 'post',
-      data: data
-    })
+    const token = this.$store.state.Authorization
+    if (token !== '') {
+      const data = new FormData()
+      data.append('token', token)
+      this.axios({
+        url: '/api/authorize',
+        method: 'post',
+        data: data
+      }).then(resp => {
+        if (!resp.data.result) {
+          localStorage.clear()
+        }
+      }).catch(() => {
+        localStorage.clear()
+      })
+    }
+  },
+  methods: {
+    loginOut: function () {
+      localStorage.clear()
+      window.location.reload()
+    }
   },
   mounted () {
     const _this = this
@@ -72,6 +91,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '@/assets/css/materialdesignicons.min.css';
+@import '@/assets/css/style.min.css';
 #detector {
   background-color:#F8F8F9 !important
 }

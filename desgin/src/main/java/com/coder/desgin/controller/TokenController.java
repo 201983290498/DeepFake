@@ -19,7 +19,7 @@ public class TokenController {
     @PostMapping("/authorize")
     @ResponseBody
     public String checkToken(String token) {
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token) || token.equals("null")) {
             return RespMessageUtils.ERROR();
         }
         if (token.lastIndexOf(" ") > 0) {

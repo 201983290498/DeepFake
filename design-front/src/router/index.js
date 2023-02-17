@@ -70,7 +70,11 @@ const routes = [
     path: '/showBoard',
     name: 'ShowBoard',
     component: () => import('@/views/ShowBoard.vue'),
-    children: []
+    children: [{
+      path: 'forgetPwd',
+      name: 'PersonalForgetPwd',
+      component: () => import('@/components/dashboard/PersonalForgetPwd.vue')
+    }]
   }
 ]
 const router = new VueRouter({

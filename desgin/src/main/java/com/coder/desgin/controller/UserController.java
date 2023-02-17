@@ -4,7 +4,6 @@ package com.coder.desgin.controller;
 import com.coder.common.util.TokenUtil;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.exception.MailMessageException;
-import com.coder.desgin.interceptor.TokenInterceptor;
 import com.coder.desgin.service.UserService;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.login.VerificationCodeFactory;

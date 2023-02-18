@@ -9,7 +9,8 @@ module.exports = defineConfig({
       $: 'jquery',
       jquery: 'jquery',
       jQuery: 'jquery',
-      'window.jQuery': 'jquery'
+      'window.jQuery': 'jquery',
+      'window.$': 'jquery'
     }])
   },
   css: {

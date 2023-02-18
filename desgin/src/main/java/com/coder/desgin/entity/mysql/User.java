@@ -71,6 +71,31 @@ public class User implements Serializable {
 
     private String token;
 
+    @TableField("first_name")
+    private String firstName;
+
+    @TableField("last_name")
+    private String lastName;
+
+    @TableField("phone_number")
+    private String phoneNumber;
+
+    @TableField("company")
+    private String company;
+
+    @TableField("city")
+    private String city;
+
+    @TableField("country")
+    private String country;
+
+    @TableField("zip_code")
+    private String zipCode;
+
+    @TableField("user_introduction")
+    private String userIntroduction;
+
+
     /**
      * Instantiates a new User.
      *
@@ -100,6 +125,7 @@ public class User implements Serializable {
         this.imageId = imageId;
         this.createTime = createTime;
     }
+
 
     /**
      * Instantiates a new User.

@@ -14,5 +14,13 @@ create table if not exists `usr_tbl`(
     image_id nvarchar(255) comment '用户头像',
     create_time datetime default now(),
     status INT default 1 comment '用户状态: 1.活跃; 2.冻结;',
+    first_name nvarchar(255) default null,
+    last_name nvarchar(255) default null,
+    phone_number nvarchar(255) default null,
+    company nvarchar(255) default null,
+    city nvarchar(255) default null,
+    country nvarchar(255) default null,
+    zip_code nvarchar(255) default null,
+    user_introduction nvarchar(500) default null,
     foreign key (image_id) references image(image_id)
 );

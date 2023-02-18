@@ -23,8 +23,8 @@
             <li class="nav-item nav-item-has-subnav">
               <a href="javascript:void(0)"><i class="mdi mdi-account"></i>个人信息</a>
               <ul class="nav nav-subnav">
-                <li> <a href="">账号信息</a> </li>
-                <li> <a href="">密码修改</a></li>
+                <li> <router-link to="/showBoard/personalInfo">账号信息</router-link> </li>
+                <li> <router-link to="/showBoard/forgetPwd">密码修改</router-link></li>
               </ul>
             </li>
           </ul>
@@ -57,7 +57,7 @@
                 <li> <a href="/showBoard"><i class="mdi mdi-home"></i> 控制台</a> </li>
                 <li> <a href="/showBoard/runningProject"><i class="mdi mdi-palette"></i> 运行项目</a> </li>
                 <li> <a href="/showBoard/historyProject"><i class="mdi mdi-format-align-justify"></i> 历史项目</a></li>
-                <li><a href="/showBoard/historyProject"><i class="mdi mdi-account"></i>个人信息</a></li>
+                <li><a href="/showBoard/personalInfo"><i class="mdi mdi-account"></i>个人信息</a></li>
                 <li class="divider"></li>
                 <li> <a @click="loginOut"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
               </ul>
@@ -196,7 +196,7 @@
     <!--End 头部信息-->
     <!--页面主要内容-->
     <main class="lyear-layout-content">
-      <router-view @changeSubPage="changeSubPage"></router-view>
+      <router-view @changeActivePage="changeSubPage"></router-view>
     </main>
     <!--End 页面主要内容-->
   </div>
@@ -221,7 +221,6 @@ export default {
     }
   },
   created () {
-    console.log(this.user)
     const token = this.$store.state.Authorization
     if (token !== '') {
       const data = new FormData()
@@ -232,10 +231,12 @@ export default {
         data: data
       }).then(resp => {
         if (!resp.data.result) {
-          localStorage.removeItem('data')
+          localStorage.clear()
+          window.location.reload()
         }
       }).catch(() => {
-        localStorage.removeItem('data')
+        localStorage.clear()
+        window.location.reload()
       })
     }
     let script = document.createElement('script')

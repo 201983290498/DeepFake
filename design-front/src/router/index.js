@@ -74,6 +74,11 @@ const routes = [
       path: 'forgetPwd',
       name: 'PersonalForgetPwd',
       component: () => import('@/components/dashboard/PersonalForgetPwd.vue')
+    },
+    {
+      path: 'personalInfo',
+      name: 'PersonalInfo',
+      component: () => import('@/components/dashboard/PersonalInfo.vue')
     }]
   }
 ]
@@ -84,12 +89,11 @@ const router = new VueRouter({
 })
 // 添加一个路由守卫
 router.beforeEach((to, from, next) => {
-  const pattern = /^\/showBoard\/.*$/
+  const pattern = /^\/showBoard.*$/
   if (to.path === '/signIn') {
     next()
   } else if (pattern.test(to.path)) {
     const token = localStorage.getItem('Authorization')
-    console.log(token)
     if (token === 'null' || token === '' || token === null) {
       next('/')
     } else {

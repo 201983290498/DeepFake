@@ -140,6 +140,8 @@ export default {
             _this.$store.commit('changeStatus', true)
             _this.$message.success('登入成功!')
             _this.$router.push({ path: '/' })
+          } else {
+            _this.$message.warning('账号密码错误!')
           }
         },
         error: function () {
@@ -156,6 +158,10 @@ export default {
     }, function () {
       $('.right-container .title span').removeClass('font_underline')
       $('.left-container .title span').addClass('font_underline')
+    })
+    $('input[type=submit]').on('click', function (event) {
+      event.preventDefault()
+      $('#submit').click()
     })
   }
 }

@@ -87,9 +87,9 @@ public class UserController {
         if(login == null){
             return RespMessageUtils.ERROR("账号或者密码错误");
         }
-        User newUser = new User(username, new Date(System.currentTimeMillis()), login.getImageId(), login.getImageUrl());
-        newUser.setToken(tokenUtil.sign(username));
-        return RespMessageUtils.SUCCESS(newUser);
+        login.setToken(tokenUtil.sign(username));
+        login.setCreateTime(new Date(System.currentTimeMillis()));
+        return RespMessageUtils.SUCCESS(login);
     }
 
     /**
@@ -168,5 +168,13 @@ public class UserController {
         } else {
             return RespMessageUtils.ERROR("邮箱对应的账号不存在。");
         }
+    }
+
+    @ResponseBody
+    @PostMapping("/updateUser")
+    public String updateUser(User user){
+        log.warn("user " + user.getUserId() + "updated the personal information." + user);
+        userService.updateOne(user);
+        return RespMessageUtils.SUCCESS();
     }
 }

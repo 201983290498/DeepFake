@@ -39,4 +39,14 @@ public class ImageServiceImpl implements ImageService {
         String url = ossService.uploadFile(file);
         return insertOne(new Image(url));
     }
+
+    @Override
+    public String updateUserPhoto(String imageId, MultipartFile photo) throws IOException {
+        Image image = imageDao.selectById(imageId);
+        ossService.deleteFile(image.getImageUrl());
+        String url = ossService.uploadFile(photo);
+        image.setImageUrl(url);
+        imageDao.updateById(image);
+        return url;
+    }
 }

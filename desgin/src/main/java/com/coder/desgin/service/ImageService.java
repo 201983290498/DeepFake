@@ -32,4 +32,12 @@ public interface ImageService {
      * @throws IOException 报错
      */
     Image insertOne(MultipartFile file) throws IOException;
+
+    /**
+     * 更新用户的头像
+     * @param imageId 图片id
+     * @param photo 头像
+     * @throws IOException 输入输出错误
+     */
+    String updateUserPhoto(String imageId, MultipartFile photo) throws IOException;
 }

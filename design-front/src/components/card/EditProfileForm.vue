@@ -1,7 +1,7 @@
 <template>
   <BaseCard class="card" title="User Profile">
     <div>
-      <form @submit.prevent="updateProfile" ref="updateForm">
+      <form @submit.prevent="updateProfile" ref="updateForm" id="editForm">
         <div class="row">
           <div class="col-md-5">
             <FgInput type="text" label="用户唯一标识" :disabled="true" placeholder="Use Unique Id" v-model="user.userId" name="userId"></FgInput>
@@ -96,16 +96,17 @@ export default {
   methods: {
     updateProfile: function () {
       const _this = this
-      $('input[name=userId]').attr('disabled', false)
-      $('input[name=phoneNumber]').attr('disabled', false)
+      $('#editForm input[name=userId]').attr('disabled', false)
+      $('#editForm input[name=phoneNumber]').attr('disabled', false)
       this.axios({
         url: window.server.COMMONS.userUrl + '/updateUser',
         method: 'post',
         data: new FormData(_this.$refs.updateForm)
       }).then(resp => {
+        console.log(resp)
         if (resp.data.result) {
           _this.$message.success('个人信息更新成功')
-          _this.$store.commit('saveData', resp.data.data)
+          _this.$store.commit('saveData', _this.user)
         } else {
           _this.$message.warning('个人信息更新失败, 请稍后重试。')
           _this.user = JSON.parse(_this.$store.state.data)
@@ -123,16 +124,16 @@ export default {
       $('#button').removeClass('col-md-12')
       $('#button').addClass('col-sm-6')
       $('#button').addClass('col-sm-6')
-      $('textarea').attr('disabled', false)
-      $('input').attr('disabled', false)
-      $('input[name=userId]').attr('disabled', true)
-      $('input[name=phoneNumber]').attr('disabled', true)
+      $('#editForm textarea').attr('disabled', false)
+      $('#editForm input').attr('disabled', false)
+      $('#editForm input[name=userId]').attr('disabled', true)
+      $('#editForm input[name=phoneNumber]').attr('disabled', true)
       this.enableEdit = false
     },
     cancelEdit: function () {
       this.enableEdit = true
-      $('input').attr('disabled', true)
-      $('textarea').attr('disabled', true)
+      $('#editForm input').attr('disabled', true)
+      $('#editForm textarea').attr('disabled', true)
       $('#button').addClass('col-sm-12')
       $('#button').addClass('col-md-12')
       $('#button').removeClass('col-sm-6')

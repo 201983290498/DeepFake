@@ -2,10 +2,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-4 col-md-5 col-sm-6">
-        <user-card></user-card>
+        <UserCard @changeImage="changeImage"></UserCard>
       </div>
       <div class="col-lg-8 col-md-7 col-sm-6">
-        <edit-profile-form> </edit-profile-form>
+        <EditProfileForm> </EditProfileForm>
       </div>
     </div>
   </div>
@@ -29,6 +29,11 @@ export default {
   mounted () {
     const _this = this
     this.$emit('changeActivePage', _this.pageTitle)
+  },
+  methods: {
+    changeImage: function (imageUrl) {
+      this.$emit('changeImage', imageUrl)
+    }
   }
 }
 </script>

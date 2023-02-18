@@ -50,4 +50,12 @@ public interface UserService {
      * @param user 用户对象
      */
     void updateOne(User user);
+
+    /**
+     * 更新用户的头像
+     * @param userId 用户的id
+     * @param photo 头像
+     * @return
+     */
+    String updatePhoto(String userId, MultipartFile photo);
 }

@@ -85,4 +85,17 @@ public class UserServiceImpl implements UserService {
     public void updateOne(User user) {
         userdao.updateById(user);
     }
+
+    @Override
+    public String updatePhoto(String userId, MultipartFile photo) {
+        User user = userdao.selectOne(userId);
+        String imageUrl = null;
+        try {
+            imageUrl = imageService.updateUserPhoto(user.getImageId(), photo);
+        } catch (IOException e) {
+            log.warn("user:" + userId + "更新头像失败");
+            log.warn(e.getMessage());
+        }
+        return imageUrl;
+    }
 }

@@ -196,7 +196,7 @@
     <!--End 头部信息-->
     <!--页面主要内容-->
     <main class="lyear-layout-content">
-      <router-view @changeActivePage="changeSubPage"></router-view>
+      <router-view @changeActivePage="changeSubPage" @changeImage="changeImage"></router-view>
     </main>
     <!--End 页面主要内容-->
   </div>
@@ -218,6 +218,9 @@ export default {
     },
     changeSubPage: function (data) {
       this.activePage = data
+    },
+    changeImage: function (url) {
+      this.user.imageUrl = url
     }
   },
   created () {

@@ -177,4 +177,11 @@ public class UserController {
         userService.updateOne(user);
         return RespMessageUtils.SUCCESS();
     }
+
+    @ResponseBody
+    @PostMapping("/updatePhoto")
+    public String updatePhoto(String userId, MultipartFile photo) {
+        String url = userService.updatePhoto(userId, photo);
+        return RespMessageUtils.SUCCESS(url);
+    }
 }

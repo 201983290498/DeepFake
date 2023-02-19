@@ -7,7 +7,7 @@ import com.coder.desgin.service.OssService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author coder
@@ -30,6 +30,14 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image insertOne(Image image) {
+        imageDao.insert(image);
+        return image;
+    }
+
+    public Image insertOne(File file) throws FileNotFoundException {
+        InputStream inputStream = new FileInputStream(file);
+        String url = ossService.uploadFile(file.getName(), inputStream);
+        Image image = new Image(url);
         imageDao.insert(image);
         return image;
     }

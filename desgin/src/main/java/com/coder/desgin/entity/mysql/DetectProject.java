@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.sql.Date;
  */
 @Data
 @TableName("project_tbl")
+@NoArgsConstructor
 public class DetectProject  implements Serializable {
 
     @TableId(value="detect_id", type=IdType.AUTO)
@@ -38,4 +40,9 @@ public class DetectProject  implements Serializable {
 
     @TableField(value = "user_id")
     private String userId;
+
+    public DetectProject(Date finishTime, String projectName) {
+        this.finishTime = finishTime;
+        this.projectName = projectName;
+    }
 }

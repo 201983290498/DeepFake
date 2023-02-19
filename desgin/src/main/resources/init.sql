@@ -43,7 +43,7 @@ create table if not exists `file_tbl` (
     file_name nvarchar(50) not null,
     file_size Long not null comment '文件大小',
     file_type nvarchar(20) not null comment '文件类型zip, file',
-    file_md5 nvarchar(50) not null comment '文件的md5码',
+    file_md5 nvarchar(50) not null comment '文件的md5码' unique,
     file_location nvarchar(255) default '' comment '大文件存储在本地的地址',
     image_id nvarchar(50) comment '文件的oss存储地址',
     file_results nvarchar(255) default '' comment 'json字符串或者检测文本的地址',
@@ -56,3 +56,4 @@ create table if not exists `project_file_tbl` (
     foreign key (detect_id) references project_tbl(detect_id),
     foreign key (file_id) references file_tbl(file_id)
 );
+insert into project_tbl(project_level, finish_time, project_name, user_id) values('project', now(), 'default', 'default');

@@ -16,8 +16,13 @@ import java.io.Serializable;
 public class ProjectFile implements Serializable {
 
     @TableField(value="detect_id")
-    private String detectId;
+    private Long detectId;
 
     @TableField(value="file_id")
-    private String fileId;
+    private Long fileId;
+
+    public ProjectFile(Long detectId, Long fileId) {
+        this.detectId = detectId;
+        this.fileId = fileId;
+    }
 }

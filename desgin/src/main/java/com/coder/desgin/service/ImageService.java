@@ -3,6 +3,8 @@ package com.coder.desgin.service;
 import com.coder.desgin.entity.mysql.Image;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -23,6 +25,14 @@ public interface ImageService {
      * @return 插入成功之后获取Image
      */
     Image insertOne(Image image);
+
+    /**
+     * 上传一个文件
+     * @param file 文件
+     * @return 返回上传记录
+     * @throws FileNotFoundException file本地文件不存在
+     */
+    Image insertOne(File file) throws FileNotFoundException;
 
 
     /**

@@ -22,18 +22,12 @@ import java.util.List;
 public interface DetectProjectDao extends BaseMapper<DetectProject> {
 
     /**
-     * 选择记录
-     *
-     * @param
-     * @return {@link IPage}<{@link DetectRecord}>
+     *  查询所有记录
+     * @param page 分页插件
+     * @param queryWrapper 查询参数
+     * @return 返回用户记录
      */
     @Select("select a.*, c.file_name as detect_file, c.file_id from project_tbl a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id ${ew.customSqlSegment} order by a.create_time desc")
     IPage<DetectRecord> selectRecords(Page<DetectRecord> page, @Param(Constants.WRAPPER) Wrapper queryWrapper);
 
-    /**
-     * 查看所有的行为记录
-     * @return 返回所有记录
-     */
-    @Select("select a.*, c.file_name as detect_file, c.file_id from project_tbl a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id ${ew.customSqlSegment} order by a.create_time desc")
-    IPage<DetectRecord> selectAllRecords(Page<DetectRecord> page, @Param(Constants.WRAPPER) Wrapper queryWrapper);
 }

@@ -38,6 +38,6 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Override
     public List<DetectRecord> selectAllRecords(Integer pageNum) {
         Page<DetectRecord> page = new Page<>(pageNum, 20);
-        return detectProjectDao.selectAllRecords(page, null).getRecords();
+        return detectProjectDao.selectRecords(page, null).getRecords();
     }
 }

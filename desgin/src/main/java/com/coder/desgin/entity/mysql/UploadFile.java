@@ -8,6 +8,7 @@ import com.coder.desgin.entity.BaseFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -20,8 +21,9 @@ import java.io.Serializable;
 @Data
 @TableName("file_tbl")
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class File extends BaseFile  implements Serializable{
+public class UploadFile extends BaseFile  implements Serializable{
 
     @TableId(value="file_id", type = IdType.AUTO)
     private Long fileId;
@@ -40,5 +42,23 @@ public class File extends BaseFile  implements Serializable{
 
     @TableField("file_results")
     private String fileResults;
+
+    public UploadFile(String fileName,Integer fileSize, String fileType, String fileMd5, String imageId,String fileResults) {
+        setFileName(fileName);
+        setFileSize(fileSize);
+        setFileType(fileType);
+        this.imageId = imageId;
+        this.fileMd5 = fileMd5;
+        this.fileResults = fileResults;
+    }
+
+    public UploadFile(String fileLocation,String fileName,Integer fileSize, String fileType, String fileMd5,String fileResults) {
+        setFileName(fileName);
+        setFileSize(fileSize);
+        setFileType(fileType);
+        this.fileLocation = fileLocation;
+        this.fileMd5 = fileMd5;
+        this.fileResults = fileResults;
+    }
 
 }

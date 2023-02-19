@@ -1,7 +1,7 @@
 package com.coder.desgin.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.coder.desgin.entity.mysql.File;
+import com.coder.desgin.entity.mysql.UploadFile;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 @CacheNamespace(blocking = true)
-public interface FileDao extends BaseMapper<File> {
+public interface FileDao extends BaseMapper<UploadFile> {
 
 }

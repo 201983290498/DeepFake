@@ -12,13 +12,12 @@ import lombok.Data;
 public class BaseFile {
 
     @TableField(value="file_type")
-    private String fileType;
+    private String fileType="image";
     @TableField(value="file_name")
     private String fileName;
 
     @TableField(value="file_size")
     private Integer fileSize;
     private String base64;
-
 
 }

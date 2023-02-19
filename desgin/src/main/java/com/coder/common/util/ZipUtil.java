@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -43,9 +44,7 @@ public class ZipUtil {
      * @param request  http的请求，获取项目在本地的地址
      * @return 返回压缩文件的地址
      */
-    public static String base64ToFile(String base64, String filename, HttpServletRequest request) {
-        filename = filename.substring(0, filename.lastIndexOf('.'));
-
+    public static String base64ToFile(String base64, String filename, HttpServletRequest request) throws IOException {
         String contentPath = request.getSession().getServletContext().getRealPath("/");
         File dir = new File(contentPath + DETECT_DIR + UUID.randomUUID().toString().substring(0, 6));
         // 查看检测文件夹/context/detectFile是否存在
@@ -57,7 +56,7 @@ public class ZipUtil {
             dir.mkdir();
         }
 
-        // 解压文件夹
+        // 文件存放的地址
         String filePath = dir.getAbsolutePath().concat("\\").concat(filename);
         if (!dir.exists()) {
             dir.mkdir();
@@ -66,7 +65,11 @@ public class ZipUtil {
         // 先将文件写出来在解压, 将base64去掉文件头
         base64 = base64.substring(base64.indexOf(',') + 1);
         byte[] bytes = Base64.getDecoder().decode(base64);
-        unZipFile(bytes, filePath);
+        OutputStream out = null;
+        out = Files.newOutputStream(Paths.get(filePath));
+        out.write(bytes);
+        out.flush();
+        out.close();
         return filePath;
     }
 
@@ -299,17 +302,5 @@ public class ZipUtil {
         /* 删除压缩包 */
         new File(filePath).delete();
         return zipDir;
-    }
-    public static void main(String[] args) {
-        // 文件压缩
-        List<File> fileList = new ArrayList<>();
-        String zipPath = "新文件夹";
-        String[] filePath = new String[3];
-        fileList.add(new File(filePath[0]));
-        fileList.add(new File(filePath[1]));
-        fileList.add(new File(filePath[2]));
-        String base64 = zipToBase64(fileList);
-        log.info("文件Base64加密为" + base64);
-        base64ToFile(base64, zipPath, null);
     }
 }

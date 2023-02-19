@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * @Author coder
@@ -52,7 +53,7 @@ public class FileController {
             try {
                 resultsFile = uploadFileService.detectZip(file, request);
                 return RespMessageUtils.SUCCESS(resultsFile);
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 return RespMessageUtils.ERROR("服务器故障!");
             }
         } else {// 处理单个文件
@@ -69,7 +70,7 @@ public class FileController {
      */
     @ResponseBody
     @PostMapping("/normal/upload")
-    public String uploadFile(@RequestBody NormalDetectionFile file, HttpServletRequest request) {
+    public String uploadFile(@RequestBody NormalDetectionFile file, HttpServletRequest request) throws IOException {
         if (file.getFileType().contains(ZIP)) {
             String resultsFile = normalDetectionService.detectZip(file, request);
             return RespMessageUtils.SUCCESS(resultsFile);

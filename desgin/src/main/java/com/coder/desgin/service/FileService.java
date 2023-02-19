@@ -6,6 +6,7 @@ import com.coder.desgin.entity.ImgDetectorResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -18,9 +19,9 @@ public interface FileService {
      * @param file 普通的压缩文件, 不会产生中间文件, 直接生成文件夹
      * @param request request请求，获取项目地址
      * @return 返回检测文档的url地址
-     * @throws  FileNotFoundException 检测文本生成错误
+     * @throws  IOException 检测文本生成错误
      */
-    String detectZip(BaseFile file, HttpServletRequest request) throws FileNotFoundException;
+    String detectZip(BaseFile file, HttpServletRequest request) throws IOException;
 
     /**
      * 检测zip文件

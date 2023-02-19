@@ -63,13 +63,14 @@ public class FileServiceImpl implements FileService {
 
 //     todo 因为没有中间文件, 所以没有md5, 添加中间文件
     @Override
-    public String detectZip(BaseFile file, HttpServletRequest request) throws FileNotFoundException {
+    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException {
         // zipPath 解压文件夹的路径
-        String unZipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
+        String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
+        String unZipPath = ZipUtil.unZip(zipPath, zipPath.substring(0, zipPath.lastIndexOf(".")));
         String result = detectDir(unZipPath);
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
         Image image = imageService.insertOne(new File(detectTextPath));
-        insertRecord(unZipPath, file, image.getImageUrl());
+        insertRecord(zipPath, file, image.getImageUrl());
         return image.getImageUrl();
     }
 
@@ -167,7 +168,8 @@ public class FileServiceImpl implements FileService {
         String md5 = Md5Util.getMd5(uploadFile);
         // 上传图片
         Image image = null;
-        if (uploadFile.isFile()) {
+        // 如果不是zip文件
+        if (!filePath.substring(filePath.lastIndexOf(".")+1).equals("zip")) {
             image = imageService.insertOne(uploadFile);
         } else {
             image = imageService.insertOne(new Image(filePath));

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author Pengfei Yue
@@ -44,9 +45,10 @@ public class NormalDetectionServiceImpl implements NormalDetectionService {
         this.httpUtil = httpUtil;
     }
 
-    public String detectZip(NormalDetectionFile file, HttpServletRequest request) {
+    public String detectZip(NormalDetectionFile file, HttpServletRequest request) throws IOException {
         // zipPath 解压文件夹的路径
         String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
+        zipPath = ZipUtil.unZip(zipPath, zipPath.substring(0, zipPath.lastIndexOf(".")));
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         zipPath = zipPath.replace("\\", "/");

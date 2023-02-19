@@ -3,7 +3,9 @@ package com.coder.desgin.service;
 import com.alibaba.fastjson.JSONObject;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.entity.ImgDetectorResult;
+import com.coder.desgin.entity.mysql.UploadFile;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,15 +22,19 @@ public interface FileService {
      * @param request request请求，获取项目地址
      * @return 返回检测文档的url地址
      * @throws  IOException 检测文本生成错误
+     * @throws MessagingException 邮箱发送错误
      */
-    String detectZip(BaseFile file, HttpServletRequest request) throws IOException;
+    String detectZip(BaseFile file, HttpServletRequest request) throws IOException, MessagingException;
 
     /**
      * 检测zip文件
      * @param filePath zip文件夹
      * @return 返回检测url
+     * @throws IOException 检测文本生成错误
+     * @throws MessagingException 邮箱发送错误
      */
-    String detectZip(String filePath);
+    String detectZip(String filePath, UploadFile file) throws IOException, MessagingException;
+
 
     /**
      * 对文件夹进行检测
@@ -67,5 +73,5 @@ public interface FileService {
      * @param result 检测结果json
      * @throws FileNotFoundException 检测文本生成出现问题
      */
-    void insertRecord(String filePath, BaseFile baseFile, Object result) throws FileNotFoundException;
+    void insertRecord(String filePath, UploadFile baseFile, Object result) throws FileNotFoundException;
 }

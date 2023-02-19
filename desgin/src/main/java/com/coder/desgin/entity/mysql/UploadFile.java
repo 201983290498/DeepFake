@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.coder.desgin.entity.BaseFile;
+import com.coder.desgin.entity.TempFileInfoVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -61,4 +62,16 @@ public class UploadFile extends BaseFile  implements Serializable{
         this.fileResults = fileResults;
     }
 
+    public UploadFile(BaseFile file) {
+        setFileName(file.getFileName());
+        setFileSize(file.getFileSize());
+        setFileType(file.getFileType());
+    }
+
+    public UploadFile(TempFileInfoVO fileInfoVO) {
+        setFileName(fileInfoVO.getName());
+        setFileMd5(fileInfoVO.getUniqueIdentifier());
+        setFileSize(Math.toIntExact(fileInfoVO.getSize()));
+        setFileType(fileInfoVO.getFileType());
+    }
 }

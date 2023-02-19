@@ -18,6 +18,8 @@ public class BaseFile {
 
     @TableField(value="file_size")
     private Integer fileSize;
+
+    @TableField(exist = false)
     private String base64;
 
 }

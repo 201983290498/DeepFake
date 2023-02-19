@@ -2,8 +2,8 @@
   <div class="df-detector">
     <ServiceTitle :titleHeader="title"></ServiceTitle>
     <ServiceModule></ServiceModule>
-    <ServiceDisplay :disImgs='disImgs' @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
-    <ServiceUpload @uploadImage='uploadImage' @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
+    <ServiceDisplay :disImgs="disImgs" @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
+    <ServiceUpload @uploadImage="uploadImage" @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
     <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
   </div>
 </template>
@@ -16,7 +16,7 @@ import ServiceUpload from '../components/detector/ServiceUpload.vue'
 import ServiceTitle from '../components/detector/ServiceTitle.vue'
 import UploadFile from '../components/detector/UploadFile.vue'
 import $ from 'jquery'
-
+import SparkMD5 from 'spark-md5'
 export default {
   name: 'DeepFakeDetector',
   components: {
@@ -42,20 +42,37 @@ export default {
       const image = new Image()
       image.src = imgs.base64
       image.crossOrigin = ''
+      imgs.md5 = this.base64ToArrayBufferToMD5(imgs.base64.substring(imgs.base64.indexOf(',', 1) + 1))
       $.ajax({
         type: 'post',
-        url: _this.deepfakeDetector.detectUrl,
+        url: window.server.COMMONS.checkMd5,
         dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(imgs),
+        data: {
+          md5: imgs.md5
+        },
         success: function (response) {
           if (response.result) {
-            // 通过base64字符串加载图片
-            imgs.base64 = _this.drawDetections(image, response.data.rects)
+            const rects = JSON.parse(response.data).rects
+            imgs.base64 = _this.drawDetections(image, rects)
             _this.$refs.serviceDisplay.updateDetectedImage(imgs)
           } else {
-            // 显示错误信息
-            _this.$message.warning(response.msg)
+            $.ajax({
+              type: 'post',
+              url: _this.deepfakeDetector.detectUrl,
+              dataType: 'json',
+              contentType: 'application/json',
+              data: JSON.stringify(imgs),
+              success: function (response) {
+                if (response.result) {
+                  // 通过base64字符串加载图片
+                  imgs.base64 = _this.drawDetections(image, response.data.rects)
+                  _this.$refs.serviceDisplay.updateDetectedImage(imgs)
+                } else {
+                  // 显示错误信息
+                  _this.$message.warning(response.msg)
+                }
+              }
+            })
           }
         }
       })
@@ -86,33 +103,62 @@ export default {
     },
     uploadZip: function (zipFile) {
       const _this = this
+      zipFile.md5 = this.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
       $.ajax({
         type: 'post',
-        url: _this.deepfakeDetector.detectUrl,
+        url: window.server.COMMONS.checkMd5,
         dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(zipFile),
+        data: {
+          md5: zipFile.md5
+        },
         success: function (response) {
           if (response.result) {
-            _this.$message.success('检测文本存储于: ' + response.data)
+            const url = JSON.parse(response.data)
+            _this.$message.success('检测文本存储于: ' + url)
+            _this.uploaded = 100
           } else {
-            _this.$message.warning(response.msg)
+            $.ajax({
+              type: 'post',
+              url: _this.deepfakeDetector.detectUrl,
+              dataType: 'json',
+              contentType: 'application/json',
+              data: JSON.stringify(zipFile),
+              success: function (response) {
+                if (response.result) {
+                  _this.$message.success('检测文本存储于: ' + response.data)
+                } else {
+                  _this.$message.warning(response.msg)
+                }
+              },
+              xhr: function () { // 显示加载进度
+                const xhr = $.ajaxSettings.xhr()
+                if (xhr.upload) {
+                  xhr.upload.addEventListener('progress', function (event) {
+                    // 已经上传的进度条
+                    _this.uploaded = Math.round(event.loaded / event.total * 100)
+                  }, false)
+                }
+                return xhr
+              }
+            })
           }
-        },
-        xhr: function () { // 显示加载进度
-          const xhr = $.ajaxSettings.xhr()
-          if (xhr.upload) {
-            xhr.upload.addEventListener('progress', function (event) {
-              // 已经上传的进度条
-              _this.uploaded = Math.round(event.loaded / event.total * 100)
-            }, false)
-          }
-          return xhr
         }
       })
     },
     downToZero: function () {
       this.uploaded = 0
+    },
+    base64ToArrayBufferToMD5: function (base64) {
+      const binaryString = window.atob(base64)
+      const len = binaryString.length
+      const bytes = new Uint8Array(len)
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+      const spark = new SparkMD5.ArrayBuffer()
+      spark.append(bytes)
+      const hexHash = spark.end(false)
+      return hexHash
     }
   }
 }

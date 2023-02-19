@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Scope("singleton")
 public class RedisUtil {
 
+    private final Integer EXPIRE_TIME = 60 * 60;
+
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 

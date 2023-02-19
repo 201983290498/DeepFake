@@ -25,14 +25,14 @@
 
 <script>
 import SparkMD5 from 'spark-md5'
-
+import $ from 'jquery'
 export default {
   name: 'UploadFile',
   data () {
     return {
       options: {
         target: window.server.COMMONS.bigFileUpload + '/chunk', // todo 上传的url, 需要修改
-        chunkSize: '20971520', // 分块大小
+        chunkSize: '10485760', // 分块大小
         testChunks: false,
         fileParameterName: 'upfile',
         singleFile: false, // 一次只允许上传一个文件
@@ -59,20 +59,37 @@ export default {
   },
   methods: {
     computeMD5: function (file) {
+      const _this = this
       file.pause()
       const fileReader = new FileReader()
       const blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
       let currentChunk = 0
-      const chunkSize = 20 * 1024 * 1024
+      const chunkSize = 10 * 1024 * 1024
+      const chunkNum = file.size / chunkSize
       const spark = new SparkMD5.ArrayBuffer()
       loadNext(file)
       fileReader.onload = (e) => {
         spark.append(e.target.result)
-        if (currentChunk < 1) { // 文件太大会怎样呢
+        if (currentChunk < chunkNum) { // 文件太大会怎样呢
           loadNext(file)
         } else {
           file.uniqueIdentifier = spark.end() // 设置文件的识别码
-          file.resume() // 开始上传
+          $.ajax({
+            type: 'post',
+            url: window.server.COMMONS.checkMd5,
+            dataType: 'json',
+            data: {
+              md5: file.uniqueIdentifier
+            },
+            success: function (resp) {
+              if (resp.result) {
+                _this.$message.info('检测完成, 检测结果位于:' + resp.data)
+                file.cancel()
+              } else {
+                file.resume() // 开始上传
+              }
+            }
+          })
         }
       }
       function loadNext (file) {
@@ -117,11 +134,9 @@ export default {
       })
     },
     fileProgress: function (rootFile, file, chunk) {
-      console.log(chunk)
       this.isUploadOk = !file.isUploading() // 禁止上传
     },
     mergeFile: function (data) {
-      data = new FormData(data)
       return this.axios({
         url: window.server.COMMONS.bigFileUpload + '/mergeFile',
         method: 'post',

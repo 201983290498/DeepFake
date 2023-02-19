@@ -278,7 +278,6 @@ public class ZipUtil {
                     fileObject.mkdir();
                 }
             }
-
             Enumeration<? extends ZipEntry> e = zipfile.entries();
             while (e.hasMoreElements()) {
                 entry = e.nextElement();

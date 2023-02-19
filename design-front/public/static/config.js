@@ -8,6 +8,7 @@ window.server = {
   COMMONS: {
     bigFileUpload: '/api/bigfile',
     userUrl: '/api/users',
-    imageUrl: '/api/images'
+    imageUrl: '/api/images',
+    checkMd5: '/api/files/checkMd5'
   }
 }

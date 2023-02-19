@@ -2,6 +2,7 @@ package com.coder.desgin.controller;
 
 import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.TempChunkInfo;
+import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.FileService;
 import com.coder.common.util.RespMessageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,7 @@ public class BigFileController {
         File outFile = new File(contentPath+bigFileDirTemp+File.separator+uid, chunkNumber + ".part");
         InputStream inputStream = file.getInputStream();
         FileUtils.copyInputStreamToFile(inputStream, outFile);
+        log.info("大文件输出地址为" + outFile);
         return RespMessageUtils.SUCCESS();
     }
 
@@ -69,7 +71,7 @@ public class BigFileController {
     }
 
     @PostMapping("/mergeFile")
-    public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request) throws Exception{
+    public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request){
         String contentPath = request.getSession().getServletContext().getRealPath("/");
         File bigFileDirPath = new File(contentPath+bigFileDir);
         log.warn("Merging file exists in:" + bigFileDirPath);
@@ -80,20 +82,27 @@ public class BigFileController {
         String md5 = fileInfoVO.getUniqueIdentifier();
         System.out.println("merge:"+ md5);
         File fileDir = new File(contentPath+bigFileDirTemp+File.separator+ md5);
-        if (fileDir.isDirectory()) {
-            File[] subFiles = fileDir.listFiles();
-            if (subFiles != null && subFiles.length > 0) {
-                File partFile = new File(finalFilePath);
-                for (int i = 1; i <= subFiles.length; i++) {
-                    File s = new File(contentPath+bigFileDirTemp+File.separator+md5, i + ".part");
-                    FileOutputStream destTempfos = new FileOutputStream(partFile, true);
-                    FileUtils.copyFile(s,destTempfos);
-                    destTempfos.close();
+        try {
+            if (fileDir.isDirectory()) {
+                File[] subFiles = fileDir.listFiles();
+                if (subFiles != null && subFiles.length > 0) {
+                    File partFile = new File(finalFilePath);
+                    for (int i = 1; i <= subFiles.length; i++) {
+                        File s = new File(contentPath+bigFileDirTemp+File.separator+md5, i + ".part");
+                        FileOutputStream destTempfos = new FileOutputStream(partFile, true);
+                        FileUtils.copyFile(s,destTempfos);
+                        destTempfos.close();
+                    }
+                    FileUtils.deleteDirectory(fileDir);
                 }
-                FileUtils.deleteDirectory(fileDir);
             }
+            // todo location 怎么弄
+            String textUrl = fileService.detectZip(finalFilePath, new UploadFile(fileInfoVO));
+            return RespMessageUtils.SUCCESS(textUrl);
         }
-        fileService.detectZip(finalFilePath);
-        return RespMessageUtils.SUCCESS();
+        catch (Exception e) {
+            log.warn(e.getMessage());
+            return RespMessageUtils.ERROR("服务器出错");
+        }
     }
 }

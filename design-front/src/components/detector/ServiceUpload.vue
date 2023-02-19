@@ -3,7 +3,7 @@
 <!--输入框1-->
     <div class="inb upload-input">
       <div class="inb input-box">
-        <input id="filePath" :value="uploadImages.name" placeholder="请输入文件路径"/>
+        <input id="filePath" :value="uploadImages.fileName" placeholder="请输入文件路径"/>
       </div>
       <div class="inb input-btn" @click="openWindow">
         <span style="display: inline-block;">本地上传</span>
@@ -23,7 +23,7 @@
         {{'上传进度' + String(uploaded) + '%'}}
       </div>
     </div>
-    <input type="file" id="importFile" v-show="false">
+    <input type="file" id="importFile" v-show="false" >
   </div>
 </template>
 
@@ -34,9 +34,9 @@ export default {
   data () {
     return {
       uploadImages: {
-        name: '',
-        type: '',
-        size: 0,
+        fileName: '',
+        fileType: '',
+        fileSize: 0,
         base64: '',
         detectType: ''
       },
@@ -54,6 +54,22 @@ export default {
     },
     detectType: [String],
     loginStatus: [Boolean, String]
+  },
+  watch: {
+    uploadZip: function (newValue, oldValue) {
+      if (newValue) {
+        $('.service-upload').addClass('showBar')
+      } else {
+        $('.service-upload').removeClass('showBar')
+      }
+    },
+    uploaded: function (newValue, oldValue) {
+      if (newValue === 100) {
+        setTimeout(() => {
+          this.uploadZip = false
+        }, 5000)
+      }
+    }
   },
   methods: {
     openWindow: function () {
@@ -75,9 +91,9 @@ export default {
     getBase64: function (file, isFinal) { // 获取文件字符串并获取文件对象
       const fileReader = new FileReader()
       const _this = this
-      _this.uploadImages.name = file.name
-      _this.uploadImages.size = file.size
-      _this.uploadImages.type = file.type
+      _this.uploadImages.fileName = file.name
+      _this.uploadImages.fileSize = file.size
+      _this.uploadImages.fileType = file.type
       _this.uploadImages.detectType = this.detectType
       fileReader.readAsDataURL(file)
       fileReader.onload = function (event) { // 图片加载完成之后需要提示,并更新主框的视图
@@ -88,13 +104,13 @@ export default {
           _this.downToZero()
         }
         if (isFinal) {
-          _this.$message.success(`成功选中${_this.uploadImages.name}。\n总大小为: ${Number(_this.uploadImages.size / 1024.0).toFixed(2)}kb;`)
+          _this.$message.success(`成功选中${_this.uploadImages.fileName}。\n总大小为: ${Number(_this.uploadImages.fileSize / 1024.0).toFixed(2)}kb;`)
         }
       }
     },
     uploadFile: function () {
       const _this = this
-      if (_this.uploadImages.size === 0) {
+      if (_this.uploadImages.fileSize === 0) {
         _this.$message.warning('未选中任何文件，无法检测')
       } else {
         // 向父组件申报上传函数
@@ -104,7 +120,7 @@ export default {
           type: 'warning'
         }).then(() => {
           _this.$message.info('正在上传')
-          if (_this.check_suffix(_this.uploadImages.name) === 1) {
+          if (_this.check_suffix(_this.uploadImages.fileName) === 1) {
             _this.$emit('uploadImage', _this.uploadImages)
           } else {
             _this.uploadZip = true
@@ -121,7 +137,7 @@ export default {
     // 当上传文件时触发的内容
     const fn = function (event) { // 选择文件之后的加载函数
       const files = event.target.files
-      _this.uploadImages.size = 0
+      _this.uploadImages.fileSize = 0
       if (files.length > 1) {
         _this.$message.warning('仅支持单张图片处理, 多张图片请压缩成zip文件。')
       } else {
@@ -224,5 +240,8 @@ export default {
   width: 95%;
   margin: 5px auto 50px;
   height: 17px;
+}
+.showBar {
+  margin-bottom: 55px;
 }
 </style>

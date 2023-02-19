@@ -24,7 +24,7 @@ export default {
     speedMode: function () {
       this.isActive2 = true
       this.isActive1 = false
-      if (!this.$store.state.status) {
+      if (!JSON.parse(this.$store.state.status)) {
         this.$router.push({ path: '/signIn' })
       }
     },

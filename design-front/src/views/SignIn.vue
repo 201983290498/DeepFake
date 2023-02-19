@@ -55,7 +55,7 @@
       </div>
     </form>
     <input type="file" name="photo" style="display: none;" v-on:change="readPic"/>
-    <div style="height: 150px;"> </div>
+    <div style="height: 200px;"> </div>
   </div>
 </template>
 

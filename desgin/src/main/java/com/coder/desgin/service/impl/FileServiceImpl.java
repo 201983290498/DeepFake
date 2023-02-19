@@ -21,11 +21,11 @@ import com.coder.desgin.service.ImageService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.sql.Date;
@@ -52,34 +52,38 @@ public class FileServiceImpl implements FileService {
 
     public final ProjectFileDao projectFileDao;
 
-    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, DetectProjectDao projectDao, ImageService imageService, ProjectFileDao projectFileDao) {
+    public final JavaEmail javaEmail;
+
+    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, DetectProjectDao projectDao, ImageService imageService, ProjectFileDao projectFileDao, JavaEmail javaEmail) {
         this.httpUtil = httpUtil;
         this.fileDao = fileDao;
         this.redisUtil = redis;
         this.projectDao = projectDao;
         this.imageService = imageService;
         this.projectFileDao = projectFileDao;
+        this.javaEmail = javaEmail;
     }
 
-//     todo 因为没有中间文件, 所以没有md5, 添加中间文件
     @Override
-    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException {
+    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException, MessagingException {
         // zipPath 解压文件夹的路径
         String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
-        String unZipPath = ZipUtil.unZip(zipPath, zipPath.substring(0, zipPath.lastIndexOf(".")));
+        UploadFile uploadFile = new UploadFile(file);
+        uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath)));
+        return detectZip(zipPath, uploadFile);
+    }
+
+    @Override
+    public String detectZip(@NotNull String filePath, UploadFile file) throws IOException, MessagingException {
+        String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
+        unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("\\"), filePath.lastIndexOf("\\")) + 1);
+        unZipPath = ZipUtil.unZip(filePath, unZipPath);
         String result = detectDir(unZipPath);
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
         Image image = imageService.insertOne(new File(detectTextPath));
-        insertRecord(zipPath, file, image.getImageUrl());
+        javaEmail.sendMessageWithFile("1023668958@qq.com", detectTextPath);
+        insertRecord(filePath, file, image.getImageUrl());
         return image.getImageUrl();
-    }
-
-    @Override
-    public String detectZip(@NotNull String filePath){
-        String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
-        unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("/"), filePath.lastIndexOf("\\")) + 1);
-        unZipPath = ZipUtil.unZip(filePath, unZipPath);
-       return detectDir(unZipPath);
     }
 
 
@@ -111,7 +115,7 @@ public class FileServiceImpl implements FileService {
         log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
         // 将探索记录上传 1. 默认项目添加, 文件上传,添加
         try {
-            insertRecord(filePath, file, analysisResult.get(0));
+            insertRecord(filePath, new UploadFile(file), analysisResult.get(0));
             return analysisResult.get(0);
         } catch (FileNotFoundException e) {
             log.warn("OSS或者mysql出现异常, 无法上传文件");
@@ -162,17 +166,19 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public void insertRecord(String filePath, BaseFile file, Object result) throws FileNotFoundException {
+    public void insertRecord(String filePath, UploadFile file, Object result) throws FileNotFoundException {
         DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection");
         File uploadFile = new File(filePath);
-        String md5 = Md5Util.getMd5(uploadFile);
+        String md5;
         // 上传图片
-        Image image = null;
+        Image image;
         // 如果不是zip文件
         if (!filePath.substring(filePath.lastIndexOf(".")+1).equals("zip")) {
             image = imageService.insertOne(uploadFile);
+            md5 = Md5Util.getMd5(uploadFile);
         } else {
             image = imageService.insertOne(new Image(filePath));
+            md5 = file.getFileMd5();
         }
         // 创建默认项目
         projectDao.insert(detectProject);
@@ -182,7 +188,7 @@ public class FileServiceImpl implements FileService {
         // 创建并联条目
         projectFileDao.insert(new ProjectFile(detectProject.getDetectId(), file1.getFileId()));
         // 更新redis
-        redisUtil.set(md5, JSON.toJSONString(result));
+        redisUtil.set(md5, JSON.toJSONString(result), redisUtil.getEXPIRE_TIME());
     }
 
     /**
@@ -202,12 +208,8 @@ public class FileServiceImpl implements FileService {
                     results.add(img.getImageName() + ":    " + rect.toString() + "\n");
                 }
             }
-            results.sort(new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return o1.compareTo(o2);
-                }
-            });
+            // todo 待检测
+            results.sort(String::compareTo);
             for(String line: results){
                 writer.write(line);
             }

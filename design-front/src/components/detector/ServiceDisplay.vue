@@ -83,9 +83,9 @@ export default {
     upload (imgBase64, imgUrl) {
       const img = {}
       const _this = this
-      img.name = imgUrl.substring(imgUrl.lastIndexOf('/') + 1)
-      img.type = imgBase64.substring(imgBase64.indexOf(':') + 1, imgBase64.indexOf(';'))
-      img.size = 0
+      img.fileName = imgUrl.substring(imgUrl.lastIndexOf('/') + 1)
+      img.fileType = imgBase64.substring(imgBase64.indexOf(':') + 1, imgBase64.indexOf(';'))
+      img.fileSize = 0
       img.base64 = imgBase64
       img.detectType = this.detectType
       _this.$emit('uploadImage', img) // 上传图片, 包括了detectType, 区别鉴定的方式, 由主页面上传函数

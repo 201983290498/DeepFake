@@ -1,0 +1,63 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+BaseFile <|-- File
+DetectProject <|-- DetectRecord
+projectFile <--> DetectRecord
+File <--> projectFile
+File <--> Image
+class ArrayList {
+Object[] elementData
+size()
+}
+
+enum TimeUnit {
+DAYS
+HOURS
+MINUTES
+}
+class DetectProject<Table> {
+-detectId <key>
+-projectLevel
+-createTime
+-finishTime
+-projectName 无
+}
+class DetectRecord{
+-detectFile
+}
+class BaseFile{
+-fileName 文件名称
+-fileSize 文件大小
+-fileType 文件类型
+base64
+}
+class File<Table>{
+-fileId  文件Id <key>
+-fileLocation  项目存在本地
+-fileResults json字符串或者检测文本的地址
+-imageId   文件上传Id <foreign key>
+-fileMd5   文件的md5, 判断是否重复上传
+-imageQuantity 图像数量
+}
+class projectFile<Table>{
+-fileId, <foreign key>
+-detectId <foreign key>
+}
+class Image<Table> {
+-imageId <key>
+-imageUrl
+}
+@enduml

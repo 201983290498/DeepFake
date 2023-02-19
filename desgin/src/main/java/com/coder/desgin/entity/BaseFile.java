@@ -1,5 +1,6 @@
 package com.coder.desgin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
@@ -10,9 +11,13 @@ import lombok.Data;
 @Data
 public class BaseFile {
 
-    private String type;
-    private String name;
-    private Integer size;
+    @TableField(value="file_type")
+    private String fileType;
+    @TableField(value="file_name")
+    private String fileName;
+
+    @TableField(value="file_size")
+    private Integer fileSize;
     private String base64;
 
 

@@ -18,7 +18,12 @@
               <a href=""><i class="mdi mdi-palette"></i>运行项目</a>
             </li>
             <li class="nav-item nav-item-has-subnav">
-              <a href=""><i class="mdi mdi-format-align-justify"></i>历史项目</a>
+              <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>历史项目</a>
+              <ul class="nav nav-subnav">
+<!--             todo 需要重新定义路由记录, 包括了历史更新图库   -->
+                <li> <router-link to="/showBoard/personalInfo">检测记录</router-link> </li>
+                <li> <router-link to="/showBoard/forgetPwd">历史图库</router-link></li>
+              </ul>
             </li>
             <li class="nav-item nav-item-has-subnav">
               <a href="javascript:void(0)"><i class="mdi mdi-account"></i>个人信息</a>

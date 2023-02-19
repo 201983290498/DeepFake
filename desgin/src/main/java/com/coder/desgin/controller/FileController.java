@@ -44,7 +44,7 @@ public class FileController {
     @PostMapping("/deepfake/upload")
     public String uploadFile(@RequestBody BaseFile file, HttpServletRequest request) {
         // 处理压缩文件
-        if (file.getType().contains(ZIP)) {
+        if (file.getFileType().contains(ZIP)) {
             String resultsFile = uploadFileService.detectZip(file, request);
             return RespMessageUtils.SUCCESS(resultsFile);
         } else {// 处理单个文件
@@ -57,7 +57,7 @@ public class FileController {
     @ResponseBody
     @PostMapping("/normal/upload")
     public String uploadFile(@RequestBody NormalDetectionFile file, HttpServletRequest request) {
-        if (file.getType().contains(ZIP)) {
+        if (file.getFileType().contains(ZIP)) {
             String resultsFile = normalDetectionService.detectZip(file, request);
             return RespMessageUtils.SUCCESS(resultsFile);
         } else {// 处理单个文件

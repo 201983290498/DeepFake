@@ -46,7 +46,7 @@ public class NormalDetectionServiceImpl implements NormalDetectionService {
 
     public String detectZip(NormalDetectionFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
-        String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getName(), request);
+        String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         zipPath = zipPath.replace("\\", "/");
@@ -82,7 +82,7 @@ public class NormalDetectionServiceImpl implements NormalDetectionService {
 
     public String detectImg(NormalDetectionFile file, HttpServletRequest request) {
         // filePath 解压的文件地址
-        String filePath = ImageUtil.generateImage(file.getName(), file.getBase64(), request);
+        String filePath = ImageUtil.generateImage(file.getFileName(), file.getBase64(), request);
         log.info("解压文件地址为:".concat(filePath));
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

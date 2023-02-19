@@ -44,7 +44,7 @@ public class FileServiceImpl implements FileService {
 
     public String detectZip(BaseFile file, HttpServletRequest request) {
         // zipPath 解压文件夹的路径
-        String unZipPath = ZipUtil.base64ToFile(file.getBase64(), file.getName(), request);
+        String unZipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
         return detectDir(unZipPath);
     }
 
@@ -70,7 +70,7 @@ public class FileServiceImpl implements FileService {
 
     public ImgDetectorResult detectImg(BaseFile file, HttpServletRequest request) {
         // filePath 解压的文件地址
-        String filePath = ImageUtil.generateImage(file.getName(), file.getBase64(), request);
+        String filePath = ImageUtil.generateImage(file.getFileName(), file.getBase64(), request);
         log.info("解压文件地址为:".concat(filePath));
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

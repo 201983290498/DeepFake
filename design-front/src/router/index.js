@@ -70,16 +70,27 @@ const routes = [
     path: '/showBoard',
     name: 'ShowBoard',
     component: () => import('@/views/ShowBoard.vue'),
-    children: [{
-      path: 'forgetPwd',
-      name: 'PersonalForgetPwd',
-      component: () => import('@/components/dashboard/PersonalForgetPwd.vue')
-    },
-    {
-      path: 'personalInfo',
-      name: 'PersonalInfo',
-      component: () => import('@/components/dashboard/PersonalInfo.vue')
-    }]
+    children: [
+      {
+        path: 'forgetPwd',
+        name: 'PersonalForgetPwd',
+        component: () => import('@/components/dashboard/PersonalForgetPwd.vue')
+      },
+      {
+        path: 'personalInfo',
+        name: 'PersonalInfo',
+        component: () => import('@/components/dashboard/PersonalInfo.vue')
+      },
+      {
+        path: '',
+        redirect: 'historyRecord'
+      },
+      {
+        path: 'historyRecord',
+        name: 'HistoryRecord',
+        component: () => import('@/components/dashboard/HistoryRecord.vue')
+      }
+    ]
   }
 ]
 const router = new VueRouter({

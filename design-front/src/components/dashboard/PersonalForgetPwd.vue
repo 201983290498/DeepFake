@@ -11,7 +11,6 @@
                   <span>步骤一</span>
                   <a class="active" data-toggle="tab" href="#step-1"></a>
                 </li>
-
                 <li class="nav-step-item">
                   <span>步骤二</span>
                   <a data-toggle="tab" href="#step-2"></a>

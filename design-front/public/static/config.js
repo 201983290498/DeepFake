@@ -10,5 +10,8 @@ window.server = {
     userUrl: '/api/users',
     imageUrl: '/api/images',
     checkMd5: '/api/files/checkMd5'
+  },
+  Project: {
+    detectProject: '/api/detectProject'
   }
 }

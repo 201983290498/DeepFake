@@ -24,13 +24,19 @@ create table if not exists `usr_tbl`(
     user_introduction nvarchar(500) default null,
     foreign key (image_id) references image(image_id)
 );
+insert into image(image_id, image_url) values ('0306a26edd3c60a101fb7213a4668d53', 'https://deepfakedetector.oss-cn-hangzhou.aliyuncs.com/1676739159909 781.jpg');
+insert into image(image_id, image_url) values ('default', '');
+insert into usr_tbl(user_id, username, password, email, image_id) values ('f1df1f1bf1ad2944cb723901e09481fd', 'Cao100200', 'Coder111', '1023668958@qq.com', '0306a26edd3c60a101fb7213a4668d53');
+insert into usr_tbl(user_id, username, password, email, image_id) values ('default', 'AdminTest', 'Admin123', '201983290498@nuist.edu.cn', 'default');
 drop table if exists `file_table`, `project_tbl`, `project_file_tbl`;
 create table if not exists `project_tbl` (
     detect_id int auto_increment primary key comment  '项目id,单个图片也是项目',
     project_level nvarchar(20) default 'image' comment '项目类型, image or project',
     create_time datetime default now(),
     finish_time datetime,
-    project_name nvarchar(50) default ''
+    project_name nvarchar(50) default '',
+    user_id nvarchar(50) default 'default',
+    foreign key (user_id) references usr_tbl(user_id)
 );
 create table if not exists `file_tbl` (
     file_id int primary key auto_increment,

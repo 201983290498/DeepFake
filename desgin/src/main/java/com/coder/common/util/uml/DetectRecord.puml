@@ -29,6 +29,7 @@ HOURS
 MINUTES
 }
 class DetectProject<Table> {
+-userId <foreign> default 'default'
 -detectId <key>
 -projectLevel
 -createTime
@@ -37,6 +38,7 @@ class DetectProject<Table> {
 }
 class DetectRecord{
 -detectFile
+-fileId
 }
 class BaseFile{
 -fileName 文件名称

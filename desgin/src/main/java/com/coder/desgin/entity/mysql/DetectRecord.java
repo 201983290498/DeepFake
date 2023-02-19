@@ -16,4 +16,7 @@ public class DetectRecord extends DetectProject{
 
     @TableField(value = "detect_file")
     private String detectFile;
+
+    @TableField(value="file_id")
+    private String fileId;
 }

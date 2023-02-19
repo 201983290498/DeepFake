@@ -35,4 +35,7 @@ public class DetectProject  implements Serializable {
 
     @TableField(value = "project_name")
     private String projectName;
+
+    @TableField(value = "user_id")
+    private String userId;
 }

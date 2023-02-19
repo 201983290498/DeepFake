@@ -96,7 +96,7 @@ public class BigFileController {
                     FileUtils.deleteDirectory(fileDir);
                 }
             }
-            // todo location 怎么弄
+            // todo location 怎么弄 还有本地地址存在一些问题
             String textUrl = fileService.detectZip(finalFilePath, new UploadFile(fileInfoVO));
             return RespMessageUtils.SUCCESS(textUrl);
         }

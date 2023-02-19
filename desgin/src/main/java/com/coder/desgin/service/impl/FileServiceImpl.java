@@ -155,7 +155,7 @@ public class FileServiceImpl implements FileService {
             wrapper.eq("file_md5", md5);
             UploadFile file = fileDao.selectOne(wrapper);
             if (file != null) {
-                return file.getFileMd5();
+                return file.getFileResults();
             } else {
                 return null;
             }

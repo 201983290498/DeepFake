@@ -35,113 +35,31 @@
                 <thead>
                 <tr>
                   <th>#</th>
-                  <th>项目名称</th>
+                  <th>记录名称</th>
                   <th>开始日期</th>
                   <th>截止日期</th>
-                  <th>状态</th>
-                  <th>进度</th>
+                  <th>项目等级</th>
+                  <th>检测文件</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>设计新主题</td>
-                  <td>10/02/2019</td>
-                  <td>12/05/2019</td>
-                  <td><span class="label label-warning">待定</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-warning" style="width: 45%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>网站重新设计</td>
-                  <td>01/03/2019</td>
-                  <td>12/04/2019</td>
-                  <td><span class="label label-success">进行中</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-success" style="width: 30%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>模型设计</td>
-                  <td>10/10/2019</td>
-                  <td>12/11/2019</td>
-                  <td><span class="label label-warning">待定</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-warning" style="width: 25%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>后台管理系统模板设计</td>
-                  <td>25/01/2019</td>
-                  <td>09/05/2019</td>
-                  <td><span class="label label-success">进行中</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-success" style="width: 55%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td>前端设计</td>
-                  <td>10/10/2019</td>
-                  <td>12/12/2019</td>
-                  <td><span class="label label-danger">未开始</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-danger" style="width: 0%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>6</td>
-                  <td>桌面软件测试</td>
-                  <td>10/01/2019</td>
-                  <td>29/03/2019</td>
-                  <td><span class="label label-success">进行中</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-success" style="width: 75%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>7</td>
-                  <td>APP改版开发</td>
-                  <td>25/02/2019</td>
-                  <td>12/05/2019</td>
-                  <td><span class="label label-danger">暂停</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-danger" style="width: 15%;"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>8</td>
-                  <td>Logo设计</td>
-                  <td>10/02/2019</td>
-                  <td>01/03/2019</td>
-                  <td><span class="label label-warning">完成</span></td>
-                  <td>
-                    <div class="progress progress-striped progress-sm">
-                      <div class="progress-bar progress-bar-success" style="width: 100%;"></div>
-                    </div>
-                  </td>
+                <tr v-for="(record, i) in detectRecords" :key="record.detectId">
+                  <td>{{i+1}}</td>
+                  <td>{{record.projectName}}</td>
+                  <td>{{record.createTime}}</td>
+                  <td>{{record.finishTime}}</td>
+                  <td>{{record.projectLevel}}</td>
+                  <td>{{record.detectFile}}</td>
                 </tr>
                 </tbody>
               </table>
             </div>
+            <ul class="pagination">
+              <li class="disabled"><span>«</span></li>
+              <li class="active"><span>1</span></li>
+              <li><a href="#!">»</a></li>
+            </ul>
+
           </div>
         </div>
       </div>
@@ -174,9 +92,9 @@ export default {
           pageNum: pageNum
         },
         success: function (resp) {
-          if (resp.data.result) {
-            console.log(resp.data.data)
-            _this.detectRecords = resp.data.data
+          resp = JSON.parse(resp)
+          if (resp.result) {
+            _this.detectRecords = resp.data
           } else {
             this.$message.warning('服务器请求失败。')
           }

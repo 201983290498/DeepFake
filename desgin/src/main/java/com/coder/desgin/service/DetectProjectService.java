@@ -23,4 +23,6 @@ public interface DetectProjectService {
      * @return 返回所有的检测行为
      */
     List<DetectRecord> selectAllRecords(Integer pageNum);
+
+    List<DetectRecord> selectRecordsBySql(Integer pageNum);
 }

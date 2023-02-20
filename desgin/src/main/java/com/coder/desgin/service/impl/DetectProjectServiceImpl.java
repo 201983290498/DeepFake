@@ -19,6 +19,8 @@ import java.util.List;
 @Service
 public class DetectProjectServiceImpl implements DetectProjectService {
 
+    private static final Integer PAGE_SIZE = 20;
+
     private final DetectProjectDao detectProjectDao;
 
     public DetectProjectServiceImpl(DetectProjectDao detectProjectDao) {
@@ -29,15 +31,22 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Override
     public List<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum) {
         QueryWrapper wrapper = new QueryWrapper();
-        Page<DetectRecord> page = new Page<>(pageNum, 20);
+        Page<DetectRecord> page = new Page<>(pageNum, 10);
         wrapper.eq("user_id", userId);
         IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page,  wrapper);
         return iPage.getRecords();
     }
 
+
     @Override
     public List<DetectRecord> selectAllRecords(Integer pageNum) {
         Page<DetectRecord> page = new Page<>(pageNum, 20);
         return detectProjectDao.selectRecords(page, null).getRecords();
+    }
+
+    @Override
+    public List<DetectRecord> selectRecordsBySql(Integer pageNum) {
+
+        return detectProjectDao.selectRecordsBySql((pageNum-1)*PAGE_SIZE);
     }
 }

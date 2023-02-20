@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 
 /**
  * @Author coder
@@ -15,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class DetectRecord extends DetectProject{
 
     @TableField(value = "detect_file")
@@ -23,4 +24,21 @@ public class DetectRecord extends DetectProject{
 
     @TableField(value="file_id")
     private String fileId;
+
+    public DetectRecord(Long detectId, String projectLevel, Date createTime, Date finishTime, String projectName, String userId, String detectFile, String fileId) {
+        super(detectId, projectLevel, createTime, finishTime, projectName, userId);
+        this.detectFile = detectFile;
+        this.fileId = fileId;
+    }
+
+    public DetectRecord(String detectFile, String fileId) {
+        this.detectFile = detectFile;
+        this.fileId = fileId;
+    }
+
+    public DetectRecord(Date finishTime, String projectName, String detectFile, String fileId) {
+        super(finishTime, projectName);
+        this.detectFile = detectFile;
+        this.fileId = fileId;
+    }
 }

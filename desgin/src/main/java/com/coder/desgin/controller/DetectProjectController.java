@@ -38,7 +38,7 @@ public class DetectProjectController {
         if (pageNum == null){
             pageNum = 1;
         }
-        List<DetectRecord> detectRecords = projectService.selectRecordsBySql(pageNum);
+        List<DetectRecord> detectRecords = projectService.selectRecordsByUserId(userId, pageNum);
         return RespMessageUtils.SUCCESS(detectRecords);
     }
 }

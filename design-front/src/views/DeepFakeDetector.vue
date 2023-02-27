@@ -104,44 +104,68 @@ export default {
     uploadZip: function (zipFile) {
       const _this = this
       zipFile.md5 = this.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
+      // $.ajax({
+      //   type: 'post',
+      //   url: window.server.COMMONS.checkMd5,
+      //   dataType: 'json',
+      //   data: {
+      //     md5: zipFile.md5
+      //   },
+      //   success: function (response) {
+      //     if (response.result) {
+      //       const url = JSON.parse(response.data)
+      //       _this.$message.success('检测文本存储于: ' + url)
+      //       _this.uploaded = 100
+      //     } else {
+      //       $.ajax({
+      //         type: 'post',
+      //         url: _this.deepfakeDetector.detectUrl,
+      //         dataType: 'json',
+      //         contentType: 'application/json',
+      //         data: JSON.stringify(zipFile),
+      //         success: function (response) {
+      //           if (response.result) {
+      //             _this.$message.success('检测文本存储于: ' + response.data)
+      //           } else {
+      //             _this.$message.warning(response.msg)
+      //           }
+      //         },
+      //         xhr: function () { // 显示加载进度
+      //           const xhr = $.ajaxSettings.xhr()
+      //           if (xhr.upload) {
+      //             xhr.upload.addEventListener('progress', function (event) {
+      //               // 已经上传的进度条
+      //               _this.uploaded = Math.round(event.loaded / event.total * 100)
+      //             }, false)
+      //           }
+      //           return xhr
+      //         }
+      //       })
+      //     }
+      //   }
+      // })
       $.ajax({
         type: 'post',
-        url: window.server.COMMONS.checkMd5,
+        url: _this.deepfakeDetector.detectUrl,
         dataType: 'json',
-        data: {
-          md5: zipFile.md5
-        },
+        contentType: 'application/json',
+        data: JSON.stringify(zipFile),
         success: function (response) {
           if (response.result) {
-            const url = JSON.parse(response.data)
-            _this.$message.success('检测文本存储于: ' + url)
-            _this.uploaded = 100
+            _this.$message.success('检测文本存储于: ' + response.data)
           } else {
-            $.ajax({
-              type: 'post',
-              url: _this.deepfakeDetector.detectUrl,
-              dataType: 'json',
-              contentType: 'application/json',
-              data: JSON.stringify(zipFile),
-              success: function (response) {
-                if (response.result) {
-                  _this.$message.success('检测文本存储于: ' + response.data)
-                } else {
-                  _this.$message.warning(response.msg)
-                }
-              },
-              xhr: function () { // 显示加载进度
-                const xhr = $.ajaxSettings.xhr()
-                if (xhr.upload) {
-                  xhr.upload.addEventListener('progress', function (event) {
-                    // 已经上传的进度条
-                    _this.uploaded = Math.round(event.loaded / event.total * 100)
-                  }, false)
-                }
-                return xhr
-              }
-            })
+            _this.$message.warning(response.msg)
           }
+        },
+        xhr: function () { // 显示加载进度
+          const xhr = $.ajaxSettings.xhr()
+          if (xhr.upload) {
+            xhr.upload.addEventListener('progress', function (event) {
+              // 已经上传的进度条
+              _this.uploaded = Math.round(event.loaded / event.total * 100)
+            }, false)
+          }
+          return xhr
         }
       })
     },

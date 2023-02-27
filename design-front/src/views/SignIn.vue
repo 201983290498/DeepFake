@@ -81,6 +81,8 @@ export default {
             const url = resp.data.imageUrl
             const context = `<img src='${url}' style="width:100%;height: 100%;margin-top: -11.5px"/>`
             $('#photo').html(context)
+          } else {
+            _this.$message.warning('账号不存在.')
           }
         },
         error () {

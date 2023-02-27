@@ -43,15 +43,15 @@ export default {
     return {
       details: [
         {
-          title: '12',
+          title: '10',
           subTitle: 'Projects'
         },
         {
-          title: '2GB',
+          title: '0GB',
           subTitle: 'Images'
         },
         {
-          title: '24,6$',
+          title: '0￥',
           subTitle: 'Charge'
         }
       ],

@@ -141,9 +141,13 @@ export default {
       if (files.length > 1) {
         _this.$message.warning('仅支持单张图片处理, 多张图片请压缩成zip文件。')
       } else {
-        // 对进度条的处理
         if (_this.check_suffix(files[0].name) !== 2) {
           _this.uploadZip = false
+        } else {
+          if (_this.$store.state.Authorization === '') {
+            _this.$message.warning('只有在登入的条件下才能批量处理文件, 请登入！')
+            return
+          }
         }
         if (_this.check_suffix(files[0].name) !== 0) {
           _this.getBase64(files[0], true)

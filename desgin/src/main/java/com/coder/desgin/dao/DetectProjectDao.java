@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.DetectRecord;
-import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,7 +17,6 @@ import java.util.List;
  * @author coder
  */
 @Mapper
-@CacheNamespace(blocking = true)
 public interface DetectProjectDao extends BaseMapper<DetectProject> {
 
     /**

@@ -93,7 +93,7 @@ public class FileServiceImpl implements FileService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("path", dir);
         // url 使用默认参数
-        JSONObject jsonObject = httpUtil.sendPost(null, params);
+        JSONObject jsonObject = httpUtil.sendPostQuicklyDetector(null, params);
         log.info(jsonObject.toString());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
         log.info("Analysis result: path".concat(dir).concat(";  detections:").concat(analysisResult.toString()));
@@ -110,14 +110,14 @@ public class FileServiceImpl implements FileService {
         params.add("path", filePath);
         // url使用默认参数
         JSONObject jsonObject = httpUtil.sendPost(null, params);
-        log.info(jsonObject.toString());
+//        log.info(jsonObject.toString());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
-        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
+//        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
         // 将探索记录上传 1. 默认项目添加, 文件上传,添加
         try {
             insertRecord(filePath, new UploadFile(file), analysisResult.get(0));
             return analysisResult.get(0);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             log.warn("OSS或者mysql出现异常, 无法上传文件");
             return analysisResult.get(0);
         }

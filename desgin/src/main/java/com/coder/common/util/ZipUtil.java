@@ -285,7 +285,7 @@ public class ZipUtil {
                     is = new BufferedInputStream(zipfile.getInputStream(entry));
                     int count;
                     byte[] dataByte = new byte[BUFFER_SIZE];
-                    FileOutputStream fos = new FileOutputStream(zipDir+ "/" +entry.getName());
+                    FileOutputStream fos = new FileOutputStream(zipDir+ "/" +entry.getName().substring(entry.getName().lastIndexOf("/")+1));
                     dest = new BufferedOutputStream(fos, BUFFER_SIZE);
                     while ((count = is.read(dataByte, 0, BUFFER_SIZE)) != -1) {
                         dest.write(dataByte, 0, count);

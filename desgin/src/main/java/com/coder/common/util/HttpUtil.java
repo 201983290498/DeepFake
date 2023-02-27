@@ -33,6 +33,9 @@ public class HttpUtil {
     @Value("${flask.deepfake.url}")
     private String detectUrl;
 
+    @Value("${flask.deepfake.quick_url}")
+    private String detectQuick;
+
     /**
      * 发送Post请求
      * @param url 发送的url请求, 如果是null,则使用默认的url
@@ -42,6 +45,24 @@ public class HttpUtil {
     public JSONObject sendPost(String url, MultiValueMap<String, String>params){
         if(url==null){
             url = getDetectUrl();
+        }
+        RestTemplate client = new RestTemplate();
+        client.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf("application/x-www-form-urlencoded;charset=UTF-8"));
+        HttpMethod method = HttpMethod.POST;
+        // 以表单的方式提交
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        // 将请求头部和参数合成一个请求
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+        // 执行Http请求，将返回的结构使用JSONObject类格式化
+        ResponseEntity<String> result = client.exchange(url, method, requestEntity, String.class);
+        return JSONObject.parseObject(result.getBody());
+    }
+
+    public JSONObject sendPostQuicklyDetector(String url, MultiValueMap<String, String>params){
+        if(url==null){
+            url = getDetectQuick();
         }
         RestTemplate client = new RestTemplate();
         client.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));

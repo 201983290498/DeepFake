@@ -69,7 +69,7 @@ export default {
           localStorage.clear()
         }
       }).catch(() => {
-        localStorage.clear()
+        console.log('服务器异常请稍后重试')
       })
     }
   },

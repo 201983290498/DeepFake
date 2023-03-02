@@ -243,8 +243,7 @@ export default {
           window.location.reload()
         }
       }).catch(() => {
-        localStorage.clear()
-        window.location.reload()
+        console.log('服务器异常, 请等待')
       })
     }
     let script = document.createElement('script')

@@ -67,18 +67,20 @@ public class TokenUtil {
                 .withIssuer("auth0").build();
         DecodedJWT jwt;
         try {
-            jwt = verifier.verify(token);
+            // todo 记录 如果token过期, 则自动返回错误
+            verifier.verify(token);
+            return true;
         } catch (Exception e){
             return false;
         }
-        String username = jwt.getClaim("username").asString();
-        String newToken = (String)redisUtil.get(username);
-        if (token.equals(newToken)) {
-            log.info(username + "认证通过");
-            log.info("过期时间" + jwt.getExpiresAt().toString());
-            return true;
-        }else {
-            return false;
-        }
+//        String username = jwt.getClaim("username").asString();
+//        String newToken = (String)redisUtil.get(username);
+//        if (token.equals(newToken)) {
+//            log.info(username + "认证通过");
+//            log.info("过期时间" + jwt.getExpiresAt().toString());
+//            return true;
+//        }else {
+//            return false;
+//        }
     }
 }

@@ -28,6 +28,7 @@ public class RedisRQService {
 
     @RabbitHandler
     void getMessage(String msg) {
+//     todo 警惕消息队列比真实请求慢导致的更新不及时问题
         String[] messages = msg.split(paramSplit);
         if (messages.length == 3)
             redisUtil.set(messages[0], messages[1], Long.parseLong(messages[2]));

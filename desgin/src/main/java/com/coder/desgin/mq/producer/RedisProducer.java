@@ -27,6 +27,6 @@ public class RedisProducer {
         if (timeout == null)
             amqpTemplate.convertAndSend(exchangeName, "redis", key+paramSplit+value);
         else
-            amqpTemplate.convertAndSend(exchangeName, "redis", key+paramSplit+value+ timeout);
+            amqpTemplate.convertAndSend(exchangeName, "redis", key+paramSplit + value + paramSplit+ timeout);
     }
 }

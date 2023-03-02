@@ -66,6 +66,7 @@ public class UploadFile extends BaseFile  implements Serializable{
         setFileName(file.getFileName());
         setFileSize(file.getFileSize());
         setFileType(file.getFileType());
+        setMode(file.getMode());
     }
 
     public UploadFile(TempFileInfoVO fileInfoVO) {

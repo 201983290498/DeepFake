@@ -1,8 +1,9 @@
 package com.coder.common.util.login;
 
-import com.coder.common.util.JavaEmail;
 import com.coder.desgin.entity.ValidationInfo;
 import com.coder.desgin.exception.MailMessageException;
+import com.coder.desgin.mq.producer.JavaEmailProducer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -19,23 +20,28 @@ import java.util.HashMap;
 @Scope("singleton")
 public class VerificationCodeFactory {
 
-    private final JavaEmail emailHandler;
+    private final JavaEmailProducer emailAsynHandler;
 
+    /**
+     * 验证码的有效时间
+     */
+    @Value("${email.timeout}")
+    private Integer validationTimeout;
     /**
      * HashMap底层时一个红黑树(二叉排序树,按照关键字的查找效率始终是logN)
      * 目前在队列中存在的有效验证码，主要用于邮箱和验证码之间的映射
      * key: email
      * value: validationinfo
      */
-    private HashMap<String,String> messageMap = new HashMap<>();
+    private final HashMap<String,String> messageMap = new HashMap<>();
 
     /**
      * 消息队列，主要看验证码是否过期。如果不使用该队列，每次都需要遍历HashMap删除过时信息，不合理。
      */
-    private ArrayDeque<ValidationInfo> validationInfoQueue = new ArrayDeque<>();
+    private final ArrayDeque<ValidationInfo> validationInfoQueue = new ArrayDeque<>();
 
-    public VerificationCodeFactory(JavaEmail emailHandler) {
-        this.emailHandler = emailHandler;
+    public VerificationCodeFactory(JavaEmailProducer emailHandler) {
+        this.emailAsynHandler = emailHandler;
     }
 
     /**
@@ -45,7 +51,7 @@ public class VerificationCodeFactory {
         boolean flag=true;
         while(!validationInfoQueue.isEmpty()&&flag){
             ValidationInfo validationInfo = validationInfoQueue.getFirst();
-            if(System.currentTimeMillis()-validationInfo.getCreateTime()>=emailHandler.getTimeout()){
+            if(System.currentTimeMillis()-validationInfo.getCreateTime()>=validationTimeout){
                 //状态码失效
                 messageMap.remove(validationInfo.getEmail());
                 validationInfoQueue.removeFirst();
@@ -112,7 +118,7 @@ public class VerificationCodeFactory {
             msg = validationInfo.getMessage();
         }
         messageMap.put(email+type, msg);
-        emailHandler.sendHtmlMsg(email,generationValidationHtml(email, msg, type));
+        emailAsynHandler.sendEmailMsg("html", email,generationValidationHtml(email, msg, type));
         return true;
     }
 }

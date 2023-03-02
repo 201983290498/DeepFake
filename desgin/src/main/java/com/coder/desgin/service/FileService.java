@@ -5,7 +5,6 @@ import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.mysql.UploadFile;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,18 +21,17 @@ public interface FileService {
      * @param request request请求，获取项目地址
      * @return 返回检测文档的url地址
      * @throws  IOException 检测文本生成错误
-     * @throws MessagingException 邮箱发送错误
      */
-    String detectZip(BaseFile file, HttpServletRequest request) throws IOException, MessagingException;
+    String detectZip(BaseFile file, HttpServletRequest request) throws IOException;
 
     /**
      * 检测zip文件
      * @param filePath zip文件夹
+     * @param file 文件的基本信息
      * @return 返回检测url
      * @throws IOException 检测文本生成错误
-     * @throws MessagingException 邮箱发送错误
      */
-    String detectZip(String filePath, UploadFile file) throws IOException, MessagingException;
+    String detectZip(String filePath, UploadFile file) throws IOException;
 
 
     /**
@@ -41,7 +39,7 @@ public interface FileService {
      * @param dir 文件夹路径
      * @return 返回检测文本的结果
      */
-    String detectDir(String dir);
+    String detectDir(String dir, String mode);
 
     /**
      * 检测图片文件

@@ -37,6 +37,12 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
       read-only: false
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    port: ${RABBIT_PORT}
+    virtual-host: /
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:

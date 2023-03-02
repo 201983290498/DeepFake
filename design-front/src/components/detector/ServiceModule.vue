@@ -27,10 +27,12 @@ export default {
       if (!JSON.parse(this.$store.state.status)) {
         this.$router.push({ path: '/signIn' })
       }
+      this.$emit('changeMode', 'speed')
     },
     accuracyMode: function () {
       this.isActive1 = true
       this.isActive2 = false
+      this.$emit('changeMode', 'accuracy')
     }
   }
 }

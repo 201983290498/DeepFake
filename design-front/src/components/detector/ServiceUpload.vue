@@ -67,7 +67,7 @@ export default {
       if (newValue === 100) {
         setTimeout(() => {
           this.uploadZip = false
-        }, 5000)
+        }, 4000)
       }
     }
   },

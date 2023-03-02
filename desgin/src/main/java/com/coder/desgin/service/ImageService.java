@@ -20,14 +20,14 @@ public interface ImageService {
     Image selectById(String id);
 
     /**
-     * 插入一张图片
+     * 添加一条文件记录,直接记录文件的本地的位置
      * @param image 图片
      * @return 插入成功之后获取Image
      */
     Image insertOne(Image image);
 
     /**
-     * 上传一个文件
+     * 上传一个文件到oss,并添加一条文件记录
      * @param file 文件
      * @return 返回上传记录
      * @throws FileNotFoundException file本地文件不存在

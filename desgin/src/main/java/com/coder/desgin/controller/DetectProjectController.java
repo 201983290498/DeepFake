@@ -1,5 +1,6 @@
 package com.coder.desgin.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.service.DetectProjectService;
@@ -38,7 +39,7 @@ public class DetectProjectController {
         if (pageNum == null){
             pageNum = 1;
         }
-        List<DetectRecord> detectRecords = projectService.selectRecordsByUserId(userId, pageNum);
-        return RespMessageUtils.SUCCESS(detectRecords);
+        IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum);
+        return RespMessageUtils.SUCCESS(detectRecordIPage);
     }
 }

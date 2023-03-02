@@ -29,12 +29,12 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
 
     @Override
-    public List<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum) {
+    public IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum) {
         QueryWrapper wrapper = new QueryWrapper();
         Page<DetectRecord> page = new Page<>(pageNum, 10);
         wrapper.eq("user_id", userId);
         IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page,  wrapper);
-        return iPage.getRecords();
+        return iPage;
     }
 
 

@@ -23,12 +23,12 @@
                 <input type="submit" style="display: none;" value="提交" name="keyword" @click="similarSearch">
               </div>
             </form>
-            <div class="toolbar-btn-action">
-              <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
-              <a class="btn btn-success m-r-5" href="#!"><i class="mdi mdi-check"></i> 启用</a>
-              <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-block-helper"></i> 禁用</a>
-              <a class="btn btn-danger" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
-            </div>
+<!--            <div class="toolbar-btn-action">-->
+<!--              <a class="btn btn-primary m-r-5" href="#"><i class="mdi mdi-plus"></i> 新增</a>-->
+<!--              <a class="btn btn-success m-r-5" href="#"><i class="mdi mdi-check"></i> 启用</a>-->
+<!--              <a class="btn btn-warning m-r-5" href="#"><i class="mdi mdi-block-helper"></i> 禁用</a>-->
+<!--              <a class="btn btn-danger" href="#"><i class="mdi mdi-window-close"></i> 删除</a>-->
+<!--            </div>-->
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -44,7 +44,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(record, i) in detectRecords" :key="record.detectId">
+                <tr v-for="(record, i) in detectPage.records" :key="record.detectId">
                   <td>{{i+1}}</td>
                   <td>{{record.projectName}}</td>
                   <td>{{record.createTime}}</td>
@@ -58,7 +58,7 @@
             <ul class="pagination">
               <li class="disabled"><span>«</span></li>
               <li class="active"><span>1</span></li>
-              <li><a href="#!">»</a></li>
+              <li><a href="#">»</a></li>
             </ul>
 
           </div>
@@ -76,7 +76,7 @@ export default {
     return {
       cardTitle: '检测记录',
       pageTitle: '控制台',
-      detectRecords: [],
+      detectPage: [],
       user: JSON.parse(this.$store.state.data)
     }
   },
@@ -94,8 +94,9 @@ export default {
         },
         success: function (resp) {
           resp = JSON.parse(resp)
+          console.log(resp)
           if (resp.result) {
-            _this.detectRecords = resp.data
+            _this.detectPage = resp.data
           } else {
             this.$message.warning('服务器请求失败。')
           }

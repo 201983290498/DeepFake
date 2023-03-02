@@ -45,11 +45,6 @@ public class JavaEmail {
     @Value("${email.emailPwd}")
     private String pwd;
 
-    /**
-     * 验证码的有效时间
-     */
-    @Value("${email.timeout}")
-    private Long timeout;
 
     /**
      * 以html文本作为邮件内容发送给用户

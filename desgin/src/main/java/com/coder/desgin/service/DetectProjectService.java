@@ -1,5 +1,6 @@
 package com.coder.desgin.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coder.desgin.entity.mysql.DetectRecord;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface DetectProjectService {
      * @param pageNum 分页的页号
      * @return 返回个人的检测行为
      */
-    List<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum);
+    IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum);
 
     /**
      * 搜索所有的行为

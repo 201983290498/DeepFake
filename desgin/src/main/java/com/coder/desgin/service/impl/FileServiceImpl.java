@@ -6,16 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.internal.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.coder.common.util.*;
-import com.coder.desgin.dao.DetectProjectDao;
 import com.coder.desgin.dao.FileDao;
-import com.coder.desgin.dao.ProjectFileDao;
 import com.coder.desgin.entity.DetectorRect;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
-import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.Image;
-import com.coder.desgin.entity.mysql.ProjectFile;
 import com.coder.desgin.entity.mysql.UploadFile;
+import com.coder.desgin.mq.producer.JavaEmailProducer;
+import com.coder.desgin.mq.producer.RecordProducer;
 import com.coder.desgin.service.FileService;
 import com.coder.desgin.service.ImageService;
 import lombok.Data;
@@ -25,10 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.sql.Date;
 import java.util.*;
 
 /**
@@ -46,26 +42,23 @@ public class FileServiceImpl implements FileService {
 
     private final RedisUtil redisUtil;
 
-    private final DetectProjectDao projectDao;
 
     private final ImageService imageService;
 
-    public final ProjectFileDao projectFileDao;
+    public final JavaEmailProducer emailAsynHandler;
+    private final RecordProducer recordProducer;
 
-    public final JavaEmail javaEmail;
-
-    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, DetectProjectDao projectDao, ImageService imageService, ProjectFileDao projectFileDao, JavaEmail javaEmail) {
+    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer) {
         this.httpUtil = httpUtil;
         this.fileDao = fileDao;
         this.redisUtil = redis;
-        this.projectDao = projectDao;
         this.imageService = imageService;
-        this.projectFileDao = projectFileDao;
-        this.javaEmail = javaEmail;
+        this.emailAsynHandler = javaEmail;
+        this.recordProducer = recordProducer;
     }
 
     @Override
-    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException, MessagingException {
+    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException{
         // zipPath 解压文件夹的路径
         String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
         UploadFile uploadFile = new UploadFile(file);
@@ -74,26 +67,26 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String detectZip(@NotNull String filePath, UploadFile file) throws IOException, MessagingException {
+    public String detectZip(@NotNull String filePath, UploadFile file) throws IOException{
         String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
         unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("\\"), filePath.lastIndexOf("\\")) + 1);
         unZipPath = ZipUtil.unZip(filePath, unZipPath);
-        String result = detectDir(unZipPath);
+        String result = detectDir(unZipPath, file.getMode());
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
         Image image = imageService.insertOne(new File(detectTextPath));
-        javaEmail.sendMessageWithFile("1023668958@qq.com", detectTextPath);
+        emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
         insertRecord(filePath, file, image.getImageUrl());
         return image.getImageUrl();
     }
 
 
     @Override
-    public String detectDir(String dir){
+    public String detectDir(String dir, String detectMode){
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("path", dir);
         // url 使用默认参数
-        JSONObject jsonObject = httpUtil.sendPostQuicklyDetector(null, params);
+        JSONObject jsonObject = httpUtil.sendPost(null, params, detectMode);
         log.info(jsonObject.toString());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
         log.info("Analysis result: path".concat(dir).concat(";  detections:").concat(analysisResult.toString()));
@@ -102,17 +95,14 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public ImgDetectorResult detectImg(@NotNull BaseFile file, HttpServletRequest request) {
-        // filePath 解压的文件地址
         String filePath = ImageUtil.generateImage(file.getFileName(), file.getBase64(), request);
+        assert filePath != null;
         log.info("解压文件地址为:".concat(filePath));
-        // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("path", filePath);
-        // url使用默认参数
-        JSONObject jsonObject = httpUtil.sendPost(null, params);
-//        log.info(jsonObject.toString());
+        JSONObject jsonObject = httpUtil.sendPost(null, params, file.getMode());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
-//        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
+        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
         // 将探索记录上传 1. 默认项目添加, 文件上传,添加
         try {
             insertRecord(filePath, new UploadFile(file), analysisResult.get(0));
@@ -164,31 +154,17 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-
+    /**
+     * 插入一条记录, 更新所有的数据库
+     *
+     * @param filePath 文件名称
+     * @param baseFile 文件基本信息
+     * @param result   检测结果json
+     * @throws FileNotFoundException 检测文本生成出现问题
+     */
     @Override
-    public void insertRecord(String filePath, UploadFile file, Object result) throws FileNotFoundException {
-        DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection");
-        File uploadFile = new File(filePath);
-        String md5;
-        // 上传图片
-        Image image;
-        // 如果不是zip文件
-        if (!filePath.substring(filePath.lastIndexOf(".")+1).equals("zip")) {
-            image = imageService.insertOne(uploadFile);
-            md5 = Md5Util.getMd5(uploadFile);
-        } else {
-            image = imageService.insertOne(new Image(filePath));
-            md5 = file.getFileMd5();
-        }
-        // 创建默认项目
-        projectDao.insert(detectProject);
-        UploadFile file1 = new UploadFile(file.getFileName(), file.getFileSize(), file.getFileType(), md5, image.getImageId(), JSON.toJSONString(result));
-        // 创建对应的检测文件
-        fileDao.insert(file1);
-        // 创建并联条目
-        projectFileDao.insert(new ProjectFile(detectProject.getDetectId(), file1.getFileId()));
-        // 更新redis
-        redisUtil.set(md5, JSON.toJSONString(result), redisUtil.getEXPIRE_TIME());
+    public void insertRecord(String filePath, UploadFile baseFile, Object result) throws FileNotFoundException {
+        recordProducer.sendRecordMsg(filePath,baseFile,result);
     }
 
     /**

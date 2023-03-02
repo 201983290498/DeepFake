@@ -22,4 +22,6 @@ public class BaseFile {
     @TableField(exist = false)
     private String base64;
 
+    @TableField(exist = false)
+    private String mode;
 }

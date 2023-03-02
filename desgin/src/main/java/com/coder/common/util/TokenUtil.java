@@ -3,8 +3,8 @@ package com.coder.common.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.coder.desgin.mq.producer.RedisProducer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -28,9 +28,12 @@ public class TokenUtil {
     // 密钥
     private static final String TOKEN_SECRET = "ben";
 
+    private final RedisProducer redisService;
+
     private final RedisUtil redisUtil;
 
-    public TokenUtil(RedisUtil redisUtil) {
+    public TokenUtil(RedisProducer redisService, RedisUtil redisUtil) {
+        this.redisService = redisService;
         this.redisUtil = redisUtil;
     }
 
@@ -41,7 +44,7 @@ public class TokenUtil {
      * @return 返回签名
      */
     public String sign(String username) {
-        String token = null;
+        String token ;
         Date expiresAt = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         token = JWT.create()
                 .withIssuer("auth0")
@@ -50,7 +53,7 @@ public class TokenUtil {
                 .withExpiresAt(expiresAt)
                 .sign(Algorithm.HMAC256(TOKEN_SECRET));
         log.info(username + ", token: " + token);
-        redisUtil.set(username, token, EXPIRE_TIME/1000);
+        redisService.sendMsg(username, token, EXPIRE_TIME/1000);
         return token;
     }
 
@@ -62,7 +65,7 @@ public class TokenUtil {
     public boolean verify(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_SECRET))
                 .withIssuer("auth0").build();
-        DecodedJWT jwt = null;
+        DecodedJWT jwt;
         try {
             jwt = verifier.verify(token);
         } catch (Exception e){
@@ -70,7 +73,7 @@ public class TokenUtil {
         }
         String username = jwt.getClaim("username").asString();
         String newToken = (String)redisUtil.get(username);
-        if (newToken != null && token.equals(newToken)) {
+        if (token.equals(newToken)) {
             log.info(username + "认证通过");
             log.info("过期时间" + jwt.getExpiresAt().toString());
             return true;

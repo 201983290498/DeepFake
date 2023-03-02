@@ -42,26 +42,10 @@ public class HttpUtil {
      * @param params 请求参数
      * @return 返回POST请求的JSON结果
      */
-    public JSONObject sendPost(String url, MultiValueMap<String, String>params){
-        if(url==null){
+    public JSONObject sendPost(String url, MultiValueMap<String, String>params, String mode){
+        if(url==null && mode.equals("accuracy")){
             url = getDetectUrl();
-        }
-        RestTemplate client = new RestTemplate();
-        client.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf("application/x-www-form-urlencoded;charset=UTF-8"));
-        HttpMethod method = HttpMethod.POST;
-        // 以表单的方式提交
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        // 将请求头部和参数合成一个请求
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-        // 执行Http请求，将返回的结构使用JSONObject类格式化
-        ResponseEntity<String> result = client.exchange(url, method, requestEntity, String.class);
-        return JSONObject.parseObject(result.getBody());
-    }
-
-    public JSONObject sendPostQuicklyDetector(String url, MultiValueMap<String, String>params){
-        if(url==null){
+        } else if (url == null && mode.equals("speed")) {
             url = getDetectQuick();
         }
         RestTemplate client = new RestTemplate();

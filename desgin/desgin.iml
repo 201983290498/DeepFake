@@ -158,5 +158,15 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.3" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.14" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-amqp:2.3.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.2.12.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.amqp:spring-rabbit:2.2.13.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.rabbitmq:amqp-client:5.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.amqp:spring-amqp:2.2.13.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.retry:spring-retry:1.2.5.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework.amqp:spring-rabbit-test:2.2.13.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-library:2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework.amqp:spring-rabbit-junit:2.2.13.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.rabbitmq:http-client:3.2.0.RELEASE" level="project" />
   </component>
 </module>

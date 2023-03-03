@@ -41,16 +41,18 @@
                   <th>截止日期</th>
                   <th>项目等级</th>
                   <th>检测文件</th>
+                  <th>检测模式</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(record, i) in detectPage.records" :key="record.detectId">
-                  <td>{{i+1}}</td>
+                  <td>{{(detectPage.current-1)*detectPage.size+i+1}}</td>
                   <td>{{record.projectName}}</td>
                   <td>{{record.createTime}}</td>
                   <td>{{record.finishTime}}</td>
                   <td>{{record.projectLevel}}</td>
                   <td>{{record.detectFile}}</td>
+                  <td>{{record.mode}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -96,9 +98,12 @@ export default {
           pageSize
         },
         success: function (resp) {
-          console.log(resp.data)
           if (resp.result) {
             _this.detectPage = resp.data
+            for (let i = 0; i < _this.detectPage.records.length; i++) {
+              _this.detectPage.records[i].createTime = window.getLocalTime(_this.detectPage.records[i].createTime)
+              _this.detectPage.records[i].finishTime = window.getLocalTime(_this.detectPage.records[i].finishTime)
+            }
           } else {
             this.$message.warning('服务器请求失败。')
           }

@@ -8,6 +8,7 @@ import com.coder.desgin.service.ImageService;
 import com.coder.desgin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,10 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User insertUser(User entity, MultipartFile photo) throws Exception {
         if(photo.getSize() != 0){
             try {
-                Image image = imageService.insertOne(photo);
+                Image image = imageService.insertOneByFile(photo);
                 log.info(String.valueOf(image));
                 entity.setImageId(image.getImageId());
                 entity = insertUser(entity);
@@ -86,16 +88,15 @@ public class UserServiceImpl implements UserService {
         userdao.updateById(user);
     }
 
+    @Transactional
     @Override
-    public String updatePhoto(String userId, MultipartFile photo) {
+    public String updatePhoto(String userId, MultipartFile photo) throws IOException {
         User user = userdao.selectOne(userId);
-        String imageUrl = null;
-        try {
-            imageUrl = imageService.updateUserPhoto(user.getImageId(), photo);
-        } catch (IOException e) {
-            log.warn("user:" + userId + "更新头像失败");
-            log.warn(e.getMessage());
-        }
-        return imageUrl;
+        String oldImageId = user.getImageId();
+        Image image = imageService.insertOne(photo.getName(), photo.getInputStream());
+        user.setImageId(image.getImageId());
+        userdao.updateById(user);
+        imageService.deleteById(oldImageId);
+        return image.getImageUrl();
     }
 }

@@ -40,11 +40,25 @@ public class DetectProject  implements Serializable {
     @TableField(value = "project_name")
     protected String projectName;
 
+    /**
+     * 检测项目的用户id
+     */
     @TableField(value = "user_id")
     protected String userId;
 
-    public DetectProject(Date finishTime, String projectName) {
+    /**
+     * 检测模式
+     */
+    @TableField(value = "mode")
+    protected String mode;
+
+    public DetectProject(Date finishTime, String projectName, String userId, String mode) {
         this.finishTime = finishTime;
         this.projectName = projectName;
+        if(userId == null) {
+            userId = "default";
+        }
+        this.userId = userId;
+        this.mode = mode;
     }
 }

@@ -106,14 +106,9 @@ public class JavaEmail {
         message.setSubject("DeepFake检测文本");
         // 设置发送时间
         message.setSentDate(new Date());
-        /** 发送纯文本
-        message.setText("DeepFakeApplicaiton已经检测完成, 检测文本以发送在附件中");
-        发送html邮件，样式丰富。
-        message.setContent("232323232323", "text/html;charset=gbk");
-        */
         Multipart multipart = new MimeMultipart();
         BodyPart contentPart = new MimeBodyPart();
-        contentPart.setText("DeepFakeApplicaiton已经检测完成, 检测文本以发送在附件中");
+        contentPart.setText("DeepFakeApplication已经检测完成, 检测文本以发送在附件中");
         multipart.addBodyPart(contentPart);
         // 添加附件
         BodyPart messageBodyPart = new MimeBodyPart();

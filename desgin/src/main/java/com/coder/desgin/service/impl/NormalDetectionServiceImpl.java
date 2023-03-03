@@ -62,10 +62,9 @@ public class NormalDetectionServiceImpl implements NormalDetectionService {
         } else if (detectionType.equals("general")) {
 
         }
-        // url 使用默认参数
+        // todo 前端页面并没有修改 url 使用默认参数
         JSONObject jsonObject = httpUtil.sendPost(url, params, file.getMode());
         log.info(jsonObject.toString());
-
         // 返回存储检测定位图片的文件夹
         String result_detected_path = (String) jsonObject.get("result");
         result_detected_path = result_detected_path.replace("/", "\\");
@@ -99,7 +98,7 @@ public class NormalDetectionServiceImpl implements NormalDetectionService {
         } else if (detectionType.equals("general")) {
 
         }
-        // url使用默认参数
+        // todo 前端页面传递的参数还未修改 url使用默认参数
         JSONObject jsonObject = httpUtil.sendPost(url, params, file.getMode());
         log.info(jsonObject.toString());
 

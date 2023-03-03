@@ -29,13 +29,16 @@ public class Image implements Serializable {
     @TableField(value = "image_url")
     private String imageUrl;
 
+    @TableField(value="md5")
+    private String md5;
 
     /**
      * 创建图片
      * @param imageUrl 图片的url地址
      */
-    public Image(String imageUrl){
+    public Image(String imageUrl, String md5){
         this.imageUrl = imageUrl;
+        this.md5 = md5;
     }
 
     @Override
@@ -43,6 +46,7 @@ public class Image implements Serializable {
         return "Image{" +
                 "imageId='" + imageId + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", md5='" + md5 + '\'' +
                 '}';
     }
 }

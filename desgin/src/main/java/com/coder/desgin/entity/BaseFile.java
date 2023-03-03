@@ -1,7 +1,9 @@
 package com.coder.desgin.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author coder
@@ -9,6 +11,8 @@ import lombok.Data;
  * @Description 单文件, 主要是图片和单一地压缩文件
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BaseFile {
 
     @TableField(value="file_type")
@@ -22,6 +26,21 @@ public class BaseFile {
     @TableField(exist = false)
     private String base64;
 
-    @TableField(exist = false)
+    @TableField(value = "mode")
     private String mode;
+
+    /**
+     * 文件归属
+     */
+    @TableField(exist = false)
+    private String userId="default";
+
+    public BaseFile(BaseFile file) {
+        this.fileType = file.fileType;
+        this.fileName = file.fileName;
+        this.fileSize = file.fileSize;
+        this.base64 = file.base64;
+        this.mode = file.mode;
+        this.userId = file.userId;
+    }
 }

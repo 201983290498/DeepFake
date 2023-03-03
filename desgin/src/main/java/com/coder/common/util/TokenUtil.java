@@ -3,7 +3,6 @@ package com.coder.common.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.coder.desgin.mq.producer.RedisProducer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ import java.sql.Date;
 @Scope("singleton")
 public class TokenUtil {
     /* 有效时长 */
-    private static final long EXPIRE_TIME = 60*60*1000;
+    private static final long EXPIRE_TIME = 24*60*60*1000;
     // 密钥
     private static final String TOKEN_SECRET = "ben";
 
@@ -65,22 +64,11 @@ public class TokenUtil {
     public boolean verify(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_SECRET))
                 .withIssuer("auth0").build();
-        DecodedJWT jwt;
         try {
-            // todo 记录 如果token过期, 则自动返回错误
             verifier.verify(token);
             return true;
         } catch (Exception e){
             return false;
         }
-//        String username = jwt.getClaim("username").asString();
-//        String newToken = (String)redisUtil.get(username);
-//        if (token.equals(newToken)) {
-//            log.info(username + "认证通过");
-//            log.info("过期时间" + jwt.getExpiresAt().toString());
-//            return true;
-//        }else {
-//            return false;
-//        }
     }
 }

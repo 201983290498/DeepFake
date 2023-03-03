@@ -38,15 +38,14 @@ public class FileController {
     }
 
     /**
-     * 匿名状态下文件检测
      * @param file 上传的文件
      * @param request 自动注入request请求
      * @return 返回检测结果，或者显示检测结果的文本url地址
+     * @Description 检测单张图片或者小型压缩包
      */
     @ResponseBody
     @PostMapping("/deepfake/upload")
     public String uploadFile(@RequestBody BaseFile file, HttpServletRequest request) {
-        // 处理压缩文件
         if (file.getFileType().contains(ZIP)) {
             String resultsFile;
             try {
@@ -82,8 +81,8 @@ public class FileController {
 
     @ResponseBody
     @PostMapping("/files/checkMd5")
-    public String checkMd5(String md5) {
-        String result = uploadFileService.checkMd5(md5);
+    public String checkMd5(String md5, String mode) {
+        String result = uploadFileService.checkMd5(md5, mode);
         if(StringUtils.isEmpty(result)) {
             return RespMessageUtils.ERROR();
         } else {

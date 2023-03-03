@@ -55,7 +55,7 @@
           <ul class="topbar-right">
             <li class="dropdown dropdown-profile">
               <a data-toggle="dropdown">
-                <img class="img-avatar img-avatar-48 m-r-10" :src="user.imageUrl" alt="伪造检测" />
+                <img class="img-avatar img-avatar-48 m-r-10" :src="user.imageUrl" alt="DF" />
                 <span>{{user.username}}<span class="caret"></span></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-right">

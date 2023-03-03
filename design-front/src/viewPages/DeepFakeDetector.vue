@@ -4,7 +4,7 @@
     <ServiceModule @changeMode="changeMode"></ServiceModule>
     <ServiceDisplay :disImgs="disImgs" @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage="uploadImage" @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
-    <UploadFile style="margin-top: 35px" v-show="loginStatus"></UploadFile>
+    <UploadFile style="margin-top: 35px" v-show="loginStatus" :mode="mode"></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->
@@ -54,12 +54,14 @@ export default {
       image.crossOrigin = ''
       imgs.md5 = this.base64ToArrayBufferToMD5(imgs.base64.substring(imgs.base64.indexOf(',', 1) + 1))
       imgs.mode = this.mode
+      imgs.userId = JSON.parse(this.$store.state.data).userId
       $.ajax({
         type: 'post',
         url: window.server.COMMONS.checkMd5,
         dataType: 'json',
         data: {
-          md5: imgs.md5
+          md5: imgs.md5,
+          mode: _this.mode
         },
         success: function (response) {
           if (response.result) {
@@ -116,12 +118,14 @@ export default {
       const _this = this
       zipFile.md5 = this.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
       zipFile.mode = this.mode
+      zipFile.userId = JSON.parse(this.$store.state.data).userId
       $.ajax({
         type: 'post',
         url: window.server.COMMONS.checkMd5,
         dataType: 'json',
         data: {
-          md5: zipFile.md5
+          md5: zipFile.md5,
+          mode: _this.mode
         },
         success: function (response) {
           if (response.result) {

@@ -29,9 +29,9 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
 
     @Override
-    public IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum) {
+    public IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum, Integer pageSize) {
         QueryWrapper wrapper = new QueryWrapper();
-        Page<DetectRecord> page = new Page<>(pageNum, 10);
+        Page<DetectRecord> page = new Page<>(pageNum, pageSize);
         wrapper.eq("user_id", userId);
         IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page,  wrapper);
         return iPage;
@@ -46,7 +46,6 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
     @Override
     public List<DetectRecord> selectRecordsBySql(Integer pageNum) {
-
         return detectProjectDao.selectRecordsBySql((pageNum-1)*PAGE_SIZE);
     }
 }

@@ -2,6 +2,7 @@ package com.coder.common.util;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 @Scope("singleton")
 public class RedisUtil {
 
-    private final Integer EXPIRE_TIME = 60 * 60;
+    @Value("${redis.expireTime}")
+    private Integer EXPIRE_TIME;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

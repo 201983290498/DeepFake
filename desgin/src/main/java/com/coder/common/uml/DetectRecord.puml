@@ -35,6 +35,7 @@ class DetectProject<Table> {
 -createTime
 -finishTime
 -projectName 无
+-mode 检测模式 speed accuracy
 }
 class DetectRecord{
 -detectFile
@@ -45,6 +46,8 @@ class BaseFile{
 -fileSize 文件大小
 -fileType 文件类型
 base64
+userId 文件归属, 默认为default
+-mode 该文件的检测方式
 }
 class File<Table>{
 -fileId  文件Id <key>
@@ -60,6 +63,8 @@ class projectFile<Table>{
 }
 class Image<Table> {
 -imageId <key>
--imageUrl
+-imageUrl  压缩包的本地地址
+或者文件的url
+-md5 文件的唯一标识
 }
 @enduml

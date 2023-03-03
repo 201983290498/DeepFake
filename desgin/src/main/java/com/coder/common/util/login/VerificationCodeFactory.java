@@ -29,7 +29,7 @@ public class VerificationCodeFactory {
     private Integer validationTimeout;
     /**
      * HashMap底层时一个红黑树(二叉排序树,按照关键字的查找效率始终是logN)
-     * 目前在队列中存在的有效验证码，主要用于邮箱和验证码之间的映射
+     * 目前在队列中存在的有效验证码，主要用于邮箱+功能和验证码之间的映射
      * key: email
      * value: validationinfo
      */
@@ -118,7 +118,7 @@ public class VerificationCodeFactory {
             msg = validationInfo.getMessage();
         }
         messageMap.put(email+type, msg);
-        emailAsynHandler.sendEmailMsg("html", email,generationValidationHtml(email, msg, type));
+        emailAsynHandler.sendEmailMsg("html", email, generationValidationHtml(email, msg, type));
         return true;
     }
 }

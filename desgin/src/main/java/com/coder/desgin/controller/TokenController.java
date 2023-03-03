@@ -16,6 +16,11 @@ public class TokenController {
         this.tokenUtil = tokenUtil;
     }
 
+    /**
+     * @param token 认证的token
+     * @return 认证用户登入是否过期
+     * @Description redis保存token的方式, 就是用户名: token
+     */
     @PostMapping("/authorize")
     @ResponseBody
     public String checkToken(String token) {

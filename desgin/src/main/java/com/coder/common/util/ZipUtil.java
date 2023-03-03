@@ -65,7 +65,7 @@ public class ZipUtil {
         // 先将文件写出来在解压, 将base64去掉文件头
         base64 = base64.substring(base64.indexOf(',') + 1);
         byte[] bytes = Base64.getDecoder().decode(base64);
-        OutputStream out = null;
+        OutputStream out;
         out = Files.newOutputStream(Paths.get(filePath));
         out.write(bytes);
         out.flush();
@@ -123,7 +123,7 @@ public class ZipUtil {
         // 获取压缩文件的时间
         long start = System.currentTimeMillis();
         // base64字符串
-        String base64toZip = "";
+        String base64toZip;
         // zip输出流
         ZipOutputStream zos = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -250,7 +250,7 @@ public class ZipUtil {
      * @return 返回解压路径
      */
     public static String unZip(String filePath, String unZipPath) {
-        String zipDir = "";
+        String zipDir;
         if (unZipPath == null) {
             zipDir = filePath.substring(0, filePath.lastIndexOf("."));
         }else{
@@ -261,7 +261,7 @@ public class ZipUtil {
             tem.mkdirs();
         }
 
-        String name = "";
+        String name;
         try {
             BufferedOutputStream dest;
             BufferedInputStream is;

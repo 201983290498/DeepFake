@@ -57,6 +57,9 @@ export default {
       show_filename: true
     }
   },
+  props: {
+    mode: [String]
+  },
   methods: {
     computeMD5: function (file) {
       const _this = this
@@ -79,7 +82,8 @@ export default {
             url: window.server.COMMONS.checkMd5,
             dataType: 'json',
             data: {
-              md5: file.uniqueIdentifier
+              md5: file.uniqueIdentifier,
+              mode: _this.mode
             },
             success: function (resp) {
               if (resp.result) {
@@ -137,6 +141,8 @@ export default {
       this.isUploadOk = !file.isUploading() // 禁止上传
     },
     mergeFile: function (data) {
+      data.userId = JSON.parse(this.$store.state.data).userId
+      data.mode = this.mode
       return this.axios({
         url: window.server.COMMONS.bigFileUpload + '/mergeFile',
         method: 'post',

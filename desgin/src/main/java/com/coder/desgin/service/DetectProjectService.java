@@ -14,9 +14,10 @@ public interface DetectProjectService {
      * 通过用户id获取所有的检测行为
      * @param userId 用户Id
      * @param pageNum 分页的页号
+     * @param pageSize 页面的大小
      * @return 返回个人的检测行为
      */
-    IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum);
+    IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum, Integer pageSize);
 
     /**
      * 搜索所有的行为

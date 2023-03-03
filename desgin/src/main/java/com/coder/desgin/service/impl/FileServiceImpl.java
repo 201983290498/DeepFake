@@ -14,6 +14,7 @@ import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.mq.producer.JavaEmailProducer;
 import com.coder.desgin.mq.producer.RecordProducer;
+import com.coder.desgin.mq.producer.RedisProducer;
 import com.coder.desgin.service.FileService;
 import com.coder.desgin.service.ImageService;
 import lombok.Data;
@@ -48,13 +49,16 @@ public class FileServiceImpl implements FileService {
     public final JavaEmailProducer emailAsynHandler;
     private final RecordProducer recordProducer;
 
-    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer) {
+    private final RedisProducer redisAsynHandler;
+
+    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer, RedisProducer redisAsynHandler) {
         this.httpUtil = httpUtil;
         this.fileDao = fileDao;
         this.redisUtil = redis;
         this.imageService = imageService;
         this.emailAsynHandler = javaEmail;
         this.recordProducer = recordProducer;
+        this.redisAsynHandler = redisAsynHandler;
     }
 
     @Override
@@ -62,7 +66,7 @@ public class FileServiceImpl implements FileService {
         // zipPath 解压文件夹的路径
         String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
         UploadFile uploadFile = new UploadFile(file);
-        uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath)));
+        uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
         return detectZip(zipPath, uploadFile);
     }
 
@@ -73,8 +77,9 @@ public class FileServiceImpl implements FileService {
         unZipPath = ZipUtil.unZip(filePath, unZipPath);
         String result = detectDir(unZipPath, file.getMode());
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
-        Image image = imageService.insertOne(new File(detectTextPath));
         emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+        // 1. 检测结果上传
+        Image image = imageService.insertOneByFile(new File(detectTextPath));
         insertRecord(filePath, file, image.getImageUrl());
         return image.getImageUrl();
     }
@@ -103,9 +108,11 @@ public class FileServiceImpl implements FileService {
         JSONObject jsonObject = httpUtil.sendPost(null, params, file.getMode());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
         log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
-        // 将探索记录上传 1. 默认项目添加, 文件上传,添加
         try {
-            insertRecord(filePath, new UploadFile(file), analysisResult.get(0));
+            // 1. 默认项目添加, 文件上传,添加
+            UploadFile uploadFile = new UploadFile(file);
+            uploadFile.setFileMd5(Md5Util.getMd5(new File(filePath)));
+            insertRecord(filePath, uploadFile, analysisResult.get(0));
             return analysisResult.get(0);
         } catch (Exception e) {
             log.warn("OSS或者mysql出现异常, 无法上传文件");
@@ -138,13 +145,15 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String checkMd5(String md5) {
-        String result = (String)redisUtil.get(md5);
+    public String checkMd5(String md5, String mode) {
+        String result = (String)redisUtil.get(md5+mode);
         if (StringUtils.isEmpty(result)) {
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("file_md5", md5);
+            wrapper.eq("mode", mode);
             UploadFile file = fileDao.selectOne(wrapper);
             if (file != null) {
+                redisAsynHandler.sendMsg(md5+mode, file.getFileResults(), null);
                 return file.getFileResults();
             } else {
                 return null;
@@ -159,12 +168,12 @@ public class FileServiceImpl implements FileService {
      *
      * @param filePath 文件名称
      * @param baseFile 文件基本信息
-     * @param result   检测结果json
+     * @param detectResult   检测结果json
      * @throws FileNotFoundException 检测文本生成出现问题
      */
     @Override
-    public void insertRecord(String filePath, UploadFile baseFile, Object result) throws FileNotFoundException {
-        recordProducer.sendRecordMsg(filePath,baseFile,result);
+    public void insertRecord(String filePath, UploadFile baseFile, Object detectResult) throws FileNotFoundException {
+        recordProducer.sendRecordMsg(filePath,baseFile, detectResult);
     }
 
     /**

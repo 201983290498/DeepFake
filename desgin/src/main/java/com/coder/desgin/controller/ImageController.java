@@ -50,9 +50,9 @@ public class ImageController {
     @PostMapping("/upload")
     public String upLoadImage(MultipartFile photo){
         /* 传递回去上传成功的信息 */
-        Image upload = null;
+        Image upload;
         try {
-            upload = imageService.insertOne(photo);
+            upload = imageService.insertOneByFile(photo);
         } catch (IOException e) {
             return RespMessageUtils.ERROR("文件上传失败, 请稍后尝试。");
         }

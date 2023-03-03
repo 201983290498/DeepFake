@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
 
 
 /**
@@ -34,12 +33,12 @@ public class DetectProjectController {
 
     @PostMapping("/records")
     @ResponseBody
-    public String getAllDetectionRecords(String userId, Integer pageNum) {
+    public String getAllDetectionRecords(String userId, Integer pageNum, Integer pageSize) {
         log.info(userId + "正在查询所有个人检测记录");
         if (pageNum == null){
             pageNum = 1;
         }
-        IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum);
+        IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum, pageSize);
         return RespMessageUtils.SUCCESS(detectRecordIPage);
     }
 }

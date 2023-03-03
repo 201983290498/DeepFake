@@ -3,6 +3,8 @@ package com.coder.desgin.service;
 import com.coder.desgin.entity.mysql.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * @author coder
  */
@@ -57,5 +59,5 @@ public interface UserService {
      * @param photo 头像
      * @return
      */
-    String updatePhoto(String userId, MultipartFile photo);
+    String updatePhoto(String userId, MultipartFile photo) throws IOException;
 }

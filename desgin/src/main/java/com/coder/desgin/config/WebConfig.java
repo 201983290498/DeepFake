@@ -12,12 +12,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Description
  */
 @Configuration
-public class WebConfiguation implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     private final TokenInterceptor tokenInterceptor;
 
 
-    public WebConfiguation(TokenInterceptor tokenInterceptor) {
+    public WebConfig(TokenInterceptor tokenInterceptor) {
         this.tokenInterceptor = tokenInterceptor;
     }
 

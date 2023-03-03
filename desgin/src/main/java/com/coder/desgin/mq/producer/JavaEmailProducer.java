@@ -27,10 +27,12 @@ public class JavaEmailProducer {
 
     /**
      * 消息队列的生产者
-     * @param msg 待发送的信息
+     * @param functionType 发送email具体的功能, 分为html 和 file
+     * @param email 需要发往的邮箱
+     * @param msg 需要发送的具体信息
      */
-    public void sendEmailMsg (String type, String email, String msg) {
-        msg = type + paramSplit + email + paramSplit + msg;
+    public void sendEmailMsg (String functionType, String email, String msg) {
+        msg = functionType + paramSplit + email + paramSplit + msg;
         amqpTemplate.convertAndSend(exchangeName, "email", msg);
     }
 }

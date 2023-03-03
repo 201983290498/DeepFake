@@ -30,8 +30,8 @@ public class RecordProducer {
         this.amqpTemplate = amqpTemplate;
     }
 
-    public void sendRecordMsg(String filePath, UploadFile file, Object result) {
-        String msg = filePath + paramSplit + file.getFileMd5() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + JSON.toJSONString(result);
+    public void sendRecordMsg(String filePath, UploadFile file, Object detectResult) {
+        String msg = filePath + paramSplit + file.getFileMd5() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + JSON.toJSONString(detectResult) + paramSplit + file.getUserId() + paramSplit + file.getMode();
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
         String md5;
         if (!filePath.substring(filePath.lastIndexOf(".")+1).equals("zip")) {
@@ -39,6 +39,7 @@ public class RecordProducer {
         } else {
             md5 = file.getFileMd5();
         }
-        amqpTemplate.convertAndSend(exchangeName, "redis", md5 + paramSplit + JSON.toJSONString(result));
+        // 检测结果缓存
+        amqpTemplate.convertAndSend(exchangeName, "redis", md5+file.getMode() + paramSplit + JSON.toJSONString(detectResult));
     }
 }

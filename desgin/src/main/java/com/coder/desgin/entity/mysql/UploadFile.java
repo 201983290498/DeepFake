@@ -44,29 +44,19 @@ public class UploadFile extends BaseFile  implements Serializable{
     @TableField("file_results")
     private String fileResults;
 
-    public UploadFile(String fileName,Integer fileSize, String fileType, String fileMd5, String imageId,String fileResults) {
+
+    public UploadFile(String fileName,Integer fileSize, String fileType, String fileMd5, String imageId,String fileResults, String detectMode) {
         setFileName(fileName);
         setFileSize(fileSize);
         setFileType(fileType);
+        setMode(detectMode);
         this.imageId = imageId;
         this.fileMd5 = fileMd5;
         this.fileResults = fileResults;
     }
 
-    public UploadFile(String fileLocation,String fileName,Integer fileSize, String fileType, String fileMd5,String fileResults) {
-        setFileName(fileName);
-        setFileSize(fileSize);
-        setFileType(fileType);
-        this.fileLocation = fileLocation;
-        this.fileMd5 = fileMd5;
-        this.fileResults = fileResults;
-    }
-
     public UploadFile(BaseFile file) {
-        setFileName(file.getFileName());
-        setFileSize(file.getFileSize());
-        setFileType(file.getFileType());
-        setMode(file.getMode());
+        super(file);
     }
 
     public UploadFile(TempFileInfoVO fileInfoVO) {
@@ -74,5 +64,7 @@ public class UploadFile extends BaseFile  implements Serializable{
         setFileMd5(fileInfoVO.getUniqueIdentifier());
         setFileSize(Math.toIntExact(fileInfoVO.getSize()));
         setFileType(fileInfoVO.getFileType());
+        setUserId(fileInfoVO.getUserId());
+        setMode(fileInfoVO.getMode());
     }
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import DeepFakeDetector from '@/views/DeepFakeDetector.vue'
-import DetectorPage from '@/views/DetectorPage.vue'
+import DeepFakeDetector from '@/viewPages/DeepFakeDetector.vue'
+import DetectorPage from '@/viewPages/indexPage.vue'
 import Vuex from 'vuex'
 
 Vue.use(VueRouter)
@@ -28,7 +28,7 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import('@/views/NormalDetector.vue')
+        component: () => import('@/viewPages/NormalDetector.vue')
       },
       {
         path: '',
@@ -39,12 +39,12 @@ const routes = [
   {
     path: '/signIn',
     name: 'SignIn',
-    component: () => import('@/views/SignIn.vue')
+    component: () => import('@/viewPages/SignIn.vue')
   },
   {
     path: '/signUp',
     name: 'SignUp',
-    component: () => import('@/views/SignUp.vue'),
+    component: () => import('@/viewPages/SignUp.vue'),
     children: [
       {
         path: 'register',
@@ -69,7 +69,7 @@ const routes = [
   {
     path: '/showBoard',
     name: 'ShowBoard',
-    component: () => import('@/views/ShowBoard.vue'),
+    component: () => import('@/viewPages/ShowBoard.vue'),
     children: [
       {
         path: 'forgetPwd',

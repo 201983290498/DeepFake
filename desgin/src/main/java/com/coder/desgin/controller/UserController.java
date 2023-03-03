@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +81,7 @@ public class UserController {
      */
     @PostMapping("/login")
     @ResponseBody
-    public String login(String username, String password, HttpServletRequest request){
+    public String login(String username, String password){
         User user = new User(username, password);
         User login = userService.checkAccount(user);
         if(login == null){
@@ -125,7 +125,7 @@ public class UserController {
     @PostMapping("/register")
     @ResponseBody
     public String register(User user, String repeatPwd, MultipartFile photo, String validateData){
-        //验证失败，或者密码重复不正确
+
         if(!repeatPwd.equals(user.getPassword())) {
             return RespMessageUtils.ERROR("两次输入的密码不正确!");
         }
@@ -180,7 +180,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/updatePhoto")
-    public String updatePhoto(String userId, MultipartFile photo) {
+    public String updatePhoto(String userId, MultipartFile photo) throws IOException {
         String url = userService.updatePhoto(userId, photo);
         return RespMessageUtils.SUCCESS(url);
     }

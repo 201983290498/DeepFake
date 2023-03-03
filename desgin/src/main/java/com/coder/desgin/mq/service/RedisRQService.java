@@ -2,7 +2,6 @@ package com.coder.desgin.mq.service;
 
 import com.coder.common.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.redis.queue}", autoDelete = "false"),
-        exchange = @Exchange(value="${deepfake.ex}", type= ExchangeTypes.DIRECT, durable = "true"), key = "redis"))
+        exchange = @Exchange(value="${deepfake.ex}"), key = "redis"))
 public class RedisRQService {
     private final RedisUtil redisUtil;
 
@@ -28,7 +27,6 @@ public class RedisRQService {
 
     @RabbitHandler
     void getMessage(String msg) {
-//     todo 警惕消息队列比真实请求慢导致的更新不及时问题
         String[] messages = msg.split(paramSplit);
         if (messages.length == 3)
             redisUtil.set(messages[0], messages[1], Long.parseLong(messages[2]));

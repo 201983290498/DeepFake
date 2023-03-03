@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-lg-12" style="overflow: hidden">
         <div class="card">
           <div class="card-header">
             <h4>{{cardTitle}}</h4>
@@ -55,12 +55,15 @@
                 </tbody>
               </table>
             </div>
-            <ul class="pagination">
-              <li class="disabled"><span>«</span></li>
-              <li class="active"><span>1</span></li>
-              <li><a href="#">»</a></li>
-            </ul>
-
+            <el-pagination @size-change="pageSizeChange"
+                           @current-change="currentPageChange"
+                           :current-page="detectPage.current"
+                           :page-count="detectPage.pages"
+                           :total="detectPage.total"
+                           :page-size="detectPage.size"
+                           :page-sizes="[5,10,15,20,25,30]"
+                           layout="total,sizes, prev, pager, next,jumper" background style="text-align: center" :hideOnSinglePage="true">
+            </el-pagination>
           </div>
         </div>
       </div>
@@ -81,20 +84,19 @@ export default {
     }
   },
   methods: {
-    queryRecord: function (pageNum) {
-      console.log(pageNum)
+    queryRecord: function (userId, pageNum, pageSize) {
       const _this = this
       $.ajax({
         url: window.server.Project.detectProject + '/records',
         method: 'post',
+        dataType: 'json',
         data: {
-          // userId: _this.user.userId,
-          userId: 'default',
-          pageNum: pageNum
+          userId,
+          pageNum,
+          pageSize
         },
         success: function (resp) {
-          resp = JSON.parse(resp)
-          console.log(resp)
+          console.log(resp.data)
           if (resp.result) {
             _this.detectPage = resp.data
           } else {
@@ -109,12 +111,18 @@ export default {
     similarSearch: function (event) {
       event.preventDefault()
       console.log(1)
+    },
+    pageSizeChange: function (pageSize) {
+      this.queryRecord(this.user.userId, 1, pageSize)
+    },
+    currentPageChange: function (pageNum) {
+      this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
     }
   },
   created () {
     const _this = this
     this.$emit('changeActivePage', _this.pageTitle)
-    this.queryRecord(1)
+    this.queryRecord(this.user.userId, 1, 10)
   }
 }
 </script>

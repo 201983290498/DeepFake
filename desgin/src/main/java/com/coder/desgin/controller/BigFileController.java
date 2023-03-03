@@ -97,7 +97,8 @@ public class BigFileController {
                 }
             }
             // todo location 怎么弄 还有本地地址存在一些问题
-            String textUrl = fileService.detectZip(finalFilePath, new UploadFile(fileInfoVO));
+            UploadFile uploadFile = new UploadFile(fileInfoVO);
+            String textUrl = fileService.detectZip(finalFilePath, uploadFile);
             return RespMessageUtils.SUCCESS(textUrl);
         }
         catch (Exception e) {

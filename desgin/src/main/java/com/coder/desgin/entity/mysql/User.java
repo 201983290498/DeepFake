@@ -67,8 +67,10 @@ public class User implements Serializable {
     private Date createTime;
 
 
+    @TableField(exist = false)
     private String imageUrl;
 
+    @TableField(exist = false)
     private String token;
 
     @TableField("first_name")

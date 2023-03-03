@@ -2,7 +2,6 @@ package com.coder.desgin.mq.service;
 
 import com.coder.common.util.JavaEmail;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.email.queue}", autoDelete = "false"),
-        exchange = @Exchange(value="${deepfake.ex}", type= ExchangeTypes.DIRECT, durable = "true"), key = "email"))
+        exchange = @Exchange(value="${deepfake.ex}"), key = "email"))
 public class JavaEmailRQService {
 
     private final JavaEmail javaEmail;

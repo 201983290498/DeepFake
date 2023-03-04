@@ -26,10 +26,8 @@ public class Image implements Serializable {
     /**
      * 图片的连接地址
      */
-    @TableField(value = "image_url")
     private String imageUrl;
 
-    @TableField(value="md5")
     private String md5;
 
     /**

@@ -49,7 +49,7 @@ create table if not exists `file_tbl` (
     file_md5 nvarchar(50) not null comment '文件的md5码',
     file_location nvarchar(255) default '' comment '大文件存储在本地的地址',
     image_id nvarchar(50) comment '文件的oss存储地址',
-    file_results nvarchar(255) default '' comment 'json字符串或者检测文本的地址',
+    file_results nvarchar(1000) default '' comment 'json字符串或者检测文本的地址',
     image_quantity int  default 1 comment '文件对应的图片数量',
     mode nvarchar(10) default 'accuracy'
 );

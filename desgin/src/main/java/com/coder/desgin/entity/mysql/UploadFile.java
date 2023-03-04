@@ -29,23 +29,18 @@ public class UploadFile extends BaseFile  implements Serializable{
     @TableId(value="file_id", type = IdType.AUTO)
     private Long fileId;
 
-    @TableField(value="file_location")
     private String fileLocation;
 
-    @TableField(value="image_id")
     private String imageId;
 
-    @TableField(value="file_md5")
     private String fileMd5;
 
-    @TableField(value="image_quantity")
     private Integer imageQuality;
 
-    @TableField("file_results")
     private String fileResults;
 
 
-    public UploadFile(String fileName,Integer fileSize, String fileType, String fileMd5, String imageId,String fileResults, String detectMode) {
+    public UploadFile(String fileName,Integer fileSize, String fileType, String fileMd5, String imageId, String fileResults, String detectMode) {
         setFileName(fileName);
         setFileSize(fileSize);
         setFileType(fileType);

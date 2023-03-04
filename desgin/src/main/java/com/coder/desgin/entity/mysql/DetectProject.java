@@ -26,30 +26,24 @@ public class DetectProject  implements Serializable {
     @TableId(value="detect_id", type=IdType.AUTO)
     protected Long detectId;
 
-    @TableField(value="projectLevel")
     protected String projectLevel;
 
     @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
-    @TableField(value = "create_time")
     protected Date createTime;
 
     @DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
-    @TableField(value = "finish_time")
     protected Date finishTime;
 
-    @TableField(value = "project_name")
     protected String projectName;
 
     /**
      * 检测项目的用户id
      */
-    @TableField(value = "user_id")
     protected String userId;
 
     /**
      * 检测模式
      */
-    @TableField(value = "mode")
     protected String mode;
 
     public DetectProject(Date finishTime, String projectName, String userId, String mode) {

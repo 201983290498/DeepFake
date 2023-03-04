@@ -15,10 +15,8 @@ import java.io.Serializable;
 @TableName("project_file_tbl")
 public class ProjectFile implements Serializable {
 
-    @TableField(value="detect_id")
     private Long detectId;
 
-    @TableField(value="file_id")
     private Long fileId;
 
     public ProjectFile(Long detectId, Long fileId) {

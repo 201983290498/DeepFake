@@ -89,6 +89,16 @@ const routes = [
         path: 'historyRecord',
         name: 'HistoryRecord',
         component: () => import('@/components/dashboard/HistoryRecord.vue')
+      },
+      {
+        path: 'historyRecordManagement',
+        name: 'HistoryRecordManagement',
+        component: () => import('@/components/dashboard/HistoryRecordManagement.vue')
+      },
+      {
+        path: 'picBoard',
+        name: 'PicBoard',
+        component: () => import('@/components/dashboard/PicBoard.vue')
       }
     ]
   }

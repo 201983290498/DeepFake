@@ -32,31 +32,26 @@ public class User implements Serializable {
     /**
      * 邮箱验证
      */
-    @TableField("email")
     private String email;
 
     /**
      * 用户名
      */
-    @TableField("username")
     private String username;
 
     /**
      * 密码
      */
-    @TableField("password")
     private String password;
 
     /**
      * 人物的头像
      */
-    @TableField("image_id")
     private String imageId;
 
     /**
      * 用户的状态，1表示活跃有效，0表示冻结，-1表示删除
      */
-    @TableField("status")
     private Integer status;
 
     /**
@@ -73,28 +68,20 @@ public class User implements Serializable {
     @TableField(exist = false)
     private String token;
 
-    @TableField("first_name")
     private String firstName;
 
-    @TableField("last_name")
     private String lastName;
 
-    @TableField("phone_number")
     private String phoneNumber;
 
-    @TableField("company")
     private String company;
 
-    @TableField("city")
     private String city;
 
-    @TableField("country")
     private String country;
 
-    @TableField("zip_code")
     private String zipCode;
 
-    @TableField("user_introduction")
     private String userIntroduction;
 
 

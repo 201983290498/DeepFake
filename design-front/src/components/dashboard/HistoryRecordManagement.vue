@@ -23,10 +23,14 @@
                 <input type="submit" style="display: none;" value="提交" name="keyword" @click="similarSearch">
               </div>
             </form>
+            <div class="toolbar-btn-action">
+              <a class="btn btn-primary m-r-5" href="#"><i class="mdi mdi-plus"></i> 新增</a>
+              <a class="btn btn-danger" href="#"><i class="mdi mdi-window-close"></i> 删除</a>
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered">
+              <table class="table table-hover">
                 <thead>
                 <tr>
                   <th>#</th>
@@ -36,7 +40,6 @@
                   <th>项目等级</th>
                   <th>检测文件</th>
                   <th>检测模式</th>
-                  <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -48,12 +51,6 @@
                   <td>{{record.projectLevel}}</td>
                   <td>{{record.detectFile}}</td>
                   <td>{{record.mode}}</td>
-                  <td>
-                    <div class="btn-group">
-                      <a class="btn btn-xs btn-default" href="#" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
-                      <span class="btn btn-xs btn-default" @click="preview(i)" title="结果预览" data-toggle="tooltip"><i class="mdi mdi-eye"></i></span>
-                    </div>
-                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -76,8 +73,9 @@
 
 <script>
 import $ from 'jquery'
+
 export default {
-  name: 'HistoryRecord',
+  name: 'HistoryRecordManagement',
   data () {
     return {
       cardTitle: '检测记录',
@@ -117,6 +115,7 @@ export default {
     },
     similarSearch: function (event) {
       event.preventDefault()
+      console.log(1)
     },
     pageSizeChange: function (pageSize) {
       this.queryRecord(this.user.userId, 1, pageSize)
@@ -124,12 +123,23 @@ export default {
     currentPageChange: function (pageNum) {
       this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
     },
-    preview: function (recordId) {
-      const record = this.detectPage.records[recordId]
-      console.log(record)
+    getFile: function (fileId) {
+      console.log(1)
+      $.ajax({
+        url: window.server.Project.detectProject + '/detectedFile',
+        method: 'post',
+        dataType: 'json',
+        data: {
+          fileId
+        },
+        success: function (resp) {
+          console.log(resp)
+        }
+      })
     }
   },
   created () {
+    console.log(1)
     const _this = this
     this.$emit('changeActivePage', _this.pageTitle)
     this.queryRecord(this.user.userId, 1, 10)

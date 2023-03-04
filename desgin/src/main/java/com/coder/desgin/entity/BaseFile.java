@@ -15,18 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BaseFile {
 
-    @TableField(value="file_type")
     private String fileType="image";
-    @TableField(value="file_name")
     private String fileName;
 
-    @TableField(value="file_size")
     private Integer fileSize;
 
     @TableField(exist = false)
     private String base64;
 
-    @TableField(value = "mode")
     private String mode;
 
     /**

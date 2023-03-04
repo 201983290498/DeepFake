@@ -3,7 +3,9 @@ package com.coder.desgin.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.desgin.entity.mysql.DetectRecord;
+import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.DetectProjectService;
+import com.coder.desgin.service.UploadFileService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,11 @@ public class DetectProjectController {
 
     private final DetectProjectService projectService;
 
-    public DetectProjectController(DetectProjectService projectService) {
+    private final UploadFileService uploadFileService;
+
+    public DetectProjectController(DetectProjectService projectService, UploadFileService uploadFileService) {
         this.projectService = projectService;
+        this.uploadFileService = uploadFileService;
     }
 
     @PostMapping("/records")
@@ -39,6 +44,21 @@ public class DetectProjectController {
             pageNum = 1;
         }
         IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum, pageSize);
+        for(DetectRecord record : detectRecordIPage.getRecords()){
+            System.out.println(1);
+            System.out.println(record);
+        }
         return RespMessageUtils.SUCCESS(detectRecordIPage);
+    }
+
+    /**
+     * 根据fileId找检测记录, 获取到的检测记录
+     * @param fileId 文件Id
+     * @return 返回uploadFile
+     */
+    @PostMapping("/detectedFile")
+    public String getDetectedFile(String fileId) {
+        UploadFile uploadFile = uploadFileService.selectById(fileId);
+        return RespMessageUtils.SUCCESS(uploadFile);
     }
 }

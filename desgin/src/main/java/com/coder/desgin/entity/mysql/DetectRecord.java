@@ -1,10 +1,12 @@
 package com.coder.desgin.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 
 
 /**
@@ -15,12 +17,15 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class DetectRecord extends DetectProject{
+@AllArgsConstructor
+public class DetectRecord extends DetectProject implements Serializable{
 
-    @TableField(value = "detect_file")
     private String detectFile;
 
-    @TableField(value="file_id")
     private String fileId;
+
+    private String fileLocation;
+
+    private String fileResults;
 
 }

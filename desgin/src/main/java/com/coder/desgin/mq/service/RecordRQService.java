@@ -66,6 +66,7 @@ public class RecordRQService {
         // 2.创建默认项目
         projectDao.insert(detectProject);
         UploadFile file1 = new UploadFile(messages[2], Integer.valueOf(messages[3]), messages[4], md5, image.getImageId(), messages[5], messages[7]);
+        file1.setFileLocation(image.getImageUrl());
         // 创建对应的检测文件
         fileDao.insert(file1);
         // 创建并联条目

@@ -44,10 +44,6 @@ public class DetectProjectController {
             pageNum = 1;
         }
         IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum, pageSize);
-        for(DetectRecord record : detectRecordIPage.getRecords()){
-            System.out.println(1);
-            System.out.println(record);
-        }
         return RespMessageUtils.SUCCESS(detectRecordIPage);
     }
 

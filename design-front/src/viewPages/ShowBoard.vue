@@ -201,20 +201,26 @@
     <!--End 头部信息-->
     <!--页面主要内容-->
     <main class="lyear-layout-content">
-      <router-view @changeActivePage="changeSubPage" @changeImage="changeImage"></router-view>
+      <router-view @changeActivePage="changeSubPage" @changeImage="changeImage" @oneImageShow="oneImageShow"></router-view>
     </main>
     <!--End 页面主要内容-->
+    <OnePictureShow v-if="showImage" :picture="exampleImage" @closeDialog="closeShow" @downLoad="downloadImage"> </OnePictureShow>
   </div>
 </template>
 
 <script>
 import dashBoard from '@/assets/js/dashBoard'
+import common from '@/assets/js/common'
+import OnePictureShow from '@/components/dashboard/common/OnePictureShow.vue'
 export default {
   name: 'ShowBoard',
+  components: { OnePictureShow },
   data () {
     return {
       activePage: '控制台',
-      user: JSON.parse(this.$store.state.data)
+      user: JSON.parse(this.$store.state.data),
+      showImage: false,
+      exampleImage: null
     }
   },
   methods: {
@@ -227,6 +233,16 @@ export default {
     },
     changeImage: function (url) {
       this.user.imageUrl = url
+    },
+    oneImageShow: function (image) {
+      this.showImage = true
+      this.exampleImage = image
+    },
+    closeShow: function (resp) {
+      this.showImage = resp
+    },
+    downloadImage: function (resp) {
+      common.downLoadPic(resp)
     }
   },
   created () {

@@ -38,10 +38,11 @@ export default {
     const hexHash = spark.end(false)
     return hexHash
   },
-  getProcessImage: function (url, detections) {
-    const image = new Image()
-    image.src = url
-    image.crossOrigin = ''
-    return this.drawDetections(image, detections)
+  downLoadPic: function (picture) {
+    const a = document.createElement('a')
+    const event = new MouseEvent('click')
+    a.download = picture.name
+    a.href = picture.base64
+    a.dispatchEvent(event)
   }
 }

@@ -102,7 +102,6 @@ export default {
         success: function (resp) {
           if (resp.result) {
             _this.detectPage = resp.data
-            console.log(resp.data)
             for (let i = 0; i < _this.detectPage.records.length; i++) {
               _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
               _this.detectPage.records[i].finishTime = common.getLocalTime(_this.detectPage.records[i].finishTime)
@@ -126,8 +125,17 @@ export default {
       this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
     },
     preview: function (recordId) {
+      const _this = this
       const record = this.detectPage.records[recordId]
-      console.log(record)
+      const img = new Image()
+      img.src = record.fileLocation
+      img.setAttribute('crossOrigin', 'anonymous')
+      img.onload = function () {
+        const image = {}
+        image.base64 = common.drawDetections(img, JSON.parse(record.fileResults).rects)
+        image.name = record.detectFile
+        _this.$emit('oneImageShow', image)
+      }
     }
   },
   created () {

@@ -145,7 +145,6 @@ export default {
     },
     changeMode: function (mode) {
       this.mode = mode
-      console.log(mode)
     }
   }
 }

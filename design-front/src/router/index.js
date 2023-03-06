@@ -74,12 +74,12 @@ const routes = [
       {
         path: 'forgetPwd',
         name: 'PersonalForgetPwd',
-        component: () => import('@/components/dashboard/PersonalForgetPwd.vue')
+        component: () => import('@/components/dashboard/personal/PersonalForgetPwd.vue')
       },
       {
         path: 'personalInfo',
         name: 'PersonalInfo',
-        component: () => import('@/components/dashboard/PersonalInfo.vue')
+        component: () => import('@/components/dashboard/personal/PersonalInfo.vue')
       },
       {
         path: '',
@@ -88,17 +88,17 @@ const routes = [
       {
         path: 'historyRecord',
         name: 'HistoryRecord',
-        component: () => import('@/components/dashboard/HistoryRecord.vue')
+        component: () => import('@/components/dashboard/history/HistoryRecord.vue')
       },
       {
         path: 'historyRecordManagement',
         name: 'HistoryRecordManagement',
-        component: () => import('@/components/dashboard/HistoryRecordManagement.vue')
+        component: () => import('@/components/dashboard/history/HistoryRecordManagement.vue')
       },
       {
         path: 'picBoard',
         name: 'PicBoard',
-        component: () => import('@/components/dashboard/PicBoard.vue')
+        component: () => import('@/components/dashboard/common/PicBoard.vue')
       }
     ]
   }

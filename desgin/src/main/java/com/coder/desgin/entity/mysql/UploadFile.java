@@ -35,7 +35,7 @@ public class UploadFile extends BaseFile  implements Serializable{
 
     private String fileMd5;
 
-    private Integer imageQuality;
+    private Integer imageQuantity;
 
     private String fileResults;
 

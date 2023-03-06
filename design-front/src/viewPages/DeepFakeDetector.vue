@@ -16,7 +16,7 @@ import ServiceUpload from '../components/detector/ServiceUpload.vue'
 import ServiceTitle from '../components/detector/ServiceTitle.vue'
 import UploadFile from '../components/detector/UploadFile.vue'
 import $ from 'jquery'
-import SparkMD5 from 'spark-md5'
+import common from '@/assets/js/common'
 export default {
   name: 'DeepFakeDetector',
   components: {
@@ -52,7 +52,7 @@ export default {
       const image = new Image()
       image.src = imgs.base64
       image.crossOrigin = ''
-      imgs.md5 = this.base64ToArrayBufferToMD5(imgs.base64.substring(imgs.base64.indexOf(',', 1) + 1))
+      imgs.md5 = common.base64ToArrayBufferToMD5(imgs.base64.substring(imgs.base64.indexOf(',', 1) + 1))
       imgs.mode = this.mode
       imgs.userId = JSON.parse(this.$store.state.data).userId
       $.ajax({
@@ -66,7 +66,7 @@ export default {
         success: function (response) {
           if (response.result) {
             const rects = JSON.parse(response.data).rects
-            imgs.base64 = _this.drawDetections(image, rects)
+            imgs.base64 = common.drawDetections(image, rects)
             _this.$refs.serviceDisplay.updateDetectedImage(imgs)
           } else {
             $.ajax({
@@ -78,7 +78,7 @@ export default {
               success: function (response) {
                 if (response.result) {
                   // 通过base64字符串加载图片
-                  imgs.base64 = _this.drawDetections(image, response.data.rects)
+                  imgs.base64 = common.drawDetections(image, response.data.rects)
                   _this.$refs.serviceDisplay.updateDetectedImage(imgs)
                 } else {
                   // 显示错误信息
@@ -90,33 +90,12 @@ export default {
         }
       })
     },
-    drawDetections: function (img, detections) { // 绘制矩形框
-      const canvas = document.createElement('canvas')
-      canvas.width = img.width
-      canvas.height = img.height
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      ctx.font = '20px Arial'
-      detections.forEach(function (detection) {
-        if (detection.type === 'fake') {
-          ctx.strokeStyle = 'red' // 边框颜色
-        } else {
-          ctx.strokeStyle = 'green' // 边框颜色
-        }
-        ctx.lineWidth = 2 // 线条宽度
-        ctx.strokeRect(detection.x1, detection.y1, detection.x2 - detection.x1, detection.y2 - detection.y1)
-        const txt = '[ ' + detection.type + ', ' + detection.confidence + ' ]'
-        ctx.lineWidth = 1 // 线条宽度
-        ctx.strokeText(txt, detection.x1 + 3, detection.y2 - 5)
-      })
-      return canvas.toDataURL()
-    },
     changeDisBoard: function (img) {
       this.$refs.serviceDisplay.changeDisboardToTask(img)
     },
     uploadZip: function (zipFile) {
       const _this = this
-      zipFile.md5 = this.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
+      zipFile.md5 = common.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
       zipFile.mode = this.mode
       zipFile.userId = JSON.parse(this.$store.state.data).userId
       $.ajax({
@@ -163,18 +142,6 @@ export default {
     },
     downToZero: function () {
       this.uploaded = 0
-    },
-    base64ToArrayBufferToMD5: function (base64) {
-      const binaryString = window.atob(base64)
-      const len = binaryString.length
-      const bytes = new Uint8Array(len)
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i)
-      }
-      const spark = new SparkMD5.ArrayBuffer()
-      spark.append(bytes)
-      const hexHash = spark.end(false)
-      return hexHash
     },
     changeMode: function (mode) {
       this.mode = mode

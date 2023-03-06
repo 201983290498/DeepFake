@@ -208,6 +208,7 @@
 </template>
 
 <script>
+import dashBoard from '@/assets/js/dashBoard'
 export default {
   name: 'ShowBoard',
   data () {
@@ -256,12 +257,11 @@ export default {
     document.body.appendChild(script)
     script = document.createElement('script')
     script.type = 'text/javascript'
-    script.src = '/static/js/main.min.js'
-    document.body.appendChild(script)
-    script = document.createElement('script')
-    script.type = 'text/javascript'
     script.src = '/static/js/Chart.js'
     document.body.appendChild(script)
+  },
+  mounted () {
+    dashBoard.startMain()
   }
 }
 </script>

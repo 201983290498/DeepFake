@@ -76,6 +76,7 @@
 
 <script>
 import $ from 'jquery'
+import common from '@/assets/js/common'
 export default {
   name: 'HistoryRecord',
   data () {
@@ -103,8 +104,8 @@ export default {
             _this.detectPage = resp.data
             console.log(resp.data)
             for (let i = 0; i < _this.detectPage.records.length; i++) {
-              _this.detectPage.records[i].createTime = window.getLocalTime(_this.detectPage.records[i].createTime)
-              _this.detectPage.records[i].finishTime = window.getLocalTime(_this.detectPage.records[i].finishTime)
+              _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
+              _this.detectPage.records[i].finishTime = common.getLocalTime(_this.detectPage.records[i].finishTime)
             }
           } else {
             _this.$message.warning('服务器请求失败。')

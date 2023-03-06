@@ -15,7 +15,3 @@ window.server = {
     detectProject: '/api/detectProject'
   }
 }
-window.getLocalTime = function (timeStamp) {
-  const date = new Date(timeStamp + 8 * 3600 * 1000)
-  return JSON.stringify(date).substr(6, 11).replace('T', ' ')
-}

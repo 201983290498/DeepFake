@@ -1,4 +1,6 @@
 import SparkMD5 from 'spark-md5'
+import store from '@/store/index'
+import axios from 'axios'
 
 export default {
   getLocalTime: function (timeStamp) {
@@ -44,5 +46,15 @@ export default {
     a.download = picture.name
     a.href = picture.base64
     a.dispatchEvent(event)
+  },
+  checkToken: function () {
+    const token = store.state.Authorization
+    const data = new FormData()
+    data.append('token', token)
+    return axios({
+      url: '/api/authorize',
+      method: 'post',
+      data: data
+    })
   }
 }

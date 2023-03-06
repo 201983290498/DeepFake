@@ -33,6 +33,7 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         QueryWrapper wrapper = new QueryWrapper();
         Page<DetectRecord> page = new Page<>(pageNum, pageSize);
         wrapper.eq("user_id", userId);
+        wrapper.orderByDesc("create_time");
         IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page,  wrapper);
         return iPage;
     }
@@ -47,5 +48,22 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Override
     public List<DetectRecord> selectRecordsBySql(Integer pageNum) {
         return detectProjectDao.selectRecordsBySql((pageNum-1)*PAGE_SIZE);
+    }
+
+    /**
+     * 获取用户最近的检测记录
+     *
+     * @param userId 用户的id
+     * @param pageNum 页码
+     */
+    @Override
+    public IPage<DetectRecord> getRecentDetectedImages(String userId, Integer pageNum) {
+        // todo 学习QueryWrapper的使用
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("project_level", "image");
+        wrapper.eq("user_id", userId);
+        wrapper.orderByDesc("create_time");
+        Page<DetectRecord> page = new Page<>(pageNum, 10);
+        return detectProjectDao.selectRecords(page, wrapper);
     }
 }

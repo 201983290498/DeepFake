@@ -30,10 +30,11 @@ export default {
     return {
       title: 'DeepFake篡改检测',
       deepfakeDetector: window.server.DEEPFAKE,
-      disImgs: [require('../../static/imgs/fake1.jpg'), require('../../static/imgs/fake2.jpg'), require('../../static/imgs/real1.jpg')],
+      disImgs: [require('@/assets/img/deepfake_examples/fake1.jpg'), require('@/assets/img/deepfake_examples/real1.jpg'), require('@/assets/img/deepfake_examples/fake2.jpg')],
       uploaded: 0,
       loginStatus: JSON.parse(this.$store.state.status),
-      mode: 'accuracy'
+      mode: 'accuracy',
+      imgs: [require('@/assets/img/deepfake_examples/fake1.jpg'), require('@/assets/img/deepfake_examples/real1.jpg'), require('@/assets/img/deepfake_examples/fake2.jpg'), require('@/assets/img/deepfake_examples/real2.jpg'), require('@/assets/img/deepfake_examples/fake3.png'), require('@/assets/img/deepfake_examples/real3.png'), require('@/assets/img/deepfake_examples/fake4.png'), require('@/assets/img/deepfake_examples/real4.png'), require('@/assets/img/deepfake_examples/fake5.png'), require('@/assets/img/deepfake_examples/real5.png')]
     }
   },
   watch: {
@@ -77,6 +78,8 @@ export default {
               data: JSON.stringify(imgs),
               success: function (response) {
                 if (response.result) {
+                  _this.disImgs.unshift(imgs.base64)
+                  console.log(_this.disImgs)
                   // 通过base64字符串加载图片
                   imgs.base64 = common.drawDetections(image, response.data.rects)
                   _this.$refs.serviceDisplay.updateDetectedImage(imgs)
@@ -145,7 +148,42 @@ export default {
     },
     changeMode: function (mode) {
       this.mode = mode
+    },
+    getHistoryDetectedImages: function (userId, page) {
+      const data = new FormData()
+      data.append('userId', userId)
+      data.append('page', page)
+      return this.axios({
+        url: window.server.Project.detectProject + '/recent/images',
+        method: 'post',
+        data: data
+      })
+    },
+    getDisplayImages: function () {
+      let height = 170
+      if (!isNaN($('#example1 img').height()) && $('#example1 img').height() !== 0) {
+        height = $('#example1 img').height()
+      }
+      const imageNum = $('.display-minor').height() / height
+      if (this.loginStatus) {
+        const user = JSON.parse(this.$store.state.data)
+        this.getHistoryDetectedImages(user.userId, 1).then(resp => {
+          console.log(resp) // todo 需要修改
+        })
+      } else {
+        this.disImgs = []
+        for (let i = 0; i < imageNum; i++) {
+          this.disImgs.push(this.imgs[i])
+        }
+      }
     }
+  },
+  mounted () {
+    const _this = this
+    $(window).resize(() => {
+      _this.getDisplayImages()
+    })
+    _this.getDisplayImages()
   }
 }
 </script>

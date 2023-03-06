@@ -6,18 +6,10 @@
         <div class="scan" style="width:100%;height:100%;"></div>
       </div>
     </div>
-    <div class="display-minor inb">
+    <div class="display-minor inb" >
       <!--  图片框加上遮罩  -->
-      <div class="example" id="example1" @click="changeDisboard">
-        <img :src="disImgs[0]"/>
-        <div class="dsno"></div>
-      </div>
-      <div class="example" id="example2" @click="changeDisboard">
-        <img :src="disImgs[1]"/>
-        <div class="dsno"></div>
-      </div>
-      <div class="example" id="example3" @click="changeDisboard">
-        <img :src="disImgs[2]"/>
+      <div v-for="(img, i) in disImgs" class="example" @click="changeDisboard" :key="i" :id="'example'+String(i+1)">
+        <img :src="img"/>
         <div class="dsno"></div>
       </div>
     </div>
@@ -56,12 +48,12 @@ export default {
       _this.activeBox = activeBox
       _this.getBase64($('#' + _this.activeBox + ' img').attr('src'))
     },
-    getBase64 (imgUrl) { // 通过url获取base64字符串
+    getBase64 (imgUrl) { // 通过url获取base64字符串 这个如何理解 todo
       const _this = this
       const image = new Image()
       image.crossOrigin = ''
       image.src = imgUrl
-      const deffered = $.Deferred()
+      const deffered = $.Deferred() // 学习异步函数的回调函数
       if (imgUrl) {
         image.onload = function () {
           const data = _this.getBase64Image(image) // 通过画布获取图像
@@ -145,7 +137,7 @@ export default {
 
 .display-main {
   width: 70%;
-  height: 430px;
+  height: 440px;
   margin-right: 10px;
   margin-bottom: 20px;
   border-radius: 40px;
@@ -172,13 +164,14 @@ export default {
 .display-minor {
   vertical-align: top;
   width: 25%;
+  height: 440px;
+  border-radius: 16px !important;
+  background-color: #211004;
+  overflow: scroll;
 }
 
 .example {
-  height: 140px;
   margin-bottom: 10px;
-  border-radius: 16px !important;
-  background-color: #211004;
   position: relative;
   overflow: hidden;
 }
@@ -188,7 +181,9 @@ export default {
   height: 100%;
   width: 100%;
 }
-
+.example img {
+  max-height: 150px;
+}
 .wrap-mask {
   position: absolute;
   width: 100%;
@@ -197,7 +192,6 @@ export default {
   top: 0;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 16px;
   display: block;
 }
 </style>

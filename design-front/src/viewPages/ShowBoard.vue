@@ -250,11 +250,7 @@ export default {
     if (token !== '') {
       const data = new FormData()
       data.append('token', token)
-      this.axios({
-        url: '/api/authorize',
-        method: 'post',
-        data: data
-      }).then(resp => {
+      common.checkToken().then(resp => {
         if (!resp.data.result) {
           localStorage.clear()
           window.location.reload()

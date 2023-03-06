@@ -11,8 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -56,5 +59,22 @@ public class DetectProjectController {
     public String getDetectedFile(String fileId) {
         UploadFile uploadFile = uploadFileService.selectById(fileId);
         return RespMessageUtils.SUCCESS(uploadFile);
+    }
+
+    /**
+     * @param userId 用户id
+     * @param page 页码
+     * @return 返回浏览记录的列表
+     * @Description 获取用户最近的检测记录, 每页固定是10条记录
+     */
+    @PostMapping("/recent/images")
+    @ResponseBody
+    public String getRecentDetectedImage(@RequestParam("userId") String userId, @RequestParam("page") Integer page) {
+        List<String> recordLinks = new LinkedList<>();
+        IPage<DetectRecord> recentDetectedImages = projectService.getRecentDetectedImages(userId, page);
+        for(DetectRecord records: recentDetectedImages.getRecords()){
+            recordLinks.add(records.getFileLocation());
+        }
+        return RespMessageUtils.SUCCESS(recordLinks);
     }
 }

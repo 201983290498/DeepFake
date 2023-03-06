@@ -27,4 +27,11 @@ public interface DetectProjectService {
     List<DetectRecord> selectAllRecords(Integer pageNum);
 
     List<DetectRecord> selectRecordsBySql(Integer pageNum);
+
+    /**
+     * 获取用户最近的检测记录
+     * @param userId 用户的id
+     * @param page 页数
+     */
+    IPage<DetectRecord> getRecentDetectedImages(String userId, Integer page);
 }

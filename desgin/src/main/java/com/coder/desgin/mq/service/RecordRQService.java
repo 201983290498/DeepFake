@@ -62,6 +62,7 @@ public class RecordRQService {
         } else {
             image = imageService.insertOne(new Image(messages[0], messages[1])); // 压缩包需要上传什么呢?
             md5 = messages[1];
+            detectProject.setProjectLevel("zip");
         }
         // 2.创建默认项目
         projectDao.insert(detectProject);

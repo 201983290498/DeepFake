@@ -5,8 +5,10 @@
         <!--Logo加上商标名-->
         <div class="navbar-header  font-weight-bolder">
           <div class="navbar-brand">
-            <img alt="logo" src="@/../static/imgs/logo.png" class="logo-pic" >
-            DeepFake Detector
+            <a href="/" style="color: #4d5259; text-decoration: none; outline: none">
+              <img alt="logo" src="@/../static/imgs/logo.png" class="logo-pic" >
+              DeepFake Detector
+            </a>
           </div>
         </div>
         <!--功能栏-->
@@ -46,6 +48,7 @@
 
 <script>
 import $ from 'jquery'
+import common from '@/assets/js/common'
 export default {
   name: 'DetectorPage',
   data () {
@@ -56,22 +59,13 @@ export default {
     }
   },
   created () {
-    const token = this.$store.state.Authorization
-    if (token !== '') {
-      const data = new FormData()
-      data.append('token', token)
-      this.axios({
-        url: '/api/authorize',
-        method: 'post',
-        data: data
-      }).then(resp => {
-        if (!resp.data.result) {
-          localStorage.clear()
-        }
-      }).catch(() => {
-        console.log('服务器异常请稍后重试')
-      })
-    }
+    common.checkToken().then(resp => {
+      if (!resp.data.result) {
+        localStorage.clear()
+      }
+    }).catch(() => {
+      console.log('服务器异常请稍后重试')
+    })
   },
   methods: {
     loginOut: function () {

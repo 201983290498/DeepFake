@@ -21,7 +21,7 @@
               <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>历史项目</a>
               <ul class="nav nav-subnav">
 <!--             todo 需要重新定义路由记录, 包括了历史更新图库   -->
-                <li> <router-link to="/showBoard/historyRecordManagement">检测记录</router-link> </li>
+                <li> <router-link to="/showBoard/historyProjects">项目记录</router-link> </li>
                 <li> <router-link to="/showBoard/picBoard">历史图库</router-link></li>
               </ul>
             </li>

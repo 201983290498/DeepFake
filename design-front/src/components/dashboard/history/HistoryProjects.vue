@@ -30,27 +30,29 @@
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover">
+              <table class="table table-bordered text-center">
                 <thead>
                 <tr>
                   <th>#</th>
-                  <th>记录名称</th>
+                  <th>项目编号</th>
+                  <th>项目名称</th>
+                  <th>级别</th>
                   <th>开始日期</th>
-                  <th>截止日期</th>
-                  <th>项目等级</th>
-                  <th>检测文件</th>
+                  <th>图片数量</th>
                   <th>检测模式</th>
+                  <th>状态</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(record, i) in detectPage.records" :key="record.detectId">
                   <td>{{(detectPage.current-1)*detectPage.size+i+1}}</td>
+                  <td>{{record.detectId}}</td>
                   <td>{{record.projectName}}</td>
-                  <td>{{record.createTime}}</td>
-                  <td>{{record.finishTime}}</td>
                   <td>{{record.projectLevel}}</td>
-                  <td>{{record.detectFile}}</td>
+                  <td>{{record.createTime}}</td>
+                  <td>{{record.imageQuantity}}</td>
                   <td>{{record.mode}}</td>
+                  <td :style="'color:' + (record.finishTime === '已完成'? 'green' : 'red')">{{record.finishTime}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -73,13 +75,13 @@
 
 <script>
 import $ from 'jquery'
-
+import common from '@/assets/js/common'
 export default {
-  name: 'HistoryRecordManagement',
+  name: 'HistoryProjects',
   data () {
     return {
-      cardTitle: '检测记录',
-      pageTitle: '控制台',
+      cardTitle: '项目记录',
+      pageTitle: '历史项目',
       detectPage: [],
       user: JSON.parse(this.$store.state.data)
     }
@@ -88,21 +90,25 @@ export default {
     queryRecord: function (userId, pageNum, pageSize) {
       const _this = this
       $.ajax({
-        url: window.server.Project.detectProject + '/records',
+        url: window.server.Project.detectProject.projects,
         method: 'post',
         dataType: 'json',
         data: {
           userId,
-          pageNum,
-          pageSize
+          current: pageNum,
+          pageSize: pageSize
         },
         success: function (resp) {
           if (resp.result) {
             _this.detectPage = resp.data
-            console.log(resp.data)
+            console.log(_this.detectPage)
             for (let i = 0; i < _this.detectPage.records.length; i++) {
-              _this.detectPage.records[i].createTime = window.getLocalTime(_this.detectPage.records[i].createTime)
-              _this.detectPage.records[i].finishTime = window.getLocalTime(_this.detectPage.records[i].finishTime)
+              _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
+              if (_this.detectPage.records[i].finishTime != null) {
+                _this.detectPage.records[i].finishTime = '已完成'
+              } else {
+                _this.detectPage.records[i].finishTime = '检测中'
+              }
             }
           } else {
             _this.$message.warning('服务器请求失败。')
@@ -122,27 +128,13 @@ export default {
     },
     currentPageChange: function (pageNum) {
       this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
-    },
-    getFile: function (fileId) {
-      console.log(1)
-      $.ajax({
-        url: window.server.Project.detectProject + '/detectedFile',
-        method: 'post',
-        dataType: 'json',
-        data: {
-          fileId
-        },
-        success: function (resp) {
-          console.log(resp)
-        }
-      })
     }
   },
   created () {
-    console.log(1)
     const _this = this
     this.$emit('changeActivePage', _this.pageTitle)
     this.queryRecord(this.user.userId, 1, 10)
+    $('th').addClass('text-center')
   }
 }
 </script>

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,4 +32,6 @@ public interface DetectProjectDao extends BaseMapper<DetectProject> {
     @Select("select a.*, c.file_name as detect_file, c.file_id from project_tbl a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id order by a.create_time desc limit #{param1},10")
     List<DetectRecord> selectRecordsBySql(Integer start);
 
+    @Select("select a.*, sum(c.image_quantity) as image_quantity from (select * from project_tbl ${ew.customSqlSegment} ) a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id group by a.detect_id ${wrapper2.customSqlSegment}")
+    IPage<DetectProjectDTO> selectProjects(Page<DetectProjectDTO> page, @Param(Constants.WRAPPER) Wrapper queryWrapper,@Param("wrapper2") Wrapper wrapper2) ;
 }

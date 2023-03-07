@@ -78,7 +78,7 @@
 import $ from 'jquery'
 import common from '@/assets/js/common'
 export default {
-  name: 'HistoryRecord',
+  name: 'HistoryRecords',
   data () {
     return {
       cardTitle: '检测记录',
@@ -91,7 +91,7 @@ export default {
     queryRecord: function (userId, pageNum, pageSize) {
       const _this = this
       $.ajax({
-        url: window.server.Project.detectProject + '/records',
+        url: window.server.Project.detectProject.records,
         method: 'post',
         dataType: 'json',
         data: {

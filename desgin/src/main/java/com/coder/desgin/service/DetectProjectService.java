@@ -1,6 +1,7 @@
 package com.coder.desgin.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface DetectProjectService {
      * @param page 页数
      */
     IPage<DetectRecord> getRecentDetectedImages(String userId, Integer page);
+
+    IPage<DetectProjectDTO> selectProjects(String userId, Integer current, Integer pageSize);
 }

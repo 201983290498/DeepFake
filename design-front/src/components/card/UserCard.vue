@@ -86,7 +86,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.axios({
-          url: window.server.COMMONS.userUrl + '/updatePhoto',
+          url: window.server.COMMONS.userUrl.updatePhoto,
           method: 'post',
           data: new FormData(_this.$refs.photoForm)
         }).then(resp => {

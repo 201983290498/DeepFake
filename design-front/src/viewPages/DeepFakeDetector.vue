@@ -165,7 +165,7 @@ export default {
       data.append('userId', userId)
       data.append('page', page)
       return this.axios({
-        url: window.server.Project.detectProject + '/recent/images',
+        url: window.server.Project.detectProject.recentImages,
         method: 'post',
         data: data
       })

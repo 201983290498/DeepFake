@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       options: {
-        target: window.server.COMMONS.bigFileUpload + '/chunk', // todo 上传的url, 需要修改
+        target: window.server.COMMONS.bigFileUpload.chunk, // todo 上传的url, 需要修改
         chunkSize: '10485760', // 分块大小
         testChunks: false,
         fileParameterName: 'upfile',
@@ -144,7 +144,7 @@ export default {
       data.userId = JSON.parse(this.$store.state.data).userId
       data.mode = this.mode
       return this.axios({
-        url: window.server.COMMONS.bigFileUpload + '/mergeFile',
+        url: window.server.COMMONS.bigFileUpload.merge,
         method: 'post',
         data: data
       })

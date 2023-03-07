@@ -83,17 +83,17 @@ const routes = [
       },
       {
         path: '',
-        redirect: 'historyRecord'
+        redirect: 'historyRecords'
       },
       {
-        path: 'historyRecord',
-        name: 'HistoryRecord',
-        component: () => import('@/components/dashboard/history/HistoryRecord.vue')
+        path: 'historyRecords',
+        name: 'HistoryRecords',
+        component: () => import('@/components/dashboard/history/HistoryRecords.vue')
       },
       {
-        path: 'historyRecordManagement',
-        name: 'HistoryRecordManagement',
-        component: () => import('@/components/dashboard/history/HistoryRecordManagement.vue')
+        path: 'historyProjects',
+        name: 'HistoryProjects',
+        component: () => import('@/components/dashboard/history/HistoryProjects.vue')
       },
       {
         path: 'picBoard',

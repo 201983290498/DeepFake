@@ -99,7 +99,7 @@ export default {
       $('#editForm input[name=userId]').attr('disabled', false)
       $('#editForm input[name=phoneNumber]').attr('disabled', false)
       this.axios({
-        url: window.server.COMMONS.userUrl + '/updateUser',
+        url: window.server.COMMONS.userUrl.updateUser,
         method: 'post',
         data: new FormData(_this.$refs.updateForm)
       }).then(resp => {

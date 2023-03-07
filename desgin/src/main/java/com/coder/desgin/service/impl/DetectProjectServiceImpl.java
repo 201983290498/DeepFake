@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coder.desgin.dao.DetectProjectDao;
+import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.service.DetectProjectService;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,15 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         wrapper.orderByDesc("create_time");
         Page<DetectRecord> page = new Page<>(pageNum, 10);
         return detectProjectDao.selectRecords(page, wrapper);
+    }
+
+    @Override
+    public IPage<DetectProjectDTO> selectProjects(String userId, Integer current, Integer pageSize) {
+        Page<DetectProjectDTO> page = new Page<>(current, pageSize);
+        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper wrapper2 = new QueryWrapper();
+        wrapper.eq("user_id", userId);
+        wrapper2.orderByDesc("create_time");
+        return detectProjectDao.selectProjects(page, wrapper, wrapper2);
     }
 }

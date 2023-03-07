@@ -30,11 +30,12 @@ export default {
     return {
       title: 'DeepFake篡改检测',
       deepfakeDetector: window.server.DEEPFAKE,
-      disImgs: [require('@/assets/img/deepfake_examples/fake1.jpg'), require('@/assets/img/deepfake_examples/real1.jpg'), require('@/assets/img/deepfake_examples/fake2.jpg')],
+      disImgs: [],
       uploaded: 0,
       loginStatus: JSON.parse(this.$store.state.status),
       mode: 'accuracy',
-      imgs: [require('@/assets/img/deepfake_examples/fake1.jpg'), require('@/assets/img/deepfake_examples/real1.jpg'), require('@/assets/img/deepfake_examples/fake2.jpg'), require('@/assets/img/deepfake_examples/real2.jpg'), require('@/assets/img/deepfake_examples/fake3.png'), require('@/assets/img/deepfake_examples/real3.png'), require('@/assets/img/deepfake_examples/fake4.png'), require('@/assets/img/deepfake_examples/real4.png'), require('@/assets/img/deepfake_examples/fake5.png'), require('@/assets/img/deepfake_examples/real5.png')]
+      imgs: [require('@/assets/img/deepfake_examples/fake1.jpg'), require('@/assets/img/deepfake_examples/real1.jpg'), require('@/assets/img/deepfake_examples/fake2.jpg'), require('@/assets/img/deepfake_examples/real2.jpg'), require('@/assets/img/deepfake_examples/fake3.png'), require('@/assets/img/deepfake_examples/real3.png'), require('@/assets/img/deepfake_examples/fake4.png'), require('@/assets/img/deepfake_examples/real4.png'), require('@/assets/img/deepfake_examples/fake5.png'), require('@/assets/img/deepfake_examples/real5.png')],
+      currentPage: 1
     }
   },
   watch: {
@@ -56,19 +57,27 @@ export default {
       imgs.md5 = common.base64ToArrayBufferToMD5(imgs.base64.substring(imgs.base64.indexOf(',', 1) + 1))
       imgs.mode = this.mode
       imgs.userId = JSON.parse(this.$store.state.data).userId
+      imgs.fileName = imgs.fileName.substring(imgs.fileName.lastIndexOf('=') + 1)
       $.ajax({
         type: 'post',
         url: window.server.COMMONS.checkMd5,
         dataType: 'json',
         data: {
+          fileName: imgs.fileName,
           md5: imgs.md5,
           mode: _this.mode
         },
         success: function (response) {
           if (response.result) {
-            const rects = JSON.parse(response.data).rects
+            const data = JSON.parse(response.data)
+            const rects = JSON.parse(data.fileResults).rects
             imgs.base64 = common.drawDetections(image, rects)
             _this.$refs.serviceDisplay.updateDetectedImage(imgs)
+            if (data.fileLocation === '') {
+              _this.addShowImage(data.fileName)
+            } else {
+              _this.addShowImage(data.fileLocation)
+            }
           } else {
             $.ajax({
               type: 'post',
@@ -78,11 +87,11 @@ export default {
               data: JSON.stringify(imgs),
               success: function (response) {
                 if (response.result) {
-                  _this.disImgs.unshift(imgs.base64)
-                  console.log(_this.disImgs)
-                  // 通过base64字符串加载图片
                   imgs.base64 = common.drawDetections(image, response.data.rects)
                   _this.$refs.serviceDisplay.updateDetectedImage(imgs)
+                  setTimeout(() => {
+                    _this.addShowImage(response.data.imageUrl)
+                  }, 1500)
                 } else {
                   // 显示错误信息
                   _this.$message.warning(response.msg)
@@ -101,11 +110,13 @@ export default {
       zipFile.md5 = common.base64ToArrayBufferToMD5(zipFile.base64.substring(zipFile.base64.indexOf(',') + 1))
       zipFile.mode = this.mode
       zipFile.userId = JSON.parse(this.$store.state.data).userId
+      zipFile.fileName = zipFile.fileName.substring(zipFile.fileName.lastIndexOf('=') + 1)
       $.ajax({
         type: 'post',
         url: window.server.COMMONS.checkMd5,
         dataType: 'json',
         data: {
+          fileName: zipFile.fileName,
           md5: zipFile.md5,
           mode: _this.mode
         },
@@ -159,31 +170,110 @@ export default {
         data: data
       })
     },
-    getDisplayImages: function () {
+    getDisplayImages: function (showImage) {
+      const _this = this
       let height = 170
       if (!isNaN($('#example1 img').height()) && $('#example1 img').height() !== 0) {
         height = $('#example1 img').height()
       }
-      const imageNum = $('.display-minor').height() / height
+      let imageNum = $('.display-minor').height() / height + 1
+      if (_this.disImgs.length >= imageNum) {
+        return
+      }
+      imageNum = imageNum - _this.disImgs.length
       if (this.loginStatus) {
         const user = JSON.parse(this.$store.state.data)
-        this.getHistoryDetectedImages(user.userId, 1).then(resp => {
-          console.log(resp) // todo 需要修改
+        this.getHistoryDetectedImages(user.userId, _this.currentPage).then(resp => {
+          if (resp.data.result) {
+            _this.imgs = resp.data.data
+            for (let i = 0; i < imageNum; i++) {
+              _this.disImgs.push(_this.imgs[i])
+            }
+          } else {
+            for (let i = 0; i < imageNum; i++) {
+              _this.disImgs.push(_this.imgs[i])
+            }
+          }
+          if (showImage) {
+            _this.$refs.serviceDisplay.getBase64(_this.disImgs[0])
+          }
+        }).catch(() => {
+          _this.$message.warning('服务器异常')
         })
       } else {
-        this.disImgs = []
         for (let i = 0; i < imageNum; i++) {
           this.disImgs.push(this.imgs[i])
         }
+        if (showImage) {
+          _this.$refs.serviceDisplay.getBase64(_this.disImgs[0])
+        }
+      }
+    },
+    queryRecentList: function (maxNum) {
+      const _this = this
+      if (_this.loginStatus) {
+        let insertNum = 0
+        let i = 0
+        for (; i < _this.imgs.length; i++) {
+          const img = _this.imgs[i]
+          if (_this.disImgs.indexOf(img) === -1) {
+            _this.disImgs.push(img)
+            insertNum += 1
+          }
+          if (insertNum === maxNum) {
+            break
+          }
+        }
+        if (insertNum < maxNum) {
+          _this.currentPage += 1
+          const user = JSON.parse(_this.$store.state.data)
+          _this.getHistoryDetectedImages(user.userId, _this.currentPage).then(resp => {
+            if (resp.data.result) {
+              _this.imgs = resp.data.data
+              _this.queryRecentList(maxNum - insertNum)
+            } else {
+              _this.currentPage -= 1
+            }
+          })
+        }
+      } else { // 未登入状态则将所有的检测图片放进去
+        for (let i = 0; i < _this.imgs.length; i++) {
+          const img = _this.imgs[i]
+          if (_this.disImgs.indexOf(img) === -1) {
+            _this.disImgs.push(img)
+          }
+        }
+      }
+    },
+    addShowImage: function (url) {
+      if (typeof url === 'undefined') {
+        return
+      }
+      const _this = this
+      const imageName = url.substring(url.lastIndexOf('/') + 1)
+      let i = 0
+      for (; i < _this.disImgs.length; i++) {
+        if (_this.disImgs[i].indexOf(imageName) !== -1) {
+          break
+        }
+      }
+      if (i === _this.disImgs.length) {
+        _this.disImgs.unshift(url)
       }
     }
   },
   mounted () {
     const _this = this
     $(window).resize(() => {
-      _this.getDisplayImages()
+      _this.getDisplayImages(false)
     })
-    _this.getDisplayImages()
+    // todo 滚动条的监听
+    $('.display-minor.inb').scroll(function (e) {
+      if (e.target.scrollTop + e.target.clientHeight === e.target.scrollHeight) {
+        _this.queryRecentList(5)
+      }
+    })
+    _this.getDisplayImages(true)
   }
 }
 </script>

@@ -10,7 +10,7 @@
       <!--  图片框加上遮罩  -->
       <div v-for="(img, i) in disImgs" class="example" @click="changeDisboard" :key="i" :id="'example'+String(i+1)">
         <img :src="img"/>
-        <div class="dsno"></div>
+        <div class="dsno wrap-mask"></div>
       </div>
     </div>
   </div>
@@ -23,16 +23,19 @@ export default {
   name: 'ServiceDisplay',
   data () {
     return {
-      activeBox: 'example1'
+      activeBox: ''
     }
   },
   watch: {
     activeBox: function (newValue, oldValue) { // 根据活跃的值,自动更新选中的小阴影框
-      if (oldValue !== '') {
-        $('#' + oldValue + ' div').addClass('wrap-mask')
-      }
+      $('.example div').addClass('wrap-mask')
       if (newValue !== '') {
         $('#' + newValue + ' div').removeClass('wrap-mask')
+      }
+    },
+    disImgs: function (newValue, oldValue) {
+      if (oldValue.length > 0) {
+        this.activeBox = 'example1'
       }
     }
   },
@@ -100,10 +103,9 @@ export default {
     }
   },
   mounted () {
-    const _this = this
-    $('.example div').addClass('wrap-mask')
-    $('#' + _this.activeBox + ' div').removeClass('wrap-mask')
-    _this.getBase64($('#' + _this.activeBox + ' img').attr('src'))
+    setTimeout(function () {
+      $('#example1 div').removeClass('wrap-mask')
+    }, 1000)
   }
 }
 </script>
@@ -183,6 +185,7 @@ export default {
 }
 .example img {
   max-height: 150px;
+  width: 95%;
 }
 .wrap-mask {
   position: absolute;

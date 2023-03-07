@@ -28,10 +28,10 @@ public interface OssService {
     String uploadFile(String fileName, InputStream imageInputStream);
 
     /**
-     * 上传图片, 通过文件字节
      * @param fileName 文件名
      * @param image 图片的字节
      * @return 上传图片的url
+     * @Description 上传图片, 通过文件字节 文件的命名规则文件名的hash值=fileName
      */
     String uploadFile(String fileName, byte[] image);
 

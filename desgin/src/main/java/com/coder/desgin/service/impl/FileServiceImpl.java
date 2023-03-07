@@ -20,6 +20,7 @@ import com.coder.desgin.service.ImageService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -50,6 +51,9 @@ public class FileServiceImpl implements FileService {
     private final RecordProducer recordProducer;
 
     private final RedisProducer redisAsynHandler;
+
+    @Value("${oss.server.url.prefix}")
+    private String urlPrefix;
 
     public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer, RedisProducer redisAsynHandler) {
         this.httpUtil = httpUtil;
@@ -127,6 +131,7 @@ public class FileServiceImpl implements FileService {
         for(Map.Entry<String, Object>entry: imgs.entrySet()){
             ImgDetectorResult result = new ImgDetectorResult();
             result.setImageName(entry.getKey());
+            result.setImageUrl(urlPrefix + result.getImageName().hashCode() + "=" + result.getImageName());
             Map<String, JSONArray> detections = (Map<String, JSONArray>) entry.getValue();
             for(Map.Entry<String, JSONArray> detection: detections.entrySet()){
                 JSONArray array = detection.getValue();
@@ -145,16 +150,20 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String checkMd5(String md5, String mode) {
+    public String checkMd5(String fileName, String md5, String mode) {
         String result = (String)redisUtil.get(md5+mode);
         if (StringUtils.isEmpty(result)) {
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("file_md5", md5);
             wrapper.eq("mode", mode);
-            UploadFile file = fileDao.selectOne(wrapper);
-            if (file != null) {
-                redisAsynHandler.sendMsg(md5+mode, file.getFileResults(), null);
-                return file.getFileResults();
+            wrapper.or();
+            wrapper.eq("file_name", fileName);
+            wrapper.eq("mode", mode);
+            List<UploadFile> list = fileDao.selectList(wrapper);
+            if (list.size() != 0) {
+                UploadFile file = list.get(0);
+                redisAsynHandler.sendMsg(md5+mode, JSON.toJSONString(file), null);
+                return JSON.toJSONString(file);
             } else {
                 return null;
             }

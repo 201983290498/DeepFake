@@ -32,6 +32,7 @@ public class FileController {
 
     private static String ZIP = "zip";
 
+
     public FileController(FileService uploadFileService, NormalDetectionServiceImpl normalDetectionService) {
         this.uploadFileService = uploadFileService;
         this.normalDetectionService = normalDetectionService;
@@ -79,10 +80,17 @@ public class FileController {
         }
     }
 
+    /**
+     *
+     * @param fileName 文件名称
+     * @param md5 文件的md5码
+     * @param mode 文件的检测模式
+     * @return
+     */
     @ResponseBody
     @PostMapping("/files/checkMd5")
-    public String checkMd5(String md5, String mode) {
-        String result = uploadFileService.checkMd5(md5, mode);
+    public String checkMd5(String fileName, String md5, String mode) {
+        String result = uploadFileService.checkMd5(fileName, md5, mode);
         if(StringUtils.isEmpty(result)) {
             return RespMessageUtils.ERROR();
         } else {

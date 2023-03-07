@@ -61,9 +61,10 @@ public interface FileService {
      * 检测已知md5值的文件是都已经有了检测结果
      * @param md5 文件的md5
      * @param mode 检测文件的方式
+     * @param fileName 文件名称
      * @return  返回检测结果
      */
-    String checkMd5(String md5, String mode);
+    String checkMd5(String fileName, String md5, String mode);
 
     /**
      * 插入一条记录, 更新所有的数据库

@@ -75,6 +75,10 @@ public class DetectProjectController {
         for(DetectRecord records: recentDetectedImages.getRecords()){
             recordLinks.add(records.getFileLocation());
         }
-        return RespMessageUtils.SUCCESS(recordLinks);
+        if (recordLinks.size() == 0) {
+            return RespMessageUtils.ERROR();
+        } else {
+            return RespMessageUtils.SUCCESS(recordLinks);
+        }
     }
 }

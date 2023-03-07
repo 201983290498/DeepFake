@@ -23,5 +23,7 @@ public class ImgDetectorResult {
      */
     private List<DetectorRect> rects = new LinkedList<>();
 
+    private String imageUrl;
+
 }
  

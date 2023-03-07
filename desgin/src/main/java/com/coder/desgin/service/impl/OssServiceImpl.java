@@ -49,7 +49,7 @@ public class OssServiceImpl implements OssService {
     @Override
     public String uploadFile(String fileName, InputStream imageInputStream){
         ObjectMetadata meta = new ObjectMetadata();
-        fileName = System.currentTimeMillis() + "=" + fileName;
+        fileName = fileName.hashCode() + "=" + fileName;
         meta.setContentType("image/jpg");
         PutObjectRequest putObjectRequest = new PutObjectRequest(ossProperty.getBucketName(), fileName, imageInputStream, meta);
         putObjectRequest.setProcess("true");

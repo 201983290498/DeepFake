@@ -104,4 +104,10 @@ public class DetectProjectController {
         IPage<DetectProjectDTO> detectProjectDTOIPage = projectService.selectSimilarProjects(userId, current, pageSize, field, value, ordered, orderField);
         return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
     }
+
+    @ApiOperation(value = "删除项目", notes = "删")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "default")})
+    public String deleteProjectList(String userId, String token, List<String> userIds) {
+        return  null;
+    }
 }

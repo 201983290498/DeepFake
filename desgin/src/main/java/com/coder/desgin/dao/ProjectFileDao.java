@@ -13,5 +13,4 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 @CacheNamespace(blocking = true)
 public interface ProjectFileDao extends BaseMapper<ProjectFile> {
-
 }

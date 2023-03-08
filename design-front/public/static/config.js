@@ -25,7 +25,8 @@ window.server = {
       records: '/api/detectProject/records',
       projects: '/api/detectProject/projects',
       recentImages: '/api/detectProject/recent/images',
-      file: '/api/detectProject/detectedFile'
+      file: '/api/detectProject/detectedFile',
+      similarSearch: '/api/detectProject/project/similarSearch'
     }
   }
 }

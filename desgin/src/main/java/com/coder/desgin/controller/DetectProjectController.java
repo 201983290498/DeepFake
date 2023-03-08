@@ -88,11 +88,20 @@ public class DetectProjectController {
      */
     @ApiOperation(value = "查询项目", notes = "查询用户的所有项目记录")
     @ApiImplicitParams({@ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10")})
-    @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
+    @ApiResponse(code = 200, message = "检测成功", response = IPage.class)
     @PostMapping("/projects")
     public String getProjects(@RequestParam("userId") String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        log.info(userId + "正在查询所有个人检测记录");
+        log.info(userId + "正在查询所有个人项目, 页码" + current + "; 页大小为" + pageSize);
         IPage<DetectProjectDTO> detectProjectDTOIPage = projectService.selectProjects(userId, current, pageSize);
         return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
+    }
+    @ApiOperation(value="对项目记录进行条件查询", notes="条件查询")
+    @ApiImplicitParams({@ApiImplicitParam(name = "field", value = "projectName"), @ApiImplicitParam(name = "value", value="deepfake"), @ApiImplicitParam(name = "ordered", value = "true"), @ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10"), @ApiImplicitParam(name = "orderField", value="createTime")})
+    @ApiResponse(code = 200, message = "检测成功", response = IPage.class)
+    @PostMapping("project/similarSearch")
+    public String getProjects(@RequestParam("userId") String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam("field")String field, @RequestParam("value") Object value, @RequestParam(value = "ordered", defaultValue = "true") Boolean ordered, @RequestParam(value = "orderField", defaultValue = "createTime") String orderField) {
+        log.info(userId + "正在模糊查询个人项目, 页码" + current + "; 页大小为" + pageSize + "; 查询条件" + field + ": " + value + " ordered" + ordered);
+        projectService.selectSimilarProjects(userId, current, pageSize, field, value, ordered, orderField);
+        return RespMessageUtils.SUCCESS();
     }
 }

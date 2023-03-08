@@ -10,16 +10,24 @@
             <form class="pull-right search-bar" method="get" role="form">
               <div class="input-group">
                 <div class="input-group-btn">
-                  <input type="hidden" name="search_field" id="search-field" value="title">
                   <button class="btn btn-default dropdown-toggle" id="search-btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                    标题<span class="caret"></span>
+                    名称<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="title">标题</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="cat_name">栏目</a> </li>
+<!--                    todo data-field有什么用-->
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="projectName">名称</a> </li>
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="detectId">编号</a> </li>
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="projectLevel">级别</a> </li>
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="createTime">日期</a> </li>
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="mode">模式</a> </li>
                   </ul>
                 </div>
-                <input type="text" class="form-control" value="" name="keyword" placeholder="请输入名称">
+                <input v-if="conditionField !== 'createTime'" type="text" class="form-control" v-model="conditionValue" placeholder="请输入名称">
+                <el-date-picker v-if="conditionField === 'createTime'"
+                  v-model="conditionValue"
+                  type="datetime"
+                  placeholder="选择开始的日期">
+                </el-date-picker>
                 <input type="submit" style="display: none;" value="提交" name="keyword" @click="similarSearch">
               </div>
             </form>
@@ -83,7 +91,16 @@ export default {
       cardTitle: '项目记录',
       pageTitle: '历史项目',
       detectPage: [],
-      user: JSON.parse(this.$store.state.data)
+      user: JSON.parse(this.$store.state.data),
+      conditionValue: '',
+      conditionField: 'projectName'
+    }
+  },
+  watch: {
+    conditionValue: function (newValue, oldValue) {
+      if (newValue === '') {
+        this.queryRecord(this.user.userId, 1, 10)
+      }
     }
   },
   methods: {
@@ -99,42 +116,86 @@ export default {
           pageSize: pageSize
         },
         success: function (resp) {
-          if (resp.result) {
-            _this.detectPage = resp.data
-            console.log(_this.detectPage)
-            for (let i = 0; i < _this.detectPage.records.length; i++) {
-              _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
-              if (_this.detectPage.records[i].finishTime != null) {
-                _this.detectPage.records[i].finishTime = '已完成'
-              } else {
-                _this.detectPage.records[i].finishTime = '检测中'
-              }
-            }
-          } else {
-            _this.$message.warning('服务器请求失败。')
-          }
+          _this.updateRecords(resp)
         },
         error: function (error) {
           _this.$message.warning(error)
         }
       })
     },
+    updateRecords: function (resp) {
+      const _this = this
+      if (resp.result) {
+        _this.detectPage = resp.data
+        for (let i = 0; i < _this.detectPage.records.length; i++) {
+          _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
+          if (_this.detectPage.records[i].finishTime != null) {
+            _this.detectPage.records[i].finishTime = '已完成'
+          } else {
+            _this.detectPage.records[i].finishTime = '检测中'
+          }
+        }
+      } else {
+        _this.$message.warning('服务器请求失败。')
+      }
+    },
     similarSearch: function (event) {
       event.preventDefault()
-      console.log(1)
+      if (this.conditionValue !== '') {
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, 10)
+      }
+    },
+    searchProject: function (userId, field, value, ordered, orderField, current, pageSize) {
+      const _this = this
+      $.ajax({
+        url: window.server.Project.detectProject.similarSearch,
+        method: 'post',
+        dataType: 'json',
+        data: {
+          userId,
+          current,
+          pageSize,
+          field,
+          value,
+          ordered,
+          orderField
+        },
+        success: function (resp) {
+          _this.updateRecords(resp)
+        },
+        error: function (error) {
+          _this.$message.warning(error)
+        }
+      })
     },
     pageSizeChange: function (pageSize) {
-      this.queryRecord(this.user.userId, 1, pageSize)
+      if (this.conditionValue === '' || this.conditionValue === null) {
+        this.queryRecord(this.user.userId, 1, pageSize)
+      } else {
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, pageSize)
+      }
     },
     currentPageChange: function (pageNum) {
-      this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
+      if (this.conditionValue === '' || this.conditionValue === null) {
+        this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
+      } else {
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', pageNum, this.detectPage.pageSize)
+      }
     }
   },
   created () {
     const _this = this
     this.$emit('changeActivePage', _this.pageTitle)
     this.queryRecord(this.user.userId, 1, 10)
+  },
+  mounted () {
+    const _this = this
     $('th').addClass('text-center')
+    $('.search-bar .dropdown-menu a').click(function () {
+      const field = $(this).data('field') || ''
+      _this.conditionField = field
+      $('#search-btn').html($(this).text() + ' <span class="caret"></span>')
+    })
   }
 }
 </script>

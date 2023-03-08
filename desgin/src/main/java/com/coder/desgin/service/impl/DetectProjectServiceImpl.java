@@ -3,6 +3,7 @@ package com.coder.desgin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.coder.common.util.StringUtil;
 import com.coder.desgin.dao.DetectProjectDao;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
@@ -75,6 +76,30 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         QueryWrapper wrapper2 = new QueryWrapper();
         wrapper.eq("user_id", userId);
         wrapper2.orderByDesc("create_time");
+        return detectProjectDao.selectProjects(page, wrapper, wrapper2);
+    }
+
+    @Override
+    public IPage<DetectProjectDTO> selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, Object value, Boolean ordered, String orderField) {
+        Page<DetectProjectDTO> page = new Page<>(current, pageSize);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id", userId);
+        QueryWrapper wrapper2 = new QueryWrapper();
+        if (ordered) {
+            wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
+        }
+        switch (field) {
+            case "projectName":
+            case "projectLevel":
+            case "mode":
+                wrapper.like(StringUtil.camelCaseToUnderlineCase(field), "%" + value + "%");
+                break;
+            case "detectId":
+                wrapper.like("cast(detect_id as varchar(255))", "%" + value + "%");
+                break;
+            case "createTime":
+                break;
+        }
         return detectProjectDao.selectProjects(page, wrapper, wrapper2);
     }
 }

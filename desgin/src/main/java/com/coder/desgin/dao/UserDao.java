@@ -1,10 +1,10 @@
 package com.coder.desgin.dao;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.coder.desgin.entity.mysql.User;
-import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 /**
  * @Author coder
@@ -30,4 +30,12 @@ public interface UserDao extends BaseMapper<User> {
      * @return 邮箱对应的用户
      */
     User selectOneByEmail(String email);
+
+    /**
+     * todo 待检测
+     * 条件更新用户状态
+     * @param wrapper 查询条件和值设置
+     */
+    @Update("update usr_tbl ${ew.customSqlSegment}")
+    void update(@Param(Constants.WRAPPER) UpdateWrapper wrapper);
 }

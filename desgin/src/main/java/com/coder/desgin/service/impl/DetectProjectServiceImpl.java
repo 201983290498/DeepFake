@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coder.common.util.StringUtil;
 import com.coder.desgin.dao.DetectProjectDao;
-import com.coder.desgin.dao.ProjectFileDao;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.mq.producer.RecordProducer;
@@ -13,6 +12,8 @@ import com.coder.desgin.service.DetectProjectService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Date;
 /**
@@ -120,5 +121,21 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Transactional
     public void deleteList(List<String> detectIds) {
         recordProducer.deleteRecords(detectIds);
+    }
+
+    /**
+     * @param userId    用户Id
+     * @param detectIds 项目Ids
+     * @return
+     * @Description 检验用户和项目的所属关系
+     */
+    @Override
+    public boolean confirmOwnership(String userId, List<String> detectIds) {
+        HashSet<String> ids = new HashSet<>(detectIds);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id", userId);
+        wrapper.in("detect_id", ids);
+        Integer recordNum = detectProjectDao.selectCount(wrapper);
+        return recordNum == detectIds.size();
     }
 }

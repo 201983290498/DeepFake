@@ -1,5 +1,6 @@
 package com.coder.common.util.login;
 
+import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.ValidationInfo;
 import com.coder.desgin.exception.MailMessageException;
 import com.coder.desgin.mq.producer.JavaEmailProducer;
@@ -69,19 +70,33 @@ public class VerificationCodeFactory {
      */
     private String generationValidationHtml(String receiveEmail, String validationCode, String type){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm::ss");
-        if ("register".equals(type)) {
+        if (Constants.REGISTER.equals(type)) {
             return  "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
                     +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
-                    +"<p style='text-indent:2em;font-size:20px'>欢迎注册DeepFakeApplication，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"+
-                    "<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<p style='text-indent:2em;font-size:20px'>欢迎注册DeepFakeApplication，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"
+                    +"<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
                     +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
 
-        } else {
+        } else if (Constants.FORGET_PASSWORD.equals(type)) {
             return  "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
                     +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
-                    +"<p style='text-indent:2em;font-size:20px'>您的账号正在修改密码，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"+
-                    "<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<p style='text-indent:2em;font-size:20px'>您的账号正在修改密码，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,10分钟之内有效，请尽快填写!</p>"
+                    +"<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
                     +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
+        } else if (Constants.DELETE.equals(type)) {
+            return "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
+                    +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
+                    +"<p style='text-indent:2em;font-size:20px'>您的账号删除检测项目，您本次的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,2分钟之内有效，请尽快填写! 如果不是本人操作, 请勿泄露验证码!</p>"
+                    +"<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
+        } else if (Constants.CONFIRM.equals(type)) {
+            return "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>"
+                    +"<p style='font-size:20px;font-weight:blod;'>尊敬的："+ receiveEmail +"用户,您好</p>"
+                    +"<p style='text-indent:2em;font-size:20px'>您本次操作的验证码是 <span style='font-size:30px; font-weight:blod; color:red;'>"+ validationCode +"</span>,2分钟之内有效，请尽快填写! 如果不是本人操作, 请勿泄露验证码!</p>"
+                    +"<p style='text-align:right; padding-right:20px;'> <a href='https:www.coderSimple.com' style='font-size18px;'>DeepFakeApplication团队</a></p>"
+                    +"<span style='font-size:18px; float:right; margin-right:60px;'>"+ sdf.format(new Date()) +"</span></body></html>";
+        } else {
+            return "";
         }
     }
 
@@ -93,14 +108,10 @@ public class VerificationCodeFactory {
      * @return the boolean
      * @throws MailMessageException the message exception
      */
-    public Boolean checkValidationInfo(String email, String message, String type) throws MailMessageException {
+    public Boolean checkValidationInfo(String email, String message, String type){
         clearOutdatedInfo();
         String msg = messageMap.get(email+type);
-        if(message!=null&&message.equals(msg)){
-            return true;
-        }else{
-            throw new MailMessageException("验证码错误");
-        }
+        return message != null && message.equals(msg);
     }
 
     /**

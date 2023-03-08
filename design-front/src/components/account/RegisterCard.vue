@@ -270,7 +270,7 @@ export default {
         let style
         let msg
         $.ajax({
-          url: _this.userUrl.checkMsg,
+          url: window.server.COMMONS.verification.checkMsg,
           type: 'post',
           dataType: 'json',
           data: {
@@ -330,12 +330,12 @@ export default {
     $('input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
-          url: _this.userUrl.genMsg,
+          url: window.server.COMMONS.verification.genMsg,
           type: 'post',
           dataType: 'json',
           data: {
             email: $('#email').val(),
-            type: 'register'
+            type: window.CONSTANT.EMAIL.register
           },
           success: function (resp) {
             if (resp.result) {

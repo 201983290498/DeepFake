@@ -60,4 +60,10 @@ public interface UserService {
      * @return
      */
     String updatePhoto(String userId, MultipartFile photo) throws IOException;
+
+    /**
+     * @param user 用户信息
+     * @Description 用户id和邮箱的相关性, 避免受到攻击
+     */
+    Boolean checkAccountAndEmail(User user);
 }

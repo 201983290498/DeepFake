@@ -36,6 +36,11 @@ public class RecordProducer {
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
     }
 
+    /**
+     * todo 待检测
+     * @param detectIds 需要删除的项目ids
+     * @Description 生产者方的删除项目
+     */
     public void deleteRecords(List<String> detectIds) {
         String msg = JSON.toJSONString(detectIds);
         amqpTemplate.convertAndSend(exchangeName, "deleteRecords", msg);

@@ -2,6 +2,7 @@ package com.coder.desgin.controller;
 
 
 import com.coder.common.util.TokenUtil;
+import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.exception.MailMessageException;
 import com.coder.desgin.service.UserService;
@@ -94,40 +95,10 @@ public class UserController {
         login.setToken(tokenUtil.sign(login.getUserId()));
         login.setCreateTime(new Date(System.currentTimeMillis()));
         login.setPassword("");
-        login.setEmail("");
         login.setStatus(0);
         return RespMessageUtils.SUCCESS(login);
     }
 
-    /**
-     * 生成验证码
-     * @param email 需要发送的网络邮箱
-     * @return 返回是否发送验证码
-     */
-    @ResponseBody
-    @PostMapping("/register/genMsg")
-    public String generateMsg(String email, String type){
-        verificationCodeFactory.sendValidationInfo(email, type);
-        return RespMessageUtils.SUCCESS("验证码已发送, 请注意查收!");
-    }
-
-    /**
-     * 验证码校验
-     * @param email 需要校验的邮箱
-     * @param message 需要检验的信息
-     * @return 返回验证码是否正确
-     */
-    @ResponseBody
-    @PostMapping("/register/checkMsg")
-    public String checkMsg(String email, String message, String type) {
-        try {
-            verificationCodeFactory.checkValidationInfo(email, message, type);
-            return RespMessageUtils.SUCCESS();
-        } catch (MailMessageException e) {
-            log.info(e.getMessage());
-            return RespMessageUtils.ERROR(e.getMessage());
-        }
-    }
 
     @PostMapping("/register")
     @ResponseBody
@@ -139,10 +110,8 @@ public class UserController {
         if (userService.checkEmail(user.getEmail()) != null) {
             return RespMessageUtils.ERROR("这个邮箱已经被注册了!");
         }
-        try {
-            verificationCodeFactory.checkValidationInfo(user.getEmail(),validateData, "register");
-        } catch (MailMessageException e) {
-            return RespMessageUtils.ERROR(e.getMessage());
+        if (!verificationCodeFactory.checkValidationInfo(user.getEmail(),validateData, Constants.REGISTER)) {
+            return RespMessageUtils.ERROR("验证码错误");
         }
         // 注册
         try {
@@ -159,13 +128,13 @@ public class UserController {
         if (!user.getPassword().equals(repeatPwd)) {
             return RespMessageUtils.ERROR("两次密码输入不符合。");
         }
-        try {
-            Boolean emailExist = verificationCodeFactory.checkValidationInfo(user.getEmail(), validateData, "forgetPwd");
-            if (!emailExist) {
-                return RespMessageUtils.ERROR("验证码错误!");
-            }
-        } catch (MailMessageException e) {
-            return RespMessageUtils.ERROR(e.getMessage());
+
+        Boolean emailExist = verificationCodeFactory.checkValidationInfo(user.getEmail(), validateData, Constants.FORGET_PASSWORD);
+        if (!emailExist) {
+            return RespMessageUtils.ERROR("验证码错误!");
+        }
+        if (!userService.checkAccountAndEmail(user)) {
+            return RespMessageUtils.ERROR("检测到邮箱对应的账号出现异常, 我们将对您的账号进行冻结, 请及时关注!");
         }
         User newUser = userService.checkEmail(user.getEmail());
         if (newUser != null) {

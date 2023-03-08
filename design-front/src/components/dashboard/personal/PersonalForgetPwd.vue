@@ -104,12 +104,12 @@ export default {
           return
         }
         $.ajax({
-          url: _this.userUrl.genMsg,
+          url: window.server.COMMONS.verification.genMsg,
           type: 'post',
           dataType: 'json',
           data: {
             email: $('#email').val(),
-            type: 'forgetPwd'
+            type: window.CONSTANT.EMAIL.forgetPwd
           },
           success: function (resp) {
             if (resp.result) {

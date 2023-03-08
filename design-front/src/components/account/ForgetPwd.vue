@@ -177,7 +177,7 @@ export default {
         let style
         let msg
         $.ajax({
-          url: _this.userUrl.checkMsg,
+          url: window.server.COMMONS.verification.checkMsg,
           type: 'post',
           dataType: 'json',
           data: {
@@ -253,12 +253,12 @@ export default {
     $('#forgetPwd input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
-          url: _this.userUrl.genMsg,
+          url: window.server.COMMONS.verification.genMsg,
           type: 'post',
           dataType: 'json',
           data: {
             email: $('#email').val(),
-            type: 'forgetPwd'
+            type: window.CONSTANT.EMAIL.forgetPwd
           },
           success: function (resp) {
             if (resp.result) {

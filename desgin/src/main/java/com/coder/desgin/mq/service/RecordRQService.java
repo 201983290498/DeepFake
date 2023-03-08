@@ -77,6 +77,10 @@ public class RecordRQService {
         projectFileDao.insert(new ProjectFile(detectProject.getDetectId(), file1.getFileId()));
     }
 
+    /**
+     * todo 待检测
+     * @param msg 删除项目
+     */
     //todo 暂时不删除图片, 因为图片可能被多个人使用
     @Transactional
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.deleteQueue}", autoDelete = "false"), exchange = @Exchange(value = "${deepfake.ex}"), key="deleteRecords"))

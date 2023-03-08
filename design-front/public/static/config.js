@@ -1,4 +1,5 @@
-window.server = {
+// 用来定义全局的常量
+window.server = { // 1. 定义服务器url接口
   DEEPFAKE: {
     detectUrl: '/api/deepfake/upload'
   },
@@ -16,16 +17,18 @@ window.server = {
       updateUser: '/api/users/updateUser',
       updatePhoto: '/api/users/updatePhoto',
       forgetPwd: '/api/users/forgetPwd',
-      checkMsg: '/api/users/register/checkMsg',
       checkEmail: '/api/users/account/emailExist',
-      genMsg: '/api/users/register/genMsg',
       checkAccount: '/api/users/account/isExist',
       register: '/api/users/register',
       login: '/api/users/login'
     },
     imageUrl: '/api/images',
     checkMd5: '/api/files/checkMd5',
-    authorization: '/api/authorize'
+    authorization: '/api/authorize',
+    verification: {
+      genMsg: '/api/users/verification/genMsg',
+      checkMsg: '/api/users/verification/checkMsg'
+    }
   },
   Project: {
     base: '/api/detectProject',
@@ -36,5 +39,13 @@ window.server = {
       file: '/api/detectProject/detectedFile',
       similarSearch: '/api/detectProject/project/similarSearch'
     }
+  }
+}
+window.CONSTANT = { // 2.定义服务器使用的相关常量
+  EMAIL: {
+    register: 'register',
+    forgetPwd: 'forgetPwd',
+    confirm: 'confirm',
+    delete: 'delete'
   }
 }

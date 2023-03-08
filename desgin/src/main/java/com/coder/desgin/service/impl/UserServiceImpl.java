@@ -1,6 +1,7 @@
 package com.coder.desgin.service.impl;
 
-import com.coder.desgin.dao.ImageDao;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.coder.desgin.dao.UserDao;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.User;
@@ -23,13 +24,9 @@ public class UserServiceImpl implements UserService {
     private final UserDao userdao;
     private final ImageService imageService;
 
-    private final ImageDao imageDao;
-
-
-    public UserServiceImpl(UserDao userdao, ImageService imageService, ImageDao imageDao) {
+    public UserServiceImpl(UserDao userdao, ImageService imageService) {
         this.userdao = userdao;
         this.imageService = imageService;
-        this.imageDao = imageDao;
     }
 
     @Override
@@ -98,5 +95,32 @@ public class UserServiceImpl implements UserService {
         userdao.updateById(user);
         imageService.deleteById(oldImageId);
         return image.getImageUrl();
+    }
+
+    /**
+     * // todo 需要检测
+     * @param user 用户信息
+     * @Description 用户id和邮箱的相关性, 避免受到攻击
+     */
+    @Override
+    public Boolean checkAccountAndEmail(User user) {
+        String account = user.getUsername();
+        if(account == null && account.equals("")){
+            account = user.getUserId();
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("eamil", user.getEmail());
+        String finalAccount = account;
+        queryWrapper.and(wrapper -> wrapper.eq("user_id", finalAccount).or().eq("username", finalAccount));
+        Integer integer = userdao.selectCount(queryWrapper);
+        if (integer == 0) {
+            UpdateWrapper wrapper = new UpdateWrapper();
+            wrapper.set("status", -1);
+            wrapper.eq("email", user.getEmail());
+            userdao.update(wrapper);
+            return false;
+        } else{
+            return true;
+        }
     }
 }

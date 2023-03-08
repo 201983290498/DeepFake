@@ -63,4 +63,13 @@ public interface DetectProjectService {
      * @Description 删除项目
      */
     void deleteList(List<String> detectIds);
+
+    /**
+     *
+     * @param userId 用户Id
+     * @param detectIds 项目Ids
+     * @return
+     * @Description 检验用户和项目的所属关系
+     */
+    boolean confirmOwnership(String userId, List<String> detectIds);
 }

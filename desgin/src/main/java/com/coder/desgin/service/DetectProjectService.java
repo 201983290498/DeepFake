@@ -56,5 +56,5 @@ public interface DetectProjectService {
      * @param orderField 排列的字段
      * @return 返回满足条件的项目
      */
-    IPage<DetectProjectDTO>  selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, Object value, Boolean ordered, String orderField);
+    IPage<DetectProjectDTO>  selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField);
 }

@@ -89,6 +89,9 @@ public class UserController {
         }
         login.setToken(tokenUtil.sign(username));
         login.setCreateTime(new Date(System.currentTimeMillis()));
+        login.setPassword("");
+        login.setEmail("");
+        login.setStatus(0);
         return RespMessageUtils.SUCCESS(login);
     }
 

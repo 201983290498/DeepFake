@@ -20,9 +20,10 @@
                     <li> <a tabindex="-1" href="javascript:void(0)" data-field="projectLevel">级别</a> </li>
                     <li> <a tabindex="-1" href="javascript:void(0)" data-field="createTime">日期</a> </li>
                     <li> <a tabindex="-1" href="javascript:void(0)" data-field="mode">模式</a> </li>
+                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="imageQuantity">数量</a> </li>
                   </ul>
                 </div>
-                <input v-if="conditionField !== 'createTime'" type="text" class="form-control" v-model="conditionValue" placeholder="请输入名称">
+                <input v-if="conditionField !== 'createTime'" type="text" class="form-control" id="search-input" v-model="conditionValue" placeholder="请输入名称">
                 <el-date-picker v-if="conditionField === 'createTime'"
                   v-model="conditionValue"
                   type="datetime"
@@ -101,6 +102,10 @@ export default {
       if (newValue === '') {
         this.queryRecord(this.user.userId, 1, 10)
       }
+      if (this.conditionField === 'createTime') {
+        // todo 学习jsDate类的使用
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, this.detectPage.pageSize)
+      }
     }
   },
   methods: {
@@ -172,14 +177,22 @@ export default {
       if (this.conditionValue === '' || this.conditionValue === null) {
         this.queryRecord(this.user.userId, 1, pageSize)
       } else {
-        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, pageSize)
+        if (this.conditionField !== 'createTime') {
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, pageSize)
+        } else {
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, pageSize)
+        }
       }
     },
     currentPageChange: function (pageNum) {
       if (this.conditionValue === '' || this.conditionValue === null) {
         this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
       } else {
-        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', pageNum, this.detectPage.pageSize)
+        if (this.conditionField !== 'createTime') {
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', pageNum, this.detectPage.pageSize)
+        } else {
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', pageNum, this.detectPage.pageSize)
+        }
       }
     }
   },
@@ -194,6 +207,11 @@ export default {
     $('.search-bar .dropdown-menu a').click(function () {
       const field = $(this).data('field') || ''
       _this.conditionField = field
+      if (field !== 'imageQuantity') {
+        $('#search-input').attr('placeholder', '请输入' + $(this).text())
+      } else {
+        $('#search-input').attr('placeholder', '输入至少包含的数量')
+      }
       $('#search-btn').html($(this).text() + ' <span class="caret"></span>')
     })
   }

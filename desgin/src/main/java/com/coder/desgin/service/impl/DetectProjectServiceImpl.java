@@ -10,9 +10,8 @@ import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.service.DetectProjectService;
 import org.springframework.stereotype.Service;
 
-import java.sql.Wrapper;
 import java.util.List;
-
+import java.util.Date;
 /**
  * @Author coder
  * @Date 2023/2/19 14:17
@@ -80,25 +79,29 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     }
 
     @Override
-    public IPage<DetectProjectDTO> selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, Object value, Boolean ordered, String orderField) {
+    public IPage<DetectProjectDTO> selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField) {
         Page<DetectProjectDTO> page = new Page<>(current, pageSize);
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.eq("user_id", userId);
         QueryWrapper wrapper2 = new QueryWrapper();
-        if (ordered) {
-            wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
-        }
         switch (field) {
             case "projectName":
             case "projectLevel":
             case "mode":
-                wrapper.like(StringUtil.camelCaseToUnderlineCase(field), "%" + value + "%");
+                wrapper.like(StringUtil.camelCaseToUnderlineCase(field), value);
                 break;
             case "detectId":
-                wrapper.like("cast(detect_id as varchar(255))", "%" + value + "%");
+                wrapper.like("cast(detect_id AS CHAR)", value);
+                break;
+            case "imageQuantity":
+                wrapper2.having("count(" + StringUtil.camelCaseToUnderlineCase(field) +") >=" + value );
                 break;
             case "createTime":
+                wrapper.gt(StringUtil.camelCaseToUnderlineCase(field), new Date(Long.valueOf(value)));
                 break;
+        }
+        if (ordered) {
+            wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
         }
         return detectProjectDao.selectProjects(page, wrapper, wrapper2);
     }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -126,5 +127,20 @@ public class ImageServiceImpl implements ImageService {
             ossService.deleteFile(image.getImageUrl());
         }
         imageDao.deleteById(imageId);
+    }
+
+    @Override
+    public void deleteByUrl(List<String> urls) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.in("image_url", urls);
+        imageDao.delete(wrapper);
+        for (String url: urls) {
+            if (url.startsWith("http")) {
+                ossService.deleteFile(url);
+            } else {
+                File file = new File(url);
+                file.delete();
+            }
+        }
     }
 }

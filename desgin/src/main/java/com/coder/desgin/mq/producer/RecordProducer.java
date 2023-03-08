@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @Author coder
@@ -35,5 +36,9 @@ public class RecordProducer {
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
     }
 
+    public void deleteRecords(List<String> detectIds) {
+        String msg = JSON.toJSONString(detectIds);
+        amqpTemplate.convertAndSend(exchangeName, "deleteRecords", msg);
+    }
 
 }

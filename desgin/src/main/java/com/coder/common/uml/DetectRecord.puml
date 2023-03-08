@@ -28,7 +28,7 @@ DAYS
 HOURS
 MINUTES
 }
-class DetectProject<Table> {
+class DetectProject<Table>{
 -userId <foreign> default 'default'
 -detectId <key>
 -projectLevel
@@ -36,6 +36,7 @@ class DetectProject<Table> {
 -finishTime
 -projectName 无
 -mode 检测模式 speed accuracy
+检测记录n:1检测项目
 }
 class DetectRecord{
 -detectFile
@@ -51,9 +52,10 @@ userId 文件归属, 默认为default
 }
 class File<Table>{
 -fileId  文件Id <key>
--fileLocation  项目存在本地
+-fileLocation  项目存在本地或者url
 -fileResults json字符串或者检测文本的地址
 -imageId   文件上传Id <foreign key>
+ 和fileLocation信息一致
 -fileMd5   文件的md5, 判断是否重复上传
 -imageQuantity 图像数量
 }

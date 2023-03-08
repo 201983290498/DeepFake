@@ -8,8 +8,8 @@ import com.coder.desgin.dao.DetectProjectDao;
 import com.coder.desgin.dao.ProjectFileDao;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
+import com.coder.desgin.mq.producer.RecordProducer;
 import com.coder.desgin.service.DetectProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +27,11 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
     private final DetectProjectDao detectProjectDao;
 
-    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao, ProjectFileDao projectFileDao) {
+    private final RecordProducer recordProducer;
+
+    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao, RecordProducer recordProducer) {
         this.detectProjectDao = detectProjectDao;
+        this.recordProducer = recordProducer;
     }
 
 
@@ -116,8 +119,6 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Override
     @Transactional
     public void deleteList(List<String> detectIds) {
-        // 1. 删除项目记录
-        detectProjectDao.deleteBatchIds(detectIds);
-        // 2.
+        recordProducer.deleteRecords(detectIds);
     }
 }

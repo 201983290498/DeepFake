@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author coder
@@ -65,4 +66,9 @@ public interface ImageService {
      */
     void deleteById(String imageId);
 
+    /**
+     * @param urls 图片的地址
+     * @Description 根据图片地址删除图片本地和服务器上的记录
+     */
+    void deleteByUrl(List<String> urls);
 }

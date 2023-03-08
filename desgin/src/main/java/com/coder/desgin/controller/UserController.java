@@ -7,6 +7,8 @@ import com.coder.desgin.exception.MailMessageException;
 import com.coder.desgin.service.UserService;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.login.VerificationCodeFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/users")
 @Slf4j
+@Api("用户相关接口")
 public class UserController {
     private final UserService userService;
     /**
@@ -79,6 +82,7 @@ public class UserController {
      * @param password 密码
      * @return 失败提示错误信息, 成功记录session,并且记录登入时间。
      */
+    @ApiOperation(value = "用户登入")
     @PostMapping("/login")
     @ResponseBody
     public String login(String username, String password){
@@ -87,7 +91,7 @@ public class UserController {
         if(login == null){
             return RespMessageUtils.ERROR("账号或者密码错误");
         }
-        login.setToken(tokenUtil.sign(username));
+        login.setToken(tokenUtil.sign(login.getUserId()));
         login.setCreateTime(new Date(System.currentTimeMillis()));
         login.setPassword("");
         login.setEmail("");

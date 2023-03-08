@@ -25,8 +25,6 @@ import java.util.Date;
  */
 @Component
 @Slf4j
-@RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.queue}", autoDelete = "false"),
-        exchange = @Exchange(value="${deepfake.ex}"), key = "record"))
 public class RecordRQService {
     @Value("${rabbitmq.params.split}")
     private String paramSplit;
@@ -46,8 +44,8 @@ public class RecordRQService {
         this.projectFileDao = projectFileDao;
     }
 
-    @RabbitHandler
     @Transactional
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.queue}", autoDelete = "false"), exchange = @Exchange(value="${deepfake.ex}"), key = "record"))
     public void getEmail(String msg) throws FileNotFoundException {
         String[] messages = msg.split(paramSplit);
         DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection", messages[6],messages[7]);

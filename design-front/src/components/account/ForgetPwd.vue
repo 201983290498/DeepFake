@@ -98,7 +98,7 @@ export default {
       }
       if (flag === 0) {
         $.ajax({
-          url: _this.userUrl + '/forgetPwd',
+          url: _this.userUrl.forgetPwd,
           type: 'post',
           data: new FormData(_this.$refs.forgetForm),
           processData: false,
@@ -177,7 +177,7 @@ export default {
         let style
         let msg
         $.ajax({
-          url: _this.userUrl + '/register/checkMsg',
+          url: _this.userUrl.checkMsg,
           type: 'post',
           dataType: 'json',
           data: {
@@ -229,7 +229,7 @@ export default {
       }
       if (style === 'success') {
         $.ajax({
-          url: _this.userUrl + '/account/emailExist?email=' + value,
+          url: _this.userUrl.checkEmail + '?email=' + value,
           type: 'get',
           dataType: 'json',
           success: function (resp) {
@@ -253,7 +253,7 @@ export default {
     $('#forgetPwd input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
-          url: _this.userUrl + '/register/genMsg',
+          url: _this.userUrl.genMsg,
           type: 'post',
           dataType: 'json',
           data: {

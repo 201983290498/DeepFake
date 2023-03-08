@@ -122,7 +122,7 @@ export default {
         },
         success: function (response) {
           if (response.result) {
-            const url = JSON.parse(response.data)
+            const url = JSON.parse(response.data).fileResults
             _this.$message.success('检测文本存储于: ' + url)
             _this.uploaded = 100
           } else {

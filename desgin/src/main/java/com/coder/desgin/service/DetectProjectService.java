@@ -57,4 +57,10 @@ public interface DetectProjectService {
      * @return 返回满足条件的项目
      */
     IPage<DetectProjectDTO>  selectSimilarProjects(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField);
+
+    /**
+     * @param detectIds 需要删除的项目Id
+     * @Description 删除项目
+     */
+    void deleteList(List<String> detectIds);
 }

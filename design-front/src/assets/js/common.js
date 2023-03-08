@@ -52,7 +52,7 @@ export default {
     const data = new FormData()
     data.append('token', token)
     return axios({
-      url: '/api/authorize',
+      url: window.server.COMMONS.authorization,
       method: 'post',
       data: data
     })

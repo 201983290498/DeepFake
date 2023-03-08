@@ -142,7 +142,7 @@ export default {
         let style
         if (_this.checkAccount(account)) { // 查看样式是否符号规范
           $.ajax({
-            url: _this.userUrl + '/account/isExist?account=' + account,
+            url: _this.userUrl.checkAccount + '?account=' + account,
             method: 'get',
             dataType: 'json',
             success: (rs) => {
@@ -228,7 +228,7 @@ export default {
       }
       if (style === 'success') {
         $.ajax({
-          url: _this.userUrl + '/account/emailExist?email=' + value,
+          url: _this.userUrl.checkEmail + '?email=' + value,
           type: 'get',
           dataType: 'json',
           success: function (resp) {
@@ -270,7 +270,7 @@ export default {
         let style
         let msg
         $.ajax({
-          url: _this.userUrl + '/register/checkMsg',
+          url: _this.userUrl.checkMsg,
           type: 'post',
           dataType: 'json',
           data: {
@@ -305,7 +305,7 @@ export default {
       }
       if (flag === 0) {
         $.ajax({
-          url: _this.userUrl + '/register',
+          url: _this.userUrl.register,
           type: 'post',
           data: new FormData(_this.$refs.reluForm),
           processData: false,
@@ -330,7 +330,7 @@ export default {
     $('input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
         $.ajax({
-          url: _this.userUrl + '/register/genMsg',
+          url: _this.userUrl.genMsg,
           type: 'post',
           dataType: 'json',
           data: {

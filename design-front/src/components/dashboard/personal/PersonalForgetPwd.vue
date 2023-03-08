@@ -104,7 +104,7 @@ export default {
           return
         }
         $.ajax({
-          url: _this.userUrl + '/register/genMsg',
+          url: _this.userUrl.genMsg,
           type: 'post',
           dataType: 'json',
           data: {
@@ -139,7 +139,7 @@ export default {
       flag = flag + ($('#email').val() === '') + ($('#validateMsg').val() === '') + ($('#repeatPwd').val() === '')
       if (flag === 0) {
         $.ajax({
-          url: _this.userUrl + '/forgetPwd',
+          url: _this.userUrl.forgetPwd,
           type: 'post',
           data: new FormData(_this.$refs.forgetForm),
           processData: false,

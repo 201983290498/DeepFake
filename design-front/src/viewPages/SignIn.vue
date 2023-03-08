@@ -73,7 +73,7 @@ export default {
     getPhoto: function (event) {
       const _this = this
       $.ajax({
-        url: _this.userUrl + '/account/isExist?account=' + event.target.value,
+        url: _this.userUrl.checkAccount + '?account=' + event.target.value,
         method: 'get',
         dataType: 'json',
         success (resp) {
@@ -129,8 +129,8 @@ export default {
     $('#submit').click(() => {
       $.ajax({
         type: 'post',
-        url: _this.userUrl + '/login',
-        data: new FormData(_this.$refs.reluForm),
+        url: _this.userUrl.login,
+        data: new FormData(_this.$refs.reluForm), // todo 学习
         processData: false,
         contentType: false,
         success: function (resp) {

@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coder.common.util.StringUtil;
 import com.coder.desgin.dao.DetectProjectDao;
+import com.coder.desgin.dao.ProjectFileDao;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.service.DetectProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Date;
@@ -24,7 +27,7 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
     private final DetectProjectDao detectProjectDao;
 
-    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao) {
+    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao, ProjectFileDao projectFileDao) {
         this.detectProjectDao = detectProjectDao;
     }
 
@@ -104,5 +107,17 @@ public class DetectProjectServiceImpl implements DetectProjectService {
             wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
         }
         return detectProjectDao.selectProjects(page, wrapper, wrapper2);
+    }
+
+    /**
+     * @param detectIds 需要删除的项目Id
+     * @Description 删除项目
+     */
+    @Override
+    @Transactional
+    public void deleteList(List<String> detectIds) {
+        // 1. 删除项目记录
+        detectProjectDao.deleteBatchIds(detectIds);
+        // 2.
     }
 }

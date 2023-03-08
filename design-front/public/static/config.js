@@ -14,10 +14,18 @@ window.server = {
     userUrl: {
       base: '/api/users',
       updateUser: '/api/users/updateUser',
-      updatePhoto: '/api/users/updatePhoto'
+      updatePhoto: '/api/users/updatePhoto',
+      forgetPwd: '/api/users/forgetPwd',
+      checkMsg: '/api/users/register/checkMsg',
+      checkEmail: '/api/users/account/emailExist',
+      genMsg: '/api/users/register/genMsg',
+      checkAccount: '/api/users/account/isExist',
+      register: '/api/users/register',
+      login: '/api/users/login'
     },
     imageUrl: '/api/images',
-    checkMd5: '/api/files/checkMd5'
+    checkMd5: '/api/files/checkMd5',
+    authorization: '/api/authorize'
   },
   Project: {
     base: '/api/detectProject',

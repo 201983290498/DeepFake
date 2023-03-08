@@ -23,7 +23,7 @@ public class TokenController {
      */
     @PostMapping("/authorize")
     @ResponseBody
-    public String checkToken(String token) {
+    public String checkToken(String token, String userId) {
         if (StringUtils.isEmpty(token) || token.equals("null")) {
             return RespMessageUtils.ERROR();
         }

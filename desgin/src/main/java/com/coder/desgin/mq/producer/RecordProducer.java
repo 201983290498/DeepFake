@@ -34,4 +34,6 @@ public class RecordProducer {
         String msg = filePath + paramSplit + file.getFileMd5() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + JSON.toJSONString(detectResult) + paramSplit + file.getUserId() + paramSplit + file.getMode();
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
     }
+
+
 }

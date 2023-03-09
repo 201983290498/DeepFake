@@ -5,6 +5,8 @@ import com.coder.desgin.entity.TempChunkInfo;
 import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.FileService;
 import com.coder.common.util.RespMessageUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ import java.io.InputStream;
  *  大文件分片上传类
  * @author coder
  */
+@Api(tags ={"2.大文件相关接口"})
 @RestController
 @RequestMapping("/bigfile")
 @Slf4j
@@ -49,6 +52,7 @@ public class BigFileController {
      * @param chunk 文件块信息
      * @return 返回上传是否正确字符窜
      */
+    @ApiOperation("文件分页上传")
     @PostMapping("/chunk")
     public String uploadChunk(TempChunkInfo chunk, HttpServletRequest request) throws IOException {
         String contentPath = request.getSession().getServletContext().getRealPath("/");
@@ -56,7 +60,6 @@ public class BigFileController {
         String uid = chunk.getIdentifier();
         Integer chunkNumber = chunk.getChunkNumber();
         log.info("上传文件标识符uid:" + uid);
-        // todo 需要给大文件设立单独的文件夹, 使用md5作为他们文件夹的名称
         File outFile = new File(contentPath+bigFileDirTemp+File.separator+uid, chunkNumber + ".part");
         InputStream inputStream = file.getInputStream();
         FileUtils.copyInputStreamToFile(inputStream, outFile);
@@ -65,11 +68,13 @@ public class BigFileController {
     }
 
     @GetMapping("/chunk")
-    public Object checkChunk(TempFileInfoVO chunk, HttpServletResponse response) {
+    @ApiOperation("查文件--检测分片是否已经上传")
+    public Object checkChunk(TempFileInfoVO chunk) {
         // todo 维护一张大文件表格
         return chunk;
     }
 
+    @ApiOperation("文件分页合并")
     @PostMapping("/mergeFile")
     public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request){
         String contentPath = request.getSession().getServletContext().getRealPath("/");

@@ -1,6 +1,7 @@
 package com.coder.desgin.entity.dto;
 
 import com.coder.desgin.entity.mysql.DetectProject;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "检测项目类--响应体")
 public class DetectProjectDTO extends DetectProject implements Serializable {
     private Integer imageQuantity;
 

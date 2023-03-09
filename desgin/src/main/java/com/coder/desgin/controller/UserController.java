@@ -4,7 +4,6 @@ package com.coder.desgin.controller;
 import com.coder.common.util.TokenUtil;
 import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.mysql.User;
-import com.coder.desgin.exception.MailMessageException;
 import com.coder.desgin.service.UserService;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.login.VerificationCodeFactory;
@@ -28,7 +27,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/users")
 @Slf4j
-@Api("用户相关接口")
+@Api(tags ={"6.用户相关接口"})
 public class UserController {
     private final UserService userService;
     /**
@@ -51,6 +50,7 @@ public class UserController {
      */
     @GetMapping("/account/isExist")
     @ResponseBody
+    @ApiOperation("查账号--账号是否存在")
     public String isExist(String account){
         User user = userService.isExist(account);
         if(user==null){
@@ -68,6 +68,7 @@ public class UserController {
 
     @GetMapping("/account/emailExist")
     @ResponseBody
+    @ApiOperation("查邮箱--邮箱是否存在")
     public String emailExist(String email){
         User user = userService.checkEmail(email);
         if (user == null) {
@@ -83,7 +84,7 @@ public class UserController {
      * @param password 密码
      * @return 失败提示错误信息, 成功记录session,并且记录登入时间。
      */
-    @ApiOperation(value = "用户登入")
+    @ApiOperation(value = "查用户--用户登入")
     @PostMapping("/login")
     @ResponseBody
     public String login(String username, String password){
@@ -102,6 +103,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
+    @ApiOperation("更新用户--注册")
     public String register(User user, String repeatPwd, MultipartFile photo, String validateData){
 
         if(!repeatPwd.equals(user.getPassword())) {
@@ -124,21 +126,19 @@ public class UserController {
 
     @PostMapping("/forgetPwd")
     @ResponseBody
-    public String changePwd(User user, String repeatPwd, String validateData) {
-        if (!user.getPassword().equals(repeatPwd)) {
+    @ApiOperation("更新用户--修改密码")
+    public String changePwd(String email, String password, String repeatPwd, String validateData) {
+        if (!password.equals(repeatPwd)) {
             return RespMessageUtils.ERROR("两次密码输入不符合。");
         }
 
-        Boolean emailExist = verificationCodeFactory.checkValidationInfo(user.getEmail(), validateData, Constants.FORGET_PASSWORD);
+        Boolean emailExist = verificationCodeFactory.checkValidationInfo(email, validateData, Constants.FORGET_PASSWORD);
         if (!emailExist) {
             return RespMessageUtils.ERROR("验证码错误!");
         }
-        if (!userService.checkAccountAndEmail(user)) {
-            return RespMessageUtils.ERROR("检测到邮箱对应的账号出现异常, 我们将对您的账号进行冻结, 请及时关注!");
-        }
-        User newUser = userService.checkEmail(user.getEmail());
+        User newUser = userService.checkEmail(email);
         if (newUser != null) {
-            newUser.setPassword(user.getPassword());
+            newUser.setPassword(password);
             userService.updateOne(newUser);
             return RespMessageUtils.SUCCESS("修改成功!");
         } else {
@@ -148,6 +148,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/updateUser")
+    @ApiOperation("更新用户--更新用户基本信息")
     public String updateUser(User user){
         log.warn("user " + user.getUserId() + "updated the personal information." + user);
         userService.updateOne(user);
@@ -156,6 +157,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/updatePhoto")
+    @ApiOperation("更新用户--更新用户头像")
     public String updatePhoto(String userId, MultipartFile photo) throws IOException {
         String url = userService.updatePhoto(userId, photo);
         return RespMessageUtils.SUCCESS(url);

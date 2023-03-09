@@ -1,6 +1,7 @@
 package com.coder.desgin.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 @Data
 @AllArgsConstructor
 @TableName("image")
+@ApiModel(value = "图像类--实体类")
 public class Image implements Serializable {
     public static final Integer PAGE_SIZE = 15;
     /**

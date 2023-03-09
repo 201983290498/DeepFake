@@ -7,6 +7,8 @@ import com.coder.desgin.service.impl.NormalDetectionServiceImpl;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.common.util.RespMessageUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,7 @@ import java.io.IOException;
 @Slf4j
 @Data
 @Controller(value = "uploadFileController")
+@Api(tags ={"1.文件相关接口"})
 public class FileController {
 
     private final FileService uploadFileService;
@@ -46,6 +49,7 @@ public class FileController {
      */
     @ResponseBody
     @PostMapping("/deepfake/upload")
+    @ApiOperation("上传文件--深度伪造检测")
     public String uploadFile(@RequestBody BaseFile file, HttpServletRequest request) {
         if (file.getFileType().contains(ZIP)) {
             String resultsFile;
@@ -70,6 +74,7 @@ public class FileController {
      */
     @ResponseBody
     @PostMapping("/normal/upload")
+    @ApiOperation("上传文件--拷贝检测")
     public String uploadFile(@RequestBody NormalDetectionFile file, HttpServletRequest request) throws IOException {
         if (file.getFileType().contains(ZIP)) {
             String resultsFile = normalDetectionService.detectZip(file, request);
@@ -85,10 +90,11 @@ public class FileController {
      * @param fileName 文件名称
      * @param md5 文件的md5码
      * @param mode 文件的检测模式
-     * @return
+     * @return 返回文件对应的检测结果
      */
     @ResponseBody
     @PostMapping("/files/checkMd5")
+    @ApiOperation("查Md5检测结果缓存")
     public String checkMd5(String fileName, String md5, String mode) {
         String result = uploadFileService.checkMd5(fileName, md5, mode);
         if(StringUtils.isEmpty(result)) {

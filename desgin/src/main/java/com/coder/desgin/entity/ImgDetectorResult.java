@@ -1,5 +1,6 @@
 package com.coder.desgin.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.LinkedList;
@@ -11,6 +12,7 @@ import java.util.List;
  * @Description
  */
 @Data
+@ApiModel(value = "图片检测结果类--响应类")
 public class ImgDetectorResult {
 
     /**

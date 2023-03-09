@@ -3,6 +3,7 @@ package com.coder.desgin.entity.mysql;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Date; // todo 与sql.date的区别
 @TableName("project_tbl")
 @NoArgsConstructor
 @AllArgsConstructor
+@Api("检测项目--实体类")
 public class DetectProject  implements Serializable {
 
     @TableId(value="detect_id", type=IdType.AUTO)

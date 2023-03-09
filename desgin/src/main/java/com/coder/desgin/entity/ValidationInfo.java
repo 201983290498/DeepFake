@@ -1,5 +1,6 @@
 package com.coder.desgin.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.UUID;
  * @Description
  */
 @Data
+@ApiModel(value = "验证信息类--普通类")
 public class ValidationInfo {
 
     /**

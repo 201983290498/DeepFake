@@ -1,6 +1,7 @@
 package com.coder.desgin.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("usr_tbl")
+@ApiModel(value = "用户类")
 public class User implements Serializable {
 
     public static final Integer PAGE_SIZE = 15;

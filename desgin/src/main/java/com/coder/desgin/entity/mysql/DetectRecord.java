@@ -1,6 +1,6 @@
 package com.coder.desgin.entity.mysql;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +18,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "检测记录--响应类")
 public class DetectRecord extends DetectProject implements Serializable{
 
     private String detectFile;

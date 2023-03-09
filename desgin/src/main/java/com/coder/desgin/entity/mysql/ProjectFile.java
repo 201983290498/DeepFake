@@ -1,7 +1,7 @@
 package com.coder.desgin.entity.mysql;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @TableName("project_file_tbl")
+@ApiModel(value = "项目文件类--实体类")
 public class ProjectFile implements Serializable {
 
     private Long detectId;

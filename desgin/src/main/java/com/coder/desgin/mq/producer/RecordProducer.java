@@ -1,13 +1,11 @@
 package com.coder.desgin.mq.producer;
 
 import com.alibaba.fastjson.JSON;
-import com.coder.common.util.Md5Util;
 import com.coder.desgin.entity.mysql.UploadFile;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.util.List;
 
 /**

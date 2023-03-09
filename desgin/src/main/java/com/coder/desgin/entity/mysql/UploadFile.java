@@ -1,11 +1,11 @@
 package com.coder.desgin.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.entity.TempFileInfoVO;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +24,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "上传文件--实体类")
 public class UploadFile extends BaseFile  implements Serializable{
 
     @TableId(value="file_id", type = IdType.AUTO)

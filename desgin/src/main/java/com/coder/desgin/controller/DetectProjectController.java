@@ -22,12 +22,12 @@ import java.util.List;
 
 
 /**
- * todo 做一个资源拦截的工作
+ * todo 做一个资源拦截的工作 暂时没有解决
  * @Author coder
  * @Date 2023/2/20 0:04
  * @Description
  */
-@Api(tags = {"检测项目接口"})
+@Api(tags = {"3.检测项目接口"})
 @Data
 @Slf4j
 @RestController
@@ -53,6 +53,7 @@ public class DetectProjectController {
         this.userService = userService;
     }
 
+    @ApiOperation("查检测记录")
     @PostMapping("/records")
     public String getAllDetectionRecords(String userId, Integer pageNum, Integer pageSize) {
         log.info(userId + "正在查询所有个人检测记录");
@@ -68,6 +69,7 @@ public class DetectProjectController {
      * @param fileId 文件Id
      * @return 返回uploadFile
      */
+    @ApiOperation(value = "查检测文件", notes = "根据检测文件Id查检测文件")
     @PostMapping("/detectedFile")
     public String getDetectedFile(String fileId) {
         UploadFile uploadFile = uploadFileService.selectById(fileId);
@@ -80,6 +82,7 @@ public class DetectProjectController {
      * @return 返回浏览记录的列表
      * @Description 获取用户最近的检测记录, 每页固定是10条记录
      */
+    @ApiOperation(value = "查检测图片", notes = "查用户最近的检测图片")
     @PostMapping("/recent/images")
     public String getRecentDetectedImage(@RequestParam("userId") String userId, @RequestParam("page") Integer page) {
         List<String> recordLinks = new LinkedList<>();
@@ -110,7 +113,7 @@ public class DetectProjectController {
         IPage<DetectProjectDTO> detectProjectDTOIPage = projectService.selectProjects(userId, current, pageSize);
         return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
     }
-    @ApiOperation(value="对项目记录进行条件查询", notes="条件查询")
+    @ApiOperation(value="条件查询检测项目", notes="条件查询")
     @ApiImplicitParams({@ApiImplicitParam(name = "field", value = "projectName"), @ApiImplicitParam(name = "value", value="deepfake"), @ApiImplicitParam(name = "ordered", value = "true"), @ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10"), @ApiImplicitParam(name = "orderField", value="createTime")})
     @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
     @PostMapping("project/similarSearch")

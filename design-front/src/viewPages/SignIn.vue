@@ -24,7 +24,6 @@
     <div class="description">
       Sign in to Deepfake Detector
     </div>
-<!--    todo 需要写清楚具体的form表单提交的地址-->
     <form action="/" id="form" ref="reluForm">
       <div class="login-container">
         <div class="left-container">

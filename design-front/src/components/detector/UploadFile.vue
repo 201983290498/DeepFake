@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       options: {
-        target: window.server.COMMONS.bigFileUpload.chunk, // todo 上传的url, 需要修改
+        target: window.server.COMMONS.bigFileUpload.chunk,
         chunkSize: '10485760', // 分块大小
         testChunks: false,
         fileParameterName: 'upfile',

@@ -3,6 +3,8 @@ package com.coder.desgin.controller;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.service.ImageService;
 import com.coder.common.util.RespMessageUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +16,7 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping(value = "/images")
+@Api(tags = {"4.图片相关接口"})
 public class ImageController {
 
     private final ImageService imageService;
@@ -35,6 +38,7 @@ public class ImageController {
      * @return the response entity
      */
     @GetMapping("/search/{imageId}")
+    @ApiOperation("查图片--图片Id")
     public String loginFigureImage(@PathVariable("imageId") String id){
         Image image = imageService.selectById(id);
         return RespMessageUtils.SUCCESS(image.getImageUrl());
@@ -48,6 +52,7 @@ public class ImageController {
      */
     @ResponseBody
     @PostMapping("/upload")
+    @ApiOperation("上传图片")
     public String upLoadImage(MultipartFile photo){
         /* 传递回去上传成功的信息 */
         Image upload;

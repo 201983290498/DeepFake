@@ -68,7 +68,7 @@ public interface DetectProjectService {
      *
      * @param userId 用户Id
      * @param detectIds 项目Ids
-     * @return
+     * @return 是否是某个人
      * @Description 检验用户和项目的所属关系
      */
     boolean confirmOwnership(String userId, List<String> detectIds);

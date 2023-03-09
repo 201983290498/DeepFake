@@ -16,8 +16,8 @@ public interface ImageService {
 
     /**
      * 通过图片id获取图片的信息
-     * @param id
-     * @return
+     * @param id 文件id
+     * @return 返回对应的文件
      */
     Image selectById(String id);
 
@@ -54,15 +54,15 @@ public interface ImageService {
 
     /**
      * 插入一条需要上传文件的记录
-     * @param fileName
-     * @param inputStream
-     * @return
+     * @param fileName 文件名
+     * @param inputStream 文件输入流
+     * @return 返回响应插入的文件类
      */
     Image insertOne(String fileName, InputStream inputStream);
 
     /**
      * 根据imageId 删除某个image记录
-     * @param imageId
+     * @param imageId 删除图片的图片id
      */
     void deleteById(String imageId);
 

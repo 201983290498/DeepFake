@@ -1,5 +1,6 @@
 package com.coder.desgin.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "临时文件类--响应类")
 public class TempFileInfoVO extends BaseFile implements Serializable {
     private static final long serialVersionUID = 1L;
     /**

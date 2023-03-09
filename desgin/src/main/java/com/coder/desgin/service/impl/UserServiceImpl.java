@@ -98,7 +98,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * // todo 需要检测
      * @param user 用户信息
      * @Description 用户id和邮箱的相关性, 避免受到攻击
      */
@@ -109,15 +108,14 @@ public class UserServiceImpl implements UserService {
             account = user.getUserId();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("eamil", user.getEmail());
+        queryWrapper.eq("email", user.getEmail());
         String finalAccount = account;
         queryWrapper.and(wrapper -> wrapper.eq("user_id", finalAccount).or().eq("username", finalAccount));
         Integer integer = userdao.selectCount(queryWrapper);
         if (integer == 0) {
-            UpdateWrapper wrapper = new UpdateWrapper();
-            wrapper.set("status", -1);
-            wrapper.eq("email", user.getEmail());
-            userdao.update(wrapper);
+            UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+            wrapper.set("status", -1).eq("email", user.getEmail());
+            userdao.update(null, wrapper);
             return false;
         } else{
             return true;

@@ -26,8 +26,8 @@ window.server = { // 1. 定义服务器url接口
     checkMd5: '/api/files/checkMd5',
     authorization: '/api/authorize',
     verification: {
-      genMsg: '/api/users/verification/genMsg',
-      checkMsg: '/api/users/verification/checkMsg'
+      genMsg: '/api/verification/genMsg',
+      checkMsg: '/api/verification/checkMsg'
     }
   },
   Project: {
@@ -37,7 +37,8 @@ window.server = { // 1. 定义服务器url接口
       projects: '/api/detectProject/projects',
       recentImages: '/api/detectProject/recent/images',
       file: '/api/detectProject/detectedFile',
-      similarSearch: '/api/detectProject/project/similarSearch'
+      similarSearch: '/api/detectProject/project/similarSearch',
+      delete: '/api/deleteProject/project/delete'
     }
   }
 }

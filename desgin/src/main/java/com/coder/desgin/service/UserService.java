@@ -57,7 +57,7 @@ public interface UserService {
      * 更新用户的头像
      * @param userId 用户的id
      * @param photo 头像
-     * @return
+     * @return 更新图片的Id
      */
     String updatePhoto(String userId, MultipartFile photo) throws IOException;
 

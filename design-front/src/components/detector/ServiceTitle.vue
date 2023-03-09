@@ -1,7 +1,6 @@
 <template>
   <div class="service-title">
     <div class="title-header">
-<!--todo转换成变量名-->
       <span class="title"><h1>{{titleHeader}}</h1></span>
     </div>
     <div class="title-linear"></div>

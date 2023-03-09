@@ -1,5 +1,6 @@
 package com.coder.desgin.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "普通检测文件类--响应类")
 public class NormalDetectionFile extends BaseFile {
 
     /**

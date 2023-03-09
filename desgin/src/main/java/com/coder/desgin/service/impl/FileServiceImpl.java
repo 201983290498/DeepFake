@@ -202,7 +202,6 @@ public class FileServiceImpl implements FileService {
                     results.add(img.getImageName() + ":    " + rect.toString() + "\n");
                 }
             }
-            // todo 待检测
             results.sort(String::compareTo);
             for(String line: results){
                 writer.write(line);

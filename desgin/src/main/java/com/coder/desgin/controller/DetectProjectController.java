@@ -6,11 +6,8 @@ import com.coder.common.util.TokenUtil;
 import com.coder.common.util.login.VerificationCodeFactory;
 import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
-import com.coder.desgin.entity.mysql.DetectRecord;
-import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.service.DetectProjectService;
-import com.coder.desgin.service.UploadFileService;
 import com.coder.desgin.service.UserService;
 import io.swagger.annotations.*;
 import lombok.Data;
@@ -18,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -37,7 +33,6 @@ public class DetectProjectController {
 
     private final DetectProjectService projectService;
 
-    private final UploadFileService uploadFileService;
 
     private final TokenUtil tokenUtil;
 
@@ -46,56 +41,11 @@ public class DetectProjectController {
     private final UserService userService;
 
 
-    public DetectProjectController(DetectProjectService projectService, UploadFileService uploadFileService, TokenUtil tokenUtil, VerificationCodeFactory verificationCodeFactory, UserService userService) {
+    public DetectProjectController(DetectProjectService projectService, TokenUtil tokenUtil, VerificationCodeFactory verificationCodeFactory, UserService userService) {
         this.projectService = projectService;
-        this.uploadFileService = uploadFileService;
         this.tokenUtil = tokenUtil;
         this.verificationCodeFactory = verificationCodeFactory;
         this.userService = userService;
-    }
-
-    @ApiOperation("查检测记录")
-    @PostMapping("/records")
-    public String getAllDetectionRecords(String userId, Integer pageNum, Integer pageSize) {
-        log.info(userId + "正在查询所有个人检测记录");
-        if (pageNum == null){
-            pageNum = 1;
-        }
-        IPage<DetectRecord> detectRecordIPage = projectService.selectRecordsByUserId(userId, pageNum, pageSize);
-        return RespMessageUtils.SUCCESS(detectRecordIPage);
-    }
-
-    /**
-     * 根据fileId找检测记录, 获取到的检测记录
-     * @param fileId 文件Id
-     * @return 返回uploadFile
-     */
-    @ApiOperation(value = "查检测文件", notes = "根据检测文件Id查检测文件")
-    @PostMapping("/detectedFile")
-    public String getDetectedFile(String fileId) {
-        UploadFile uploadFile = uploadFileService.selectById(fileId);
-        return RespMessageUtils.SUCCESS(uploadFile);
-    }
-
-    /**
-     * @param userId 用户id
-     * @param page 页码
-     * @return 返回浏览记录的列表
-     * @Description 获取用户最近的检测记录, 每页固定是10条记录
-     */
-    @ApiOperation(value = "查检测图片", notes = "查用户最近的检测图片")
-    @PostMapping("/recent/images")
-    public String getRecentDetectedImage(@RequestParam("userId") String userId, @RequestParam("page") Integer page) {
-        List<String> recordLinks = new LinkedList<>();
-        IPage<DetectRecord> recentDetectedImages = projectService.getRecentDetectedImages(userId, page);
-        for(DetectRecord records: recentDetectedImages.getRecords()){
-            recordLinks.add(records.getFileLocation());
-        }
-        if (recordLinks.size() == 0) {
-            return RespMessageUtils.ERROR();
-        } else {
-            return RespMessageUtils.SUCCESS(recordLinks);
-        }
     }
 
     /**
@@ -123,16 +73,6 @@ public class DetectProjectController {
     public String getProjects(@RequestParam("userId") String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam("field") String field, @RequestParam("value") String value, @RequestParam(value = "ordered", defaultValue = "true") Boolean ordered, @RequestParam(value = "orderField", defaultValue = "createTime") String orderField) {
         log.info(userId + "正在模糊查询个人项目, 页码" + current + "; 页大小为" + pageSize + "; 查询条件" + field + ": " + value + " ordered" + ordered);
         IPage<DetectProjectDTO> detectProjectDTOIPage = projectService.selectSimilarProjects(userId, current, pageSize, field, value, ordered, orderField);
-        return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
-    }
-
-    @ApiOperation(value="条件查询--查检测记录", notes="条件查询")
-    @ApiImplicitParams({@ApiImplicitParam(name = "field", value = "projectName"), @ApiImplicitParam(name = "value", value="deepfake"), @ApiImplicitParam(name = "ordered", value = "true"), @ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10"), @ApiImplicitParam(name = "orderField", value="createTime")})
-    @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
-    @PostMapping("record/similarSearch")
-    public String getRecords(String userId,@RequestParam(value = "current", defaultValue = "1") Integer current,@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, String field, String value, @RequestParam(value = "ordered", defaultValue = "true") Boolean ordered, @RequestParam(value = "orderField", defaultValue = "createTime") String orderField) {
-        log.info(userId + "正在模糊查询个人检测记录, 页码" + current + "; 页大小为" + pageSize + "; 查询条件" + field + ": " + value + " ordered" + ordered);
-        IPage<DetectRecord> detectProjectDTOIPage = projectService.selectSimilarRecords(userId, current, pageSize, field, value, ordered, orderField);
         return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
     }
 

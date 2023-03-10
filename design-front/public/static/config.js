@@ -38,7 +38,8 @@ window.server = { // 1. 定义服务器url接口
       recentImages: '/api/detectProject/recent/images',
       file: '/api/detectProject/detectedFile',
       similarSearch: '/api/detectProject/project/similarSearch',
-      delete: '/api/deleteProject/project/delete'
+      delete: '/api/detectProject/project/delete',
+      recordSearch: '/api/detectProject/record/similarSearch'
     }
   }
 }

@@ -35,10 +35,13 @@ public class ValidationInfo {
      */
     private String type;
 
-    public ValidationInfo(String email, String type) {
+    private Long expireTime;
+
+    public ValidationInfo(String email, String type, Long expireTime) {
         this.email = email;
         this.message = UUID.randomUUID().toString().substring(0, 6);
         this.createTime = System.currentTimeMillis();
         this.type = type;
+        this.expireTime = expireTime;
     }
 }

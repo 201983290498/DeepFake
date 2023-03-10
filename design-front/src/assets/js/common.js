@@ -1,6 +1,7 @@
 import SparkMD5 from 'spark-md5'
 import store from '@/store/index'
 import axios from 'axios'
+import Vue from 'vue'
 
 export default {
   getLocalTime: function (timeStamp) {
@@ -53,6 +54,57 @@ export default {
     data.append('token', token)
     return axios({
       url: window.server.COMMONS.authorization,
+      method: 'post',
+      data: data
+    })
+  },
+  sendValidationMsg: function (email, type, btn, expireTime = null) {
+    const data = new FormData()
+    data.append('email', email)
+    data.append('type', type)
+    if (expireTime != null) {
+      data.append('expireTime', expireTime)
+    }
+    axios({
+      url: window.server.COMMONS.verification.genMsg,
+      method: 'post',
+      data: data
+    }).then(function (resp) {
+      if (resp.data.result) { // todo check
+        Vue.prototype.$message.success('验证信息已经发送到邮箱!')
+      } else {
+        Vue.prototype.$message.warning(resp.data.msg)
+      }
+    })
+    if (btn !== null) {
+      btn.addClass('avoid')
+      btn.val('重新发送(60s)')
+      btn.attr('disabled', 'disabled')
+      const waitProcess = setInterval(() => {
+        const content = btn.val()
+        let time = parseInt(content.substr(5, 2))
+        time = time - 1
+        if (time < 10) {
+          btn.val('重新发送(0' + time + 's)')
+        } else {
+          btn.val('重新发送(' + time + 's)')
+        }
+      }, 1000)// 每隔一段时间修改时间
+      setTimeout(() => {
+        clearInterval(waitProcess)
+        btn.removeClass('avoid')
+        btn.removeAttr('disabled')
+        btn.val('发送验证信息')
+      }, 60000)
+    }
+  },
+  checkValidationMsg: function (email, message, type) {
+    const data = new FormData()
+    data.append('email', email)
+    data.append('type', type)
+    data.append('message', message)
+    return axios({
+      url: window.server.COMMONS.verification.checkMsg,
       method: 'post',
       data: data
     })

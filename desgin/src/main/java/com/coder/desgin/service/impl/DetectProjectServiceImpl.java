@@ -41,21 +41,10 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         QueryWrapper wrapper = new QueryWrapper();
         Page<DetectRecord> page = new Page<>(pageNum, pageSize);
         wrapper.eq("user_id", userId);
-        wrapper.orderByDesc("create_time");
-        IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page,  wrapper);
+        QueryWrapper wrapper2 = new QueryWrapper();
+        wrapper2.orderByDesc("create_time");
+        IPage<DetectRecord> iPage = detectProjectDao.selectRecords(page, wrapper, wrapper2);
         return iPage;
-    }
-
-
-    @Override
-    public List<DetectRecord> selectAllRecords(Integer pageNum) {
-        Page<DetectRecord> page = new Page<>(pageNum, 20);
-        return detectProjectDao.selectRecords(page, null).getRecords();
-    }
-
-    @Override
-    public List<DetectRecord> selectRecordsBySql(Integer pageNum) {
-        return detectProjectDao.selectRecordsBySql((pageNum-1)*PAGE_SIZE);
     }
 
     /**
@@ -68,11 +57,12 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     public IPage<DetectRecord> getRecentDetectedImages(String userId, Integer pageNum) {
         // todo 学习QueryWrapper的使用
         QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper wrapper2 = new QueryWrapper();
         wrapper.eq("project_level", "image");
         wrapper.eq("user_id", userId);
-        wrapper.orderByDesc("create_time");
+        wrapper2.orderByDesc("create_time");
         Page<DetectRecord> page = new Page<>(pageNum, 10);
-        return detectProjectDao.selectRecords(page, wrapper);
+        return detectProjectDao.selectRecords(page, wrapper, wrapper2);
     }
 
     @Override
@@ -137,5 +127,42 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         wrapper.in("detect_id", ids);
         Integer recordNum = detectProjectDao.selectCount(wrapper);
         return recordNum == detectIds.size();
+    }
+
+    /**
+     * 条件查询用户检测记录
+     *
+     * @param userId     用户Id
+     * @param current    当前的查询页码
+     * @param pageSize   页面的大小
+     * @param field      查询的字段
+     * @param value      查询字段的值
+     * @param ordered    按照什么排序
+     * @param orderField 排序的顺序
+     * @return 返回满足条件查询的值
+     */
+    @Override
+    public IPage<DetectRecord> selectSimilarRecords(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField) {
+        Page<DetectRecord> page = new Page<>(current, pageSize);
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("user_id", userId);
+        QueryWrapper wrapper2 = new QueryWrapper();
+        switch (field) {
+            case "projectName":
+            case "projectLevel":
+            case "mode":
+                wrapper.like(StringUtil.camelCaseToUnderlineCase(field), value);
+                break;
+            case "detectFile":
+                wrapper2.apply(StringUtil.camelCaseToUnderlineCase(field) + " like '%" + value + "%'");
+                break;
+            case "createTime":
+                wrapper.gt(StringUtil.camelCaseToUnderlineCase(field), new Date(Long.valueOf(value)));
+                break;
+        }
+        if (ordered) {
+            wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
+        }
+        return detectProjectDao.selectRecords(page, wrapper, wrapper2);
     }
 }

@@ -21,15 +21,6 @@ public interface DetectProjectService {
     IPage<DetectRecord> selectRecordsByUserId(String userId, Integer pageNum, Integer pageSize);
 
     /**
-     * 搜索所有的行为
-     * @param pageNum 分页的页号
-     * @return 返回所有的检测行为
-     */
-    List<DetectRecord> selectAllRecords(Integer pageNum);
-
-    List<DetectRecord> selectRecordsBySql(Integer pageNum);
-
-    /**
      * 获取用户最近的检测记录
      * @param userId 用户的id
      * @param page 页数
@@ -72,4 +63,17 @@ public interface DetectProjectService {
      * @Description 检验用户和项目的所属关系
      */
     boolean confirmOwnership(String userId, List<String> detectIds);
+
+    /**
+     * 条件查询用户检测记录
+     * @param userId 用户Id
+     * @param current 当前的查询页码
+     * @param pageSize 页面的大小
+     * @param field 查询的字段
+     * @param value 查询字段的值
+     * @param ordered 按照什么排序
+     * @param orderField 排序的顺序
+     * @return 返回满足条件查询的值
+     */
+    IPage<DetectRecord> selectSimilarRecords(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField);
 }

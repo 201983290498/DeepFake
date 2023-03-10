@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" id="historyProject">
     <div class="row">
       <div class="col-lg-12" style="overflow: hidden">
         <div class="card">
@@ -7,42 +7,30 @@
             <h4>{{cardTitle}}</h4>
           </div>
           <div class="card-toolbar clearfix">
-            <form class="pull-right search-bar" method="get" role="form">
-              <div class="input-group">
-                <div class="input-group-btn">
-                  <button class="btn btn-default dropdown-toggle" id="search-btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                    名称<span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-<!--                    todo data-field有什么用-->
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="projectName">名称</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="detectId">编号</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="projectLevel">级别</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="createTime">日期</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="mode">模式</a> </li>
-                    <li> <a tabindex="-1" href="javascript:void(0)" data-field="imageQuantity">数量</a> </li>
-                  </ul>
-                </div>
-                <input v-if="conditionField !== 'createTime'" type="text" class="form-control" id="search-input" v-model="conditionValue" placeholder="请输入名称">
-                <el-date-picker v-if="conditionField === 'createTime'"
-                  v-model="conditionValue"
-                  type="datetime"
-                  placeholder="选择开始的日期">
-                </el-date-picker>
-                <input type="submit" style="display: none;" value="提交" name="keyword" @click="similarSearch">
-              </div>
-            </form>
+            <SearchBar :names="['名称', '编号', '级别', '日期', '模式', '数量']"
+                       :attrs="['projectName', 'detectId', 'projectLevel', 'createTime', 'mode', 'imageQuantity']"
+                       :similar-search="similarSearch"
+                       @changeValue="(value) => this.conditionValue=value"
+                       @changeField="(value) => this.conditionField=value"></SearchBar>
             <div class="toolbar-btn-action">
-              <a class="btn btn-primary m-r-5" href="#"><i class="mdi mdi-plus"></i> 新增</a>
-              <a class="btn btn-danger" href="#"><i class="mdi mdi-window-close"></i> 删除</a>
+<!--              todo label中的for与输入框input的id相同, 点击label是会聚焦到响应的输入框-->
+              <span class="btn btn-primary btn-label m-r-5" v-show="!deleteMode"><label><i class="mdi mdi-plus"></i></label>新增</span>
+              <span class="btn btn-secondary btn-label m-r-5" v-show="deleteMode" @click="deleteMode=false"><label><i class="mdi mdi-cancel"></i></label>取消</span>
+              <span class="btn btn-danger btn-label" v-show="!deleteMode" @click="deleteMode=true"><label><i class="mdi mdi-window-close"></i></label>删除</span>
+              <span class="btn btn-danger btn-label" v-show="deleteMode" @click="confirmDelete"><label><i class="mdi mdi-window-close"></i></label>确认删除</span>
             </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered text-center">
+              <table class="table table-bordered text-center" id="projectTabel">
                 <thead>
                 <tr>
-                  <th>#</th>
+                  <th v-show="deleteMode" style="width: 5%;">
+                    <label class="lyear-checkbox checkbox-primary">
+                      <input type="checkbox" id="check-all" @click="checkAll"><span></span>
+                    </label>
+                  </th>
+                  <th v-show="!deleteMode">#</th>
                   <th>项目编号</th>
                   <th>项目名称</th>
                   <th>级别</th>
@@ -54,7 +42,12 @@
                 </thead>
                 <tbody>
                 <tr v-for="(record, i) in detectPage.records" :key="record.detectId">
-                  <td>{{(detectPage.current-1)*detectPage.size+i+1}}</td>
+                  <td v-show="!deleteMode">{{(detectPage.current-1)*detectPage.size+i+1}}</td>
+                  <td v-show="deleteMode" style="width: 5%;">
+                    <label class="lyear-checkbox checkbox-primary">
+                      <input type="checkbox" :data-detect-id="record.detectId" @change="checkboxChange" :checked="deleteIds.indexOf(record.detectId) !== -1"><span></span>
+                    </label>
+                  </td>
                   <td>{{record.detectId}}</td>
                   <td>{{record.projectName}}</td>
                   <td>{{record.projectLevel}}</td>
@@ -66,15 +59,41 @@
                 </tbody>
               </table>
             </div>
-            <el-pagination @size-change="pageSizeChange"
-                           @current-change="currentPageChange"
-                           :current-page="detectPage.current"
-                           :page-count="detectPage.pages"
-                           :total="detectPage.total"
-                           :page-size="detectPage.size"
-                           :page-sizes="[5,10,15,20,25,30]"
-                           layout="total,sizes, prev, pager, next,jumper" background style="text-align: center" :hideOnSinglePage="true">
-            </el-pagination>
+            <el-pagination @size-change="pageSizeChange" @current-change="currentPageChange" :current-page="detectPage.current" :page-count="detectPage.pages" :total="detectPage.total" :page-size="detectPage.size" :page-sizes="[5,10,15,20,25,30]" layout="total,sizes, prev, pager, next,jumper" background style="text-align: center" :hideOnSinglePage="true"></el-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--    todo 学习modal框的使用 -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" style="margin-top: 6%;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" style="color:red; font-weight: bold;">您正在删除项目, 请慎重考虑！</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid card-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="example-hf-email">邮箱</label>
+                  <div class="col-md-7">
+                    <input class="form-control" style="display: inline-block;width: 60%;" type="email" id="example-hf-email" name="example-hf-email" :placeholder="user.email.slice(0,4) + '******' + user.email.slice(-4)" disabled>
+                    <input type="button" class="btn btn-primary" style="display: inline-block;width: 40%; vertical-align: top;" id="resendBtn" @click="sendValidationMsg" value="重新发送">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="example-hf-password">验证码</label>
+                  <div class="col-md-7">
+                    <input class="form-control" type="password" id="example-hf-password" name="validationInfo" placeholder="请输入验证码..">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-danger" @click="deleteRecords">删除</button>
           </div>
         </div>
       </div>
@@ -85,8 +104,10 @@
 <script>
 import $ from 'jquery'
 import common from '@/assets/js/common'
+import SearchBar from '@/components/Inputs/SearchBar.vue'
 export default {
   name: 'HistoryProjects',
+  components: { SearchBar },
   data () {
     return {
       cardTitle: '项目记录',
@@ -94,21 +115,43 @@ export default {
       detectPage: [],
       user: JSON.parse(this.$store.state.data),
       conditionValue: '',
-      conditionField: 'projectName'
+      conditionField: 'projectName',
+      deleteMode: false,
+      deleteIds: [],
+      deleteNum: 0
     }
   },
   watch: {
-    conditionValue: function (newValue, oldValue) {
+    conditionValue: function (newValue) {
       if (newValue === '') {
-        this.queryRecord(this.user.userId, 1, 10)
+        this.queryRecord(this.user.userId, 1, this.detectPage.size)
       }
       if (this.conditionField === 'createTime') {
         // todo 学习jsDate类的使用
-        this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, this.detectPage.pageSize)
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, this.detectPage.size)
+      }
+    },
+    deleteMode: function () {
+      this.deleteIds = []
+      this.deleteNum = 0
+    },
+    detectPage: function (newValue) {
+      for (const index in newValue.records) {
+        newValue.records[index].delete = false
+      }
+    },
+    deleteNum: function (newValue, oldValue) {
+      // 反应普通按钮对最上面按钮的影响
+      if (newValue === this.detectPage.size && oldValue !== this.detectPage.size) {
+        $('#check-all').prop('checked', true)
+      }
+      if (newValue !== this.detectPage.size && oldValue === this.detectPage.size) {
+        $('#check-all').prop('checked', false)
       }
     }
   },
   methods: {
+    // 查询记录
     queryRecord: function (userId, pageNum, pageSize) {
       const _this = this
       $.ajax({
@@ -130,9 +173,13 @@ export default {
     },
     updateRecords: function (resp) {
       const _this = this
+      _this.deleteNum = 0
       if (resp.result) {
         _this.detectPage = resp.data
         for (let i = 0; i < _this.detectPage.records.length; i++) {
+          if (_this.deleteIds.indexOf(_this.detectPage.records[i].detectId) !== -1) {
+            _this.deleteNum += 1
+          }
           _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
           if (_this.detectPage.records[i].finishTime != null) {
             _this.detectPage.records[i].finishTime = '已完成'
@@ -142,12 +189,6 @@ export default {
         }
       } else {
         _this.$message.warning('服务器请求失败。')
-      }
-    },
-    similarSearch: function (event) {
-      event.preventDefault()
-      if (this.conditionValue !== '') {
-        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, 10)
       }
     },
     searchProject: function (userId, field, value, ordered, orderField, current, pageSize) {
@@ -173,7 +214,14 @@ export default {
         }
       })
     },
+    similarSearch: function () {
+      if (this.conditionValue !== '') {
+        this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, 10)
+      }
+    },
+    // 分页
     pageSizeChange: function (pageSize) {
+      this.detectPage.size = pageSize
       if (this.conditionValue === '' || this.conditionValue === null) {
         this.queryRecord(this.user.userId, 1, pageSize)
       } else {
@@ -189,10 +237,70 @@ export default {
         this.queryRecord(this.user.userId, pageNum, this.detectPage.size)
       } else {
         if (this.conditionField !== 'createTime') {
-          this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', pageNum, this.detectPage.pageSize)
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', pageNum, this.detectPage.size)
         } else {
-          this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', pageNum, this.detectPage.pageSize)
+          this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', pageNum, this.detectPage.size)
         }
+      }
+    },
+    // 删除ids
+    deleteRecords: function () { // todo 待检测
+      const _this = this
+      $('#confirmModal').modal('hide')
+      const data = new FormData()
+      data.append('userId', this.user.userId)
+      data.append('email', this.user.email)
+      data.append('token', this.$store.state.Authorization)
+      data.append('validationInfo', $('#historyProject input[name=validationInfo]').val())
+      data.append('detectIds', this.deleteIds)
+      this.axios({
+        url: window.server.Project.detectProject.delete,
+        method: 'post',
+        data: data
+      }).then((resp) => {
+        if (!resp.data.result) {
+          _this.$message.warning(resp.data.msg)
+        } else {
+          _this.deleteMode = false
+          if (this.conditionValue === '' || this.conditionValue === null) {
+            this.queryRecord(this.user.userId, 1, this.detectPage.size)
+          } else {
+            if (this.conditionField !== 'createTime') {
+              this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, this.detectPage.size)
+            } else {
+              this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, this.detectPage.size)
+            }
+          }
+        }
+      })
+    },
+    confirmDelete: function () {
+      $('#confirmModal').modal('show')
+      if ($('#resendBtn').attr('disabled') !== 'disabled') {
+        $('#resendBtn').click()
+      }
+    },
+    sendValidationMsg: function () {
+      common.sendValidationMsg(this.user.email, window.CONSTANT.EMAIL.delete, $('#resendBtn'), 120000)
+    },
+    checkAll: function (event) { // 复选框变化事件
+      const _this = event.target
+      // todo 学习$的逻辑, 返回满足条件的第一个祖先元素, 在向下寻找
+      $(_this).closest('table').find('td .lyear-checkbox input[type=checkbox]').each(function () {
+        if ($(this).prop('checked') !== $(_this).prop('checked')) {
+          $(this).click()
+        }
+      })
+    },
+    checkboxChange: function (event) {
+      const node = event.target
+      const detectId = $(node).data('detectId')
+      if ($(node).prop('checked')) {
+        this.deleteIds.push(detectId)
+        this.deleteNum += 1
+      } else {
+        this.deleteIds.splice(this.deleteIds.indexOf(detectId), 1)
+        this.deleteNum -= 1
       }
     }
   },
@@ -202,18 +310,7 @@ export default {
     this.queryRecord(this.user.userId, 1, 10)
   },
   mounted () {
-    const _this = this
     $('th').addClass('text-center')
-    $('.search-bar .dropdown-menu a').click(function () {
-      const field = $(this).data('field') || ''
-      _this.conditionField = field
-      if (field !== 'imageQuantity') {
-        $('#search-input').attr('placeholder', '请输入' + $(this).text())
-      } else {
-        $('#search-input').attr('placeholder', '输入至少包含的数量')
-      }
-      $('#search-btn').html($(this).text() + ' <span class="caret"></span>')
-    })
   }
 }
 </script>

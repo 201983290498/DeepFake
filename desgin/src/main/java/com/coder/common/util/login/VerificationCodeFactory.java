@@ -27,7 +27,7 @@ public class VerificationCodeFactory {
      * 验证码的有效时间
      */
     @Value("${email.timeout}")
-    private Integer validationTimeout;
+    private Long validationTimeout;
     /**
      * HashMap底层时一个红黑树(二叉排序树,按照关键字的查找效率始终是logN)
      * 目前在队列中存在的有效验证码，主要用于邮箱+功能和验证码之间的映射
@@ -52,9 +52,9 @@ public class VerificationCodeFactory {
         boolean flag=true;
         while(!validationInfoQueue.isEmpty()&&flag){
             ValidationInfo validationInfo = validationInfoQueue.getFirst();
-            if(System.currentTimeMillis()-validationInfo.getCreateTime()>=validationTimeout){
+            if(System.currentTimeMillis()-validationInfo.getCreateTime()>=validationInfo.getExpireTime()){
                 //状态码失效
-                messageMap.remove(validationInfo.getEmail());
+                messageMap.remove(validationInfo.getEmail() + validationInfo.getType());
                 validationInfoQueue.removeFirst();
             }else{
                 flag=false;
@@ -119,12 +119,15 @@ public class VerificationCodeFactory {
      * @param email the email
      * @return Boolean
      */
-    public Boolean sendValidationInfo(String email, String type){
+    public Boolean sendValidationInfo(String email, String type, Long expireTime){
         clearOutdatedInfo();
+        if (expireTime == null) {
+            expireTime = validationTimeout;
+        }
         // 获取验证码，先查看是否已经存在，不存在创建一个验证码
         String msg = messageMap.get(email+type);
         if(msg==null){
-            ValidationInfo validationInfo = new ValidationInfo(email, type);
+            ValidationInfo validationInfo = new ValidationInfo(email, type, expireTime);
             validationInfoQueue.addLast(validationInfo);
             msg = validationInfo.getMessage();
         }

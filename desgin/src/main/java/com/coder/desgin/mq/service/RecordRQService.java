@@ -85,13 +85,14 @@ public class RecordRQService {
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.deleteQueue}", autoDelete = "false"), exchange = @Exchange(value = "${deepfake.ex}"), key="deleteRecords"))
     public void deleteProjectList(String msg){
         List<String> ids = (List<String>) JSON.parse(msg);
-        // 1.删除项目
-        projectDao.deleteBatchIds(ids);
         QueryWrapper wrapper = new QueryWrapper();
-        wrapper.select("file_id");
         wrapper.in("detect_id", ids);
         // 2. 查找文件
-        List<String> fileIds = projectFileDao.selectList(wrapper);
+        List<ProjectFile> temFiles = projectFileDao.selectList(wrapper);
+        List<Long> fileIds = new LinkedList<>();
+        for (ProjectFile file: temFiles) {
+            fileIds.add(file.getFileId());
+        }
         wrapper.clear();
         wrapper.in("file_id", fileIds);
         List<UploadFile> files = fileDao.selectList(wrapper);
@@ -105,9 +106,10 @@ public class RecordRQService {
         }
         imageService.deleteByUrl(results);
         // 4. 删除记录和对应的检测记录
-        projectFileDao.deleteBatchIds(fileIds);
+        projectFileDao.delete(wrapper);
         wrapper.clear();
-        wrapper.in("detect_id", ids);
+        wrapper.in("file_id", fileIds);
         fileDao.delete(wrapper);
+        projectDao.deleteBatchIds(ids);
     }
 }

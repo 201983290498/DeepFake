@@ -73,6 +73,7 @@
 
 <script>
 import $ from 'jquery'
+import common from '@/assets/js/common'
 export default {
   name: 'PersonalForgetPwd',
   data () {
@@ -84,7 +85,6 @@ export default {
   },
   watch: {
     activeStep: function (newValue, oldValue) {
-      const _this = this
       $('.nav-step-item').removeClass('complete')
       $('.nav-step-item').removeClass('active')
       for (let i = 0; i < newValue - 1; i++) {
@@ -103,25 +103,7 @@ export default {
           this.$message.warning('输入的邮箱格式错误')
           return
         }
-        $.ajax({
-          url: window.server.COMMONS.verification.genMsg,
-          type: 'post',
-          dataType: 'json',
-          data: {
-            email: $('#email').val(),
-            type: window.CONSTANT.EMAIL.forgetPwd
-          },
-          success: function (resp) {
-            if (resp.result) {
-              _this.$message.success('验证信息已经发送到邮箱!')
-            } else {
-              _this.$message.warning(resp.data)
-            }
-          },
-          error: () => {
-            _this.$message.warning('验证码发送失败, 请稍后尝试。')
-          }
-        })
+        common.sendValidationMsg($('#email').val(), window.CONSTANT.EMAIL.forgetPwd, null)
       } else if (newValue === 2) {
         this.$message.info('验证码只有从step1进入step2时会自动发送。')
       }

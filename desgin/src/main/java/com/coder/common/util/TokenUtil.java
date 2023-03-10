@@ -62,6 +62,7 @@ public class TokenUtil {
      * @return 返回签名是否有效
      */
     public boolean verify(String token) {
+        token = token.replace("Bearer ","");
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_SECRET))
                 .withIssuer("auth0").build();
         try {

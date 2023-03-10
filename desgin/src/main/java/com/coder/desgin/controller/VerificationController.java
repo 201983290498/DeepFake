@@ -31,8 +31,8 @@ public class VerificationController {
      */
     @PostMapping("/verification/genMsg")
     @ApiOperation("生成认证--发邮件验证码")
-    public String generateMsg(String email, String type){
-        verificationCodeFactory.sendValidationInfo(email, type);
+    public String generateMsg(String email, String type, Long expireTime){
+        verificationCodeFactory.sendValidationInfo(email, type, expireTime);
         return RespMessageUtils.SUCCESS("验证码已发送, 请注意查收!");
     }
 

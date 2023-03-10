@@ -53,7 +53,7 @@
 
 <script>
 import $ from 'jquery'
-
+import common from '@/assets/js/common'
 export default {
   name: 'ForgetPwd',
   data () {
@@ -122,7 +122,6 @@ export default {
     }
   },
   mounted () {
-    let waitProcess = 0
     const _this = this
     _this.addDisabled()
     $('.password').focus(function () {
@@ -174,28 +173,16 @@ export default {
       const email = $('input[name=email]').val()
       $('#validateMsg').removeClass('focus')
       if (message && message.length === 6 && _this.checkEmail(email)) {
-        let style
-        let msg
-        $.ajax({
-          url: window.server.COMMONS.verification.checkMsg,
-          type: 'post',
-          dataType: 'json',
-          data: {
-            email,
-            message,
-            type: 'forgetPwd'
-          },
-          success: function (rq) {
-            style = rq.result ? 'success' : 'error'
-            msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.result ? '验证码通过!' : '验证码错误!')
-            if (rq.result) {
-              $('input[name=validateData]').removeClass('error')
-            } else {
-              $('input[name=validateData]').addClass('error')
-            }
-            $('#validateMsg').addClass(style)
-            $('#validateMsg .tip').empty().html(msg)
+        common.checkValidationMsg(email, message, window.CONSTANT.EMAIL.forgetPwd).then(function (rq) {
+          const style = rq.data.result ? 'success' : 'error'
+          const msg = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + (rq.data.result ? '验证码通过!' : '验证码错误!')
+          if (rq.data.result) {
+            $('input[name=validateData]').removeClass('error')
+          } else {
+            $('input[name=validateData]').addClass('error')
           }
+          $('#validateMsg').addClass(style)
+          $('#validateMsg .tip').empty().html(msg)
         })
       } else if (message) {
         $('#validateMsg').addClass('error')
@@ -252,37 +239,7 @@ export default {
     })
     $('#forgetPwd input[type=button]').click(function () {
       if (!$('input[type=button]').hasClass('avoid')) {
-        $.ajax({
-          url: window.server.COMMONS.verification.genMsg,
-          type: 'post',
-          dataType: 'json',
-          data: {
-            email: $('#email').val(),
-            type: window.CONSTANT.EMAIL.forgetPwd
-          },
-          success: function (resp) {
-            if (resp.result) {
-              _this.$message.info('验证信息已经发送到邮箱!')
-            }
-          }
-        })
-        $('input[type=button]').addClass('avoid')
-        $('input[type=button]').val('重新发送(60s)')
-        waitProcess = setInterval(() => {
-          const content = $('input[type=button]').val()
-          let time = parseInt(content.substr(5, 2))
-          time = time - 1
-          if (time < 10) {
-            $('input[type=button]').val('重新发送(0' + time + 's)')
-          } else {
-            $('input[type=button]').val('重新发送(' + time + 's)')
-          }
-        }, 1000)// 每隔一段时间修改时间
-        setTimeout(() => {
-          clearInterval(waitProcess)
-          $('input[type=button]').removeClass('avoid')
-          $('input[type=button]').val('发送验证信息')
-        }, 60000)
+        common.sendValidationMsg($('#email').val(), window.CONSTANT.EMAIL.forgetPwd, $('input[type=button]'))
       }
     })
   }

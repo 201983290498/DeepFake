@@ -22,17 +22,18 @@ public interface DetectProjectDao extends BaseMapper<DetectProject> {
 
     /**
      *  查询所有记录
+     *  todo 学习 https://blog.csdn.net/weixin_43873016/article/details/112507088
      * @param page 分页插件
      * @param queryWrapper 查询参数
      * @return 返回用户记录
      */
-    @Select("select * from (select a.*, c.file_name as detect_file, c.file_id, c.file_location, c.file_results as file_results from project_tbl a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id) d ${ew.customSqlSegment}")
-    IPage<DetectRecord> selectRecords(Page<DetectRecord> page, @Param(Constants.WRAPPER) Wrapper queryWrapper);
+    @Select("select * from (select a.*, c.file_name as detect_file, c.file_id, c.file_location, c.file_results as file_results from (select * from project_tbl ${ew.customSqlSegment}) a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id) d ${wrapper2.customSqlSegment}")
+    IPage<DetectRecord> selectRecords(Page<DetectRecord> page, @Param(Constants.WRAPPER) Wrapper queryWrapper, @Param("wrapper2") Wrapper wrapper2);
 
     @Select("select a.*, c.file_name as detect_file, c.file_id from project_tbl a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id order by a.create_time desc limit #{param1},10")
     List<DetectRecord> selectRecordsBySql(Integer start);
 
-    @Select("select a.*, sum(c.image_quantity)  as image_quantity from (select * from project_tbl ${ew.customSqlSegment} ) a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id group by a.detect_id ${wrapper2.customSqlSegment}")
-    IPage<DetectProjectDTO> selectProjects(Page<DetectProjectDTO> page, @Param(Constants.WRAPPER) Wrapper queryWrapper,@Param("wrapper2") Wrapper wrapper2) ;
+    @Select("select a.*, sum(c.image_quantity)  as image_quantity from (select * from project_tbl ${ew.customSqlSegment}) a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id group by a.detect_id ${wrapper2.customSqlSegment}")
+    IPage<DetectProjectDTO> selectProjects(Page<DetectProjectDTO> page, @Param(Constants.WRAPPER) Wrapper queryWrapper, @Param("wrapper2") Wrapper wrapper2) ;
 
 }

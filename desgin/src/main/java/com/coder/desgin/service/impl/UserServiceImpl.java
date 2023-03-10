@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean checkAccountAndEmail(User user) {
         String account = user.getUsername();
-        if(account == null && account.equals("")){
+        if(account == null || account.equals("")){
             account = user.getUserId();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();

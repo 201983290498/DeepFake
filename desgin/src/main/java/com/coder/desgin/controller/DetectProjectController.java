@@ -136,9 +136,6 @@ public class DetectProjectController {
         return RespMessageUtils.SUCCESS(detectProjectDTOIPage);
     }
 
-    /**
-     * todo 待检测
-     */
     @ApiOperation(value = "删项目", notes = "根据列表删除项目")
     @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "token", value = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsInRpbWUiOjE2NzgyNjk0OTUwNjEsImV4cCI6MTY3ODM1NTg5NSwidXNlcm5hbWUiOiJjN2Y0ZmE1MjM0OTVlYmIxOGE3Mjk0NTVjZGQxMWY1NyJ9.FGC1oZYdqHEsLm5ufV21lGMZIzz2KS7s4i9jS1yGkHU"), @ApiImplicitParam(name = "validationInfo"), @ApiImplicitParam(name="detectIds")})
     @PostMapping("/project/delete")

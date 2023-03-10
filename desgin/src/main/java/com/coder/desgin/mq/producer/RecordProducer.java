@@ -35,7 +35,6 @@ public class RecordProducer {
     }
 
     /**
-     * todo 待检测
      * @param detectIds 需要删除的项目ids
      * @Description 生产者方的删除项目
      */

@@ -78,7 +78,6 @@ public class RecordRQService {
     }
 
     /**
-     * todo 待检测  暂时不删除图片, 因为图片可能被多个人使用
      * @param msg 删除项目
      */
     @Transactional

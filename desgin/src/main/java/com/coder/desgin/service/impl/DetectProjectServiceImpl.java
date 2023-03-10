@@ -1,11 +1,13 @@
 package com.coder.desgin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coder.common.util.StringUtil;
 import com.coder.desgin.dao.DetectProjectDao;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
+import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.DetectRecord;
 import com.coder.desgin.mq.producer.RecordProducer;
 import com.coder.desgin.service.DetectProjectService;
@@ -164,5 +166,25 @@ public class DetectProjectServiceImpl implements DetectProjectService {
             wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
         }
         return detectProjectDao.selectRecords(page, wrapper, wrapper2);
+    }
+
+    /**
+     * 更新
+     * todo 学习updateWrapper的使用 mybatis-plus更新字段,
+     * 1. updateById,除了id之后, 设置什么字段更新什么字段
+     * 2. UpdateWrapper设置字段, 传入需要更新的entity
+     * 3. 使用UpdateWrapper 条件更新, 1. entity传入null, 通过updatewrapper的set和eq设置条件和修改的值
+     * 4. 使用UpdateWrapper 条件更新, 1. entity传入一个新对象设置需要更新的属性, 通过updatewrapper的eq设置条件
+     * @param userId   用户Id
+     * @param detectId 项目id
+     * @param project  更新的实体
+     */
+    @Override
+    public boolean updateById(DetectProject project) {
+        UpdateWrapper<DetectProject> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", project.getUserId());
+        updateWrapper.eq("detect_id", project.getDetectId());
+        int update = detectProjectDao.update(project, updateWrapper);
+        return update == 1;
     }
 }

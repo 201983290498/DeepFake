@@ -33,13 +33,18 @@ window.server = { // 1. 定义服务器url接口
   Project: {
     base: '/api/detectProject',
     detectProject: {
-      records: '/api/detectProject/records',
       projects: '/api/detectProject/projects',
-      recentImages: '/api/detectProject/recent/images',
-      file: '/api/detectProject/detectedFile',
       similarSearch: '/api/detectProject/project/similarSearch',
       delete: '/api/detectProject/project/delete',
+      update: '/api/detectProject/project/update'
+    },
+    record: {
+      recentImages: '/api/detectProject/recent/images',
+      records: '/api/detectProject/records',
       recordSearch: '/api/detectProject/record/similarSearch'
+    },
+    file: {
+      file: '/api/detectProject/detectedFile',
     }
   }
 }

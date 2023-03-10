@@ -38,6 +38,7 @@
                   <th>图片数量</th>
                   <th>检测模式</th>
                   <th>状态</th>
+                  <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,12 +50,17 @@
                     </label>
                   </td>
                   <td>{{record.detectId}}</td>
-                  <td>{{record.projectName}}</td>
+                  <td class="project-name-td">{{record.projectName}}</td>
                   <td>{{record.projectLevel}}</td>
                   <td>{{record.createTime}}</td>
                   <td>{{record.imageQuantity}}</td>
                   <td>{{record.mode}}</td>
                   <td :style="'color:' + (record.finishTime === '已完成'? 'green' : 'red')">{{record.finishTime}}</td>
+                  <td>
+                    <div class="btn-group">
+                      <a class="btn btn-xs btn-default" href="#" title="编辑" data-toggle="tooltip" @click="editProject(i)"><i class="mdi mdi-pencil"></i></a>
+                    </div>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -244,7 +250,7 @@ export default {
       }
     },
     // 删除ids
-    deleteRecords: function () { // todo 待检测
+    deleteRecords: function () { // todo 需要解决formdata传入对象的问题
       const _this = this
       $('#confirmModal').modal('hide')
       const data = new FormData()
@@ -302,6 +308,37 @@ export default {
         this.deleteIds.splice(this.deleteIds.indexOf(detectId), 1)
         this.deleteNum -= 1
       }
+    },
+    // 修改项目名称
+    editProject: function (projectId) {
+      const _this = this
+      const node = $('#historyProject td.project-name-td').get(projectId)
+      const text = $(node).text()
+      $(node).html(`<input value="${text}" style="width:80%; border: 0px;">`)
+      $(node).find('input').val('').focus().val(text)
+      $(node).find('input').blur((event) => {
+        if (event.target.value === '' || event.target.value === text) {
+          $(node).html(text)
+          return
+        }
+        $.ajax({
+          url: window.server.Project.detectProject.update,
+          method: 'post',
+          dataType: 'json',
+          data: {
+            userId: _this.user.userId,
+            detectId: _this.detectPage.records[projectId].detectId,
+            projectName: event.target.value
+          },
+          success: function (resp) {
+            if (resp.result) {
+              $(node).html(event.target.value)
+            } else {
+              _this.$message.warning(resp.msg)
+            }
+          }
+        })
+      })
     }
   },
   created () {

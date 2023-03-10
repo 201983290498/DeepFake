@@ -2,6 +2,7 @@ package com.coder.desgin.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
+import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.DetectRecord;
 
 import java.util.List;
@@ -76,4 +77,12 @@ public interface DetectProjectService {
      * @return 返回满足条件查询的值
      */
     IPage<DetectRecord> selectSimilarRecords(String userId, Integer current, Integer pageSize, String field, String value, Boolean ordered, String orderField);
+
+    /**
+     * 更新
+     * @param userId 用户Id
+     * @param detectId 项目id
+     * @param project 更新的实体
+     */
+    boolean updateById(DetectProject project);
 }

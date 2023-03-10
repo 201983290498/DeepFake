@@ -100,7 +100,7 @@ export default {
     queryRecord: function (userId, pageNum, pageSize) {
       const _this = this
       $.ajax({
-        url: window.server.Project.detectProject.records,
+        url: window.server.Project.record.records,
         method: 'post',
         dataType: 'json',
         data: {
@@ -119,7 +119,7 @@ export default {
     searchProject: function (userId, field, value, ordered, orderField, current, pageSize) {
       const _this = this
       $.ajax({
-        url: window.server.Project.detectProject.recordSearch,
+        url: window.server.Project.record.recordSearch,
         method: 'post',
         dataType: 'json',
         data: {

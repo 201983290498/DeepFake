@@ -6,6 +6,8 @@ import com.coder.common.util.TokenUtil;
 import com.coder.common.util.login.VerificationCodeFactory;
 import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
+import com.coder.desgin.entity.mysql.DetectProject;
+import com.coder.desgin.entity.mysql.ProjectFile;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.service.DetectProjectService;
 import com.coder.desgin.service.UserService;
@@ -77,7 +79,7 @@ public class DetectProjectController {
     }
 
     @ApiOperation(value = "删项目", notes = "根据列表删除项目")
-    @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "token", value = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsInRpbWUiOjE2NzgyNjk0OTUwNjEsImV4cCI6MTY3ODM1NTg5NSwidXNlcm5hbWUiOiJjN2Y0ZmE1MjM0OTVlYmIxOGE3Mjk0NTVjZGQxMWY1NyJ9.FGC1oZYdqHEsLm5ufV21lGMZIzz2KS7s4i9jS1yGkHU"), @ApiImplicitParam(name = "validationInfo"), @ApiImplicitParam(name="detectIds")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "1023668958@qq.com"), @ApiImplicitParam(name = "token", value = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsInRpbWUiOjE2NzgyNjk0OTUwNjEsImV4cCI6MTY3ODM1NTg5NSwidXNlcm5hbWUiOiJjN2Y0ZmE1MjM0OTVlYmIxOGE3Mjk0NTVjZGQxMWY1NyJ9.FGC1oZYdqHEsLm5ufV21lGMZIzz2KS7s4i9jS1yGkHU"), @ApiImplicitParam(name = "validationInfo"), @ApiImplicitParam(name="detectIds")})
     @PostMapping("/project/delete")
     @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
     public String deleteProjectList(String userId,String email, String token, String validationInfo,String detectIds) {
@@ -100,6 +102,18 @@ public class DetectProjectController {
             return RespMessageUtils.SUCCESS();
         } else {
             return RespMessageUtils.ERROR("登入信息已过期, 请重新登入再做尝试.");
+        }
+    }
+
+    @ApiOperation(value = "更新项目", notes = "根据列表删除项目")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "detectId", value= "1789"), @ApiImplicitParam(name="projectName", value= "changeName") })
+    @PostMapping("/project/update")
+    @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
+    public String updateProject(DetectProject project) {
+        if (projectService.updateById(project)) {
+            return RespMessageUtils.SUCCESS();
+        } else {
+            return RespMessageUtils.ERROR("账号异常, 您需要修改的项目名不属于对应的账号!");
         }
     }
 }

@@ -26,7 +26,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Data
-@Controller(value = "uploadFileController")
+@Controller
 @Api(tags ={"1.文件相关接口"})
 public class FileController {
 

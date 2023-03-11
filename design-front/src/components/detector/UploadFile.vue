@@ -1,7 +1,7 @@
 <template>
-  <!-- 上传器 -->
+  <!-- 上传器 todo 学习 https://blog.csdn.net/NineWaited/article/details/126594331 -->
   <div>
-    <div class="uploaderTitle">大文件上传(>100M):</div>
+    <div class="uploaderTitle" v-show="title !== ''">{{title}}</div>
     <uploader
       ref="uploader"
       :options="options"
@@ -18,7 +18,7 @@
           <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
         </div>
       </uploader-drop>
-      <uploader-list></uploader-list>
+      <uploader-list v-show="panelShow"></uploader-list>
     </uploader>
   </div>
 </template>
@@ -32,7 +32,7 @@ export default {
     return {
       options: {
         target: window.server.COMMONS.bigFileUpload.chunk,
-        chunkSize: '10485760', // 分块大小
+        chunkSize: 10485760, // 分块大小
         testChunks: false,
         fileParameterName: 'upfile',
         singleFile: false, // 一次只允许上传一个文件
@@ -58,7 +58,20 @@ export default {
     }
   },
   props: {
-    mode: [String]
+    mode: [String],
+    title: [String],
+    allowStart: {
+      type: Boolean,
+      default: true
+    }
+  },
+  watch: {
+    allowStart: function (newValue) {
+      if (newValue) {
+        $('.uploader-file-resume').show()
+        // todo 有待上传
+      }
+    }
   },
   methods: {
     computeMD5: function (file) {
@@ -73,6 +86,9 @@ export default {
       loadNext(file)
       fileReader.onload = (e) => {
         spark.append(e.target.result)
+        if (!_this.allowStart) {
+          $('.uploader-file-resume').hide()
+        }
         if (currentChunk < chunkNum) { // 文件太大会怎样呢
           loadNext(file)
         } else {
@@ -90,7 +106,7 @@ export default {
                 _this.$message.info('检测完成, 检测结果位于:' + resp.data)
                 file.cancel()
               } else {
-                file.resume() // 开始上传
+                _this.files.push(file)
               }
             }
           })
@@ -115,7 +131,7 @@ export default {
         return false
       }
       this.panelShow = true // 展示上传panel
-      this.show_filename = false // 不显示文件名
+      this.show_filename = true // 不显示文件名
       this.computeMD5(file) // md验证上传
     },
     onFileSuccess: function (rootFile, file, response, chunk) {

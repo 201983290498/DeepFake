@@ -99,6 +99,11 @@ const routes = [
         path: 'picBoard',
         name: 'PicBoard',
         component: () => import('@/components/dashboard/common/PicBoard.vue')
+      },
+      {
+        path: 'addProject',
+        name: 'AddProject',
+        component: () => import('@/components/dashboard/common/AddProject.vue')
       }
     ]
   }

@@ -1,0 +1,26 @@
+@startuml
+actor Bob
+participant DetectProjectController
+participant BigFileController
+participant model
+participant mysql
+participant ossService
+participant redis
+
+Bob -> DetectProjectController ++ : 1. 创建一个project
+DetectProjectController -> mysql ++ : 2. 保存项目(finishTime null)
+mysql -> DetectProjectController -- : 3. 返回项目编号
+DetectProjectController -> Bob -- : 4. 新项目(包含Id)
+Bob -> BigFileController ++ : 5. 携带Id开始上传分片
+BigFileController -> BigFileController : 6. 合并分片
+BigFileController -> mysql ++ : 7. 上传文件/本地地址
+mysql -> ossService ++ : 8.上传文件
+ossService -> mysql -- : 9.返回图像url
+mysql -> BigFileController -- : 10.暂存文件地址(本地地址)
+BigFileController ->model ++ : 11.批量检测
+model -> BigFileController -- : 12. 返回检测结果
+BigFileController -> BigFileController : 13.生成检测文本
+@enduml
+@startjson
+["1.创建项目记录", "2.检测文件", "3.检测文件上传", "4.压缩文件检测结果上传, 普通文件直接记录", "5.创建检测记录"]
+@endjson

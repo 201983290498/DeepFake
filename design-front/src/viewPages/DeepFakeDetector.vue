@@ -4,7 +4,7 @@
     <ServiceModule @changeMode="changeMode"></ServiceModule>
     <ServiceDisplay :disImgs="disImgs" @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage="uploadImage" @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
-    <UploadFile style="margin-top: 35px" v-show="loginStatus" :mode="mode"></UploadFile>
+    <UploadFile style="margin-top: 35px" v-show="loginStatus" :mode="mode" title="大文件上传(>100M):"></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->

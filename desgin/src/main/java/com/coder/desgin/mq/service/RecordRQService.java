@@ -55,7 +55,7 @@ public class RecordRQService {
         String[] messages = msg.split(paramSplit);
         DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection", messages[6],messages[7]);
         String md5;
-        // 1.上传图片, 上传图片或者文件
+        // 1.上传图片或者压缩包的地址
         Image image;
         // 如果不是zip文件
         if (!messages[0].substring(messages[0].lastIndexOf(".")+1).equals("zip")) {

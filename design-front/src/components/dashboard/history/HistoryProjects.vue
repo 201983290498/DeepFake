@@ -14,7 +14,7 @@
                        @changeField="(value) => this.conditionField=value"></SearchBar>
             <div class="toolbar-btn-action">
 <!--              todo label中的for与输入框input的id相同, 点击label是会聚焦到响应的输入框-->
-              <span class="btn btn-primary btn-label m-r-5" v-show="!deleteMode"><label><i class="mdi mdi-plus"></i></label>新增</span>
+              <router-link class="btn btn-primary btn-label m-r-5" v-show="!deleteMode" to="/showBoard/addProject"><label><i class="mdi mdi-plus"></i></label>新增</router-link>
               <span class="btn btn-secondary btn-label m-r-5" v-show="deleteMode" @click="deleteMode=false"><label><i class="mdi mdi-cancel"></i></label>取消</span>
               <span class="btn btn-danger btn-label" v-show="!deleteMode" @click="deleteMode=true"><label><i class="mdi mdi-window-close"></i></label>删除</span>
               <span class="btn btn-danger btn-label" v-show="deleteMode" @click="confirmDelete"><label><i class="mdi mdi-window-close"></i></label>确认删除</span>
@@ -55,7 +55,12 @@
                   <td>{{record.createTime}}</td>
                   <td>{{record.imageQuantity}}</td>
                   <td>{{record.mode}}</td>
-                  <td :style="'color:' + (record.finishTime === '已完成'? 'green' : 'red')">{{record.finishTime}}</td>
+                  <td>
+                    <div class="progress progress-striped progress-sm">
+                      <div :class="'progress-bar ' + (record.finishTime === '已完成'? 'progress-bar-success' : 'progress-bar-warning')" :style="'width: ' + (record.finishTime === '已完成'? '100%;' : '75%;')">
+                      </div>
+                    </div>
+                  </td>
                   <td>
                     <div class="btn-group">
                       <a class="btn btn-xs btn-default" href="#" title="编辑" data-toggle="tooltip" @click="editProject(i)"><i class="mdi mdi-pencil"></i></a>

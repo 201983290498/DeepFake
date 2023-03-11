@@ -42,7 +42,7 @@
           <div class="title">
             <span class="regist">注册</span>
           </div>
-          <a href="/signUp/register" style="display: none">注册页面</a>
+          <router-link to="/signUp/register" style="display: none">注册页面</router-link>
           <div class="photo-container" @click="choosePic">
             <div class="photo" id="photo"></div>
           </div>

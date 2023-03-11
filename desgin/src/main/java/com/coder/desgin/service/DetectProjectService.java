@@ -92,4 +92,10 @@ public interface DetectProjectService {
      * @return 返回插入后的信息
      */
     DetectProject insertProject(DetectProject project);
+
+    /**
+     * 根据检测项目生成检测文件
+     * @param detectId 项目Id
+     */
+    void postFinalResultTxt(Long detectId);
 }

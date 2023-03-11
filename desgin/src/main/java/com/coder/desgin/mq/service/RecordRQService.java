@@ -2,6 +2,7 @@ package com.coder.desgin.mq.service;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.coder.common.util.RedisUtil;
 import com.coder.desgin.dao.DetectProjectDao;
 import com.coder.desgin.dao.FileDao;
 import com.coder.desgin.dao.ProjectFileDao;
@@ -9,6 +10,7 @@ import com.coder.desgin.entity.mysql.DetectProject;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.ProjectFile;
 import com.coder.desgin.entity.mysql.UploadFile;
+import com.coder.desgin.service.DetectProjectService;
 import com.coder.desgin.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.*;
@@ -41,11 +43,17 @@ public class RecordRQService {
 
     private final DetectProjectDao projectDao;
 
-    public RecordRQService(FileDao fileDao, DetectProjectDao projectDao, ImageService imageService, ProjectFileDao projectFileDao) {
+    private final DetectProjectService projectService;
+
+    private final RedisUtil redisUtil;
+
+    public RecordRQService(FileDao fileDao, DetectProjectDao projectDao, ImageService imageService, ProjectFileDao projectFileDao, DetectProjectService projectService, RedisUtil redisUtil) {
         this.fileDao = fileDao;
         this.projectDao = projectDao;
         this.imageService = imageService;
         this.projectFileDao = projectFileDao;
+        this.projectService = projectService;
+        this.redisUtil = redisUtil;
     }
 
     // todo 一个项目可能有多条检测记录, 对应不同的文件,这里只有一条检测记录, 有些不合理
@@ -53,28 +61,47 @@ public class RecordRQService {
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.queue}", autoDelete = "false"), exchange = @Exchange(value="${deepfake.ex}"), key = "record"))
     public void getEmail(String msg) throws FileNotFoundException {
         String[] messages = msg.split(paramSplit);
-        DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection", messages[6],messages[7]);
         String md5;
-        // 1.上传图片或者压缩包的地址
         Image image;
+        String projectLevel;
+        // 1.上传图片或者压缩包的地址
         // 如果不是zip文件
         if (!messages[0].substring(messages[0].lastIndexOf(".")+1).equals("zip")) {
             File uploadFile = new File(messages[0]);
-            image = imageService.insertOneByFile(uploadFile);  // 上传需要检测的文件
+            image = imageService.insertOneByFile(uploadFile);  // 检测图片上传在本地的位置
             md5 = image.getMd5();
+            projectLevel = "image";
         } else {
-            image = imageService.insertOne(new Image(messages[0], messages[1])); // 压缩包需要上传什么呢?
+            image = imageService.insertOne(new Image(messages[0], messages[1])); // 压缩包上传在本地的位置
             md5 = messages[1];
-            detectProject.setProjectLevel("zip");
+            projectLevel = "zip";
         }
-        // 2.创建默认项目
-        projectDao.insert(detectProject);
-        UploadFile file1 = new UploadFile(messages[2], Integer.valueOf(messages[3]), messages[4], md5, image.getImageId(), messages[5], messages[7]);
+        // 2. 创建项目
+        DetectProject detectProject;
+        if (messages.length == 8) {
+            detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection", messages[6],messages[7]);
+            detectProject.setProjectLevel(projectLevel);
+            projectDao.insert(detectProject);
+        } else {
+            detectProject = projectDao.selectById(Integer.valueOf(messages[6]));
+        }
+        // 3.创建文件
+        UploadFile file1 = new UploadFile(messages[2], Integer.valueOf(messages[3]), messages[4], md5, image.getImageId(), messages[5], detectProject.getMode());
         file1.setFileLocation(image.getImageUrl());
         // 创建对应的检测文件
         fileDao.insert(file1);
-        // 创建并联条目
+        // 4.创建并联条目
         projectFileDao.insert(new ProjectFile(detectProject.getDetectId(), file1.getFileId()));
+        // 5. 生成结果文档
+        if (redisUtil.hasKey(detectProject.getDetectId().toString())) {
+            Integer fileNum = (Integer) redisUtil.get(detectProject.getDetectId().toString());
+            if (fileNum == 1) {
+                redisUtil.del(detectProject.getDetectId().toString());
+                projectService.postFinalResultTxt(detectProject.getDetectId());
+            } else {
+                redisUtil.set(detectProject.getDetectId().toString(), fileNum - 1);
+            }
+        }
     }
 
     /**

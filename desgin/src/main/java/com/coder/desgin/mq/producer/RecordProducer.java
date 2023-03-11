@@ -1,6 +1,7 @@
 package com.coder.desgin.mq.producer;
 
 import com.alibaba.fastjson.JSON;
+import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.mysql.UploadFile;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +30,13 @@ public class RecordProducer {
         this.amqpTemplate = amqpTemplate;
     }
 
-    public void sendRecordMsg(String filePath, UploadFile file, Object detectResult) {
-        String msg = filePath + paramSplit + file.getFileMd5() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + JSON.toJSONString(detectResult) + paramSplit + file.getUserId() + paramSplit + file.getMode();
+    public void sendRecordMsg(String filePath, UploadFile file, String detectResult) {
+        String msg = filePath + paramSplit + file.getFileMd5() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + detectResult + paramSplit + file.getUserId() + paramSplit + file.getMode();
+        amqpTemplate.convertAndSend(exchangeName, "record", msg);
+    }
+
+    public void sendRecordMsg(String filePath, TempFileInfoVO file, String detectResult) {
+        String msg = filePath + paramSplit + file.getUniqueIdentifier() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + detectResult + paramSplit + file.getDetectId();
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
     }
 

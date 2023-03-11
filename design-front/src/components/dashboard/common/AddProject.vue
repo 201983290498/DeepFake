@@ -58,7 +58,7 @@ export default {
         mode: 'accuracy',
         projectLevel: 'project',
         projectName: '',
-        userId: this.user.userId
+        userId: JSON.parse(this.$store.state.data).userId
       },
       uploaded: false
     }
@@ -75,6 +75,7 @@ export default {
       } else if (this.$refs.uploadFile.checkFile() === 0) {
         _this.$message.warning('未选中任何文件')
       } else {
+        _this.project.fileNum = this.$refs.uploadFile.checkFile()
         $.ajax({
           url: window.server.Project.detectProject.insert,
           method: 'post',

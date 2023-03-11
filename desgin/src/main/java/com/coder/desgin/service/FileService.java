@@ -3,6 +3,7 @@ package com.coder.desgin.service;
 import com.alibaba.fastjson.JSONObject;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.entity.ImgDetectorResult;
+import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.mysql.UploadFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +37,11 @@ public interface FileService {
 
     /**
      * 对文件夹进行检测
-     * @param dir 文件夹路径
+     *
+     * @param filePath 文件夹路径
      * @return 返回检测文本的结果
      */
-    String detectDir(String dir, String mode);
+    List<ImgDetectorResult> detectFile(String filePath, String mode);
 
     /**
      * 检测图片文件
@@ -73,5 +75,12 @@ public interface FileService {
      * @param result 检测结果json
      * @throws FileNotFoundException 检测文本生成出现问题
      */
-    void insertRecord(String filePath, UploadFile baseFile, Object result) throws FileNotFoundException;
+    void insertRecord(String filePath, UploadFile baseFile, String result) throws FileNotFoundException;
+
+    /**
+     * 检测项目
+     * @param fileInfoVO 文件信息
+     * @param finalFilePath 文件的路径
+     */
+    void detectProject(TempFileInfoVO fileInfoVO, String finalFilePath) throws FileNotFoundException;
 }

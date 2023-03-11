@@ -10,6 +10,7 @@ import com.coder.desgin.dao.FileDao;
 import com.coder.desgin.entity.DetectorRect;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
+import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.mq.producer.JavaEmailProducer;
@@ -64,6 +65,18 @@ public class FileServiceImpl implements FileService {
         this.recordProducer = recordProducer;
         this.redisAsynHandler = redisAsynHandler;
     }
+    @Override
+    public List<ImgDetectorResult> detectFile(String filePath, String detectMode){
+        // 打包参数
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("path", filePath);
+        // url 使用默认参数
+        JSONObject jsonObject = httpUtil.sendPost(null, params, detectMode);
+        log.info(jsonObject.toString());
+        List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
+        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
+        return analysisResult;
+    }
 
     @Override
     public String detectZip(BaseFile file, HttpServletRequest request) throws IOException{
@@ -79,7 +92,7 @@ public class FileServiceImpl implements FileService {
         String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
         unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("\\"), filePath.lastIndexOf("\\")) + 1);
         unZipPath = ZipUtil.unZip(filePath, unZipPath);
-        String result = detectDir(unZipPath, file.getMode());
+        String result = JSON.toJSONString(detectFile(unZipPath, file.getMode()));
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
         emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
         // 1. 检测结果上传
@@ -88,40 +101,47 @@ public class FileServiceImpl implements FileService {
         return image.getImageUrl();
     }
 
-
-    @Override
-    public String detectDir(String dir, String detectMode){
-        // 打包参数
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("path", dir);
-        // url 使用默认参数
-        JSONObject jsonObject = httpUtil.sendPost(null, params, detectMode);
-        log.info(jsonObject.toString());
-        List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
-        log.info("Analysis result: path".concat(dir).concat(";  detections:").concat(analysisResult.toString()));
-        return JSON.toJSONString(analysisResult);
-    }
-
     @Override
     public ImgDetectorResult detectImg(@NotNull BaseFile file, HttpServletRequest request) {
         String filePath = ImageUtil.generateImage(file.getFileName(), file.getBase64(), request);
         assert filePath != null;
         log.info("解压文件地址为:".concat(filePath));
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("path", filePath);
-        JSONObject jsonObject = httpUtil.sendPost(null, params, file.getMode());
-        List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
-        log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
+        List<ImgDetectorResult> analysisResult = detectFile(filePath, file.getMode());
         try {
             // 1. 默认项目添加, 文件上传,添加
             UploadFile uploadFile = new UploadFile(file);
             uploadFile.setFileMd5(Md5Util.getMd5(new File(filePath)));
-            insertRecord(filePath, uploadFile, analysisResult.get(0));
+            insertRecord(filePath, uploadFile, JSON.toJSONString(analysisResult.get(0)));
             return analysisResult.get(0);
         } catch (Exception e) {
             log.warn("OSS或者mysql出现异常, 无法上传文件");
             return analysisResult.get(0);
         }
+    }
+
+    /**
+     * 检测项目
+     *
+     * @param fileInfoVO    文件信息
+     * @param filePath 文件的路径
+     */
+    @Override
+    public void detectProject(TempFileInfoVO fileInfoVO, String filePath) throws FileNotFoundException {
+        String fileResults;
+        if (filePath.endsWith("zip")) {
+            String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
+            unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("\\"), filePath.lastIndexOf("\\")) + 1);
+            unZipPath = ZipUtil.unZip(filePath, unZipPath);
+            String result = JSON.toJSONString(detectFile(unZipPath, fileInfoVO.getMode()));
+            String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
+            // 检测结果上传, 获取成为url
+            Image image = imageService.insertOneByFile(new File(detectTextPath));
+            fileResults = image.getImageUrl();
+        } else {
+            List<ImgDetectorResult> imgDetectorResults = detectFile(filePath, fileInfoVO.getMode());
+            fileResults = JSON.toJSONString(imgDetectorResults.get(0));
+        }
+        recordProducer.sendRecordMsg(filePath, fileInfoVO, fileResults);
     }
 
     @Override
@@ -181,7 +201,7 @@ public class FileServiceImpl implements FileService {
      * @throws FileNotFoundException 检测文本生成出现问题
      */
     @Override
-    public void insertRecord(String filePath, UploadFile baseFile, Object detectResult) throws FileNotFoundException {
+    public void insertRecord(String filePath, UploadFile baseFile, String detectResult) throws FileNotFoundException {
         recordProducer.sendRecordMsg(filePath,baseFile, detectResult);
     }
 

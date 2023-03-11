@@ -138,10 +138,8 @@ public class BigFileController {
                     FileUtils.deleteDirectory(fileDir);
                 }
             }
-            // todo location 怎么弄 还有本地地址存在一些问题
-            UploadFile uploadFile = new UploadFile(fileInfoVO);
-            String textUrl = fileService.detectZip(finalFilePath, uploadFile);
-            return RespMessageUtils.SUCCESS(textUrl);
+            fileService.detectProject(fileInfoVO, finalFilePath);
+            return RespMessageUtils.SUCCESS();
         }
         catch (Exception e) {
             log.warn(e.getMessage());

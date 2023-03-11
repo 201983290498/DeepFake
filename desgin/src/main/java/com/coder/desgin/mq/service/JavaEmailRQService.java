@@ -6,6 +6,8 @@ import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 
 /**
  * @Author coder
@@ -34,6 +36,7 @@ public class JavaEmailRQService {
         } else {
             try {
                 javaEmail.sendMessageWithFile(messages[1], messages[2]);
+                new File(messages[2]).delete();
             } catch (Exception e) {
                 log.warn("发往" + messages[1] + "的附件" + messages[2] + "发送失败");
             }

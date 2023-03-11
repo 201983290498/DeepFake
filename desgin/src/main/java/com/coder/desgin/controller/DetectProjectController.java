@@ -1,6 +1,7 @@
 package com.coder.desgin.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.coder.common.util.RedisUtil;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.common.util.TokenUtil;
 import com.coder.common.util.login.VerificationCodeFactory;
@@ -41,12 +42,15 @@ public class DetectProjectController {
 
     private final UserService userService;
 
+    private final RedisUtil redisUtil;
 
-    public DetectProjectController(DetectProjectService projectService, TokenUtil tokenUtil, VerificationCodeFactory verificationCodeFactory, UserService userService) {
+
+    public DetectProjectController(DetectProjectService projectService, TokenUtil tokenUtil, VerificationCodeFactory verificationCodeFactory, UserService userService, RedisUtil redisUtil) {
         this.projectService = projectService;
         this.tokenUtil = tokenUtil;
         this.verificationCodeFactory = verificationCodeFactory;
         this.userService = userService;
+        this.redisUtil = redisUtil;
     }
 
     /**
@@ -117,11 +121,14 @@ public class DetectProjectController {
     }
 
     @ApiOperation(value = "增项目", notes = "新增项目")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "mode", defaultValue = "speed"), @ApiImplicitParam(name = "projectName", defaultValue = "deepfake image detection"), @ApiImplicitParam(name = "projectLevel", defaultValue = "project")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "mode", defaultValue = "speed"), @ApiImplicitParam(name = "projectName", defaultValue = "deepfake image detection"), @ApiImplicitParam(name = "projectLevel", defaultValue = "project"), @ApiImplicitParam(name = "fileNum", defaultValue = "0")})
     @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
     @PostMapping("/project/insert")
-    public String createProject(DetectProject project) {
+    public String createProject(DetectProject project,@RequestParam(value = "fileNum", defaultValue = "0") Integer fileNum) {
         DetectProject newProject = projectService.insertProject(project);
+        if (fileNum != 0) {
+            redisUtil.set(newProject.getDetectId().toString(), fileNum);
+        }
         if (newProject.getDetectId() != null ) {
             return RespMessageUtils.SUCCESS(newProject);
         } else {

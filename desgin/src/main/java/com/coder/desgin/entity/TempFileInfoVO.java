@@ -40,6 +40,6 @@ public class TempFileInfoVO extends BaseFile implements Serializable {
     /**
      * 附件所属项目ID
      */
-    private String refProjectId;
+    private String detectId;
 
 }

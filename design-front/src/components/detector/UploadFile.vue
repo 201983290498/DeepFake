@@ -1,6 +1,6 @@
 <template>
   <!-- 上传器 todo 学习 https://blog.csdn.net/NineWaited/article/details/126594331 -->
-  <div>
+  <div id="uploadFile">
     <div class="uploaderTitle" v-show="title !== ''">{{title}}</div>
     <uploader
       ref="uploader"
@@ -18,7 +18,7 @@
           <uploader-btn id="global-uploader-btn" ref="uploadBtn">选择文件<i class="el-icon-upload el-icon--right"></i></uploader-btn>
         </div>
       </uploader-drop>
-      <uploader-list v-show="panelShow"></uploader-list>
+      <uploader-list v-show="panelShow" class="m-h-3"></uploader-list>
     </uploader>
   </div>
 </template>
@@ -63,13 +63,24 @@ export default {
     allowStart: {
       type: Boolean,
       default: true
-    }
+    },
+    mergeFile: Function
   },
   watch: {
     allowStart: function (newValue) {
       if (newValue) {
+        // 1. 修改上传的按钮
         $('.uploader-file-resume').show()
-        // todo 有待上传
+        $('.uploader-file-remove').hide()
+        // 2. 修改文件展示列的大小
+        $('#uploadFile .uploader-list').removeClass('m-h-3')
+        $('#uploadFile .uploader-list').addClass('m-h-6')
+        // 3. 修改上传按钮
+        $('#global-uploader-btn').html('正在上传<i class="el-icon-upload el-icon--right"></i>')
+        $('#global-uploader-btn').click((event) => { event.preventDefault() })
+        $('#global-uploader-btn').addClass('btn-avoid')
+        // todo 有待点击
+        $('.uploader-file-resume').click()
       }
     }
   },
@@ -105,8 +116,6 @@ export default {
               if (resp.result) {
                 _this.$message.info('检测完成, 检测结果位于:' + resp.data)
                 file.cancel()
-              } else {
-                _this.files.push(file)
               }
             }
           })
@@ -117,7 +126,6 @@ export default {
         const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize
         fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
         currentChunk += 1
-        console.log('计算第' + currentChunk + '块')
       }
     },
     onFileAdded: function (file) {
@@ -156,14 +164,8 @@ export default {
     fileProgress: function (rootFile, file, chunk) {
       this.isUploadOk = !file.isUploading() // 禁止上传
     },
-    mergeFile: function (data) {
-      data.userId = JSON.parse(this.$store.state.data).userId
-      data.mode = this.mode
-      return this.axios({
-        url: window.server.COMMONS.bigFileUpload.merge,
-        method: 'post',
-        data: data
-      })
+    checkFile: function () {
+      return $('#uploadFile .uploader-file').length
     }
   }
 }
@@ -176,5 +178,14 @@ export default {
   color: #2c3e50;
   margin-bottom: 6px;
   font-size: 16px;
+}
+.btn-avoid {
+  background-color: rgba(0, 0, 0, .08);
+}
+.m-h-3 {
+  overflow: scroll; max-height: 300px;
+}
+.m-h-6 {
+  overflow: scroll; max-height: 600px;
 }
 </style>

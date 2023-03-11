@@ -4,7 +4,7 @@
     <ServiceModule @changeMode="changeMode"></ServiceModule>
     <ServiceDisplay :disImgs="disImgs" @uploadImage="uploadImage" ref="serviceDisplay"></ServiceDisplay>
     <ServiceUpload @uploadImage="uploadImage" @changeDisBoard="changeDisBoard" @uploadZip="uploadZip" ref="serviceUpload" :uploaded="uploaded" :downToZero="downToZero" :loginStatus="loginStatus"></ServiceUpload>
-    <UploadFile style="margin-top: 35px" v-show="loginStatus" :mode="mode" title="大文件上传(>100M):"></UploadFile>
+    <UploadFile style="margin-top: 35px" v-show="loginStatus" :mode="mode" title="大文件上传(>100M):" :merge-file="mergeFile"></UploadFile>
   </div>
 </template>
 <!--components为啥要用大括号呢-->
@@ -260,6 +260,15 @@ export default {
       if (i === _this.disImgs.length) {
         _this.disImgs.unshift(url)
       }
+    },
+    mergeFile: function (data) {
+      data.userId = JSON.parse(this.$store.state.data).userId
+      data.mode = this.mode
+      return this.axios({
+        url: window.server.COMMONS.bigFileUpload.merge,
+        method: 'post',
+        data: data
+      })
     }
   },
   mounted () {

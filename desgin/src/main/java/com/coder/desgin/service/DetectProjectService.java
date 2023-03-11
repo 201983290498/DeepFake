@@ -85,4 +85,11 @@ public interface DetectProjectService {
      * @param project 更新的实体
      */
     boolean updateById(DetectProject project);
+
+    /**
+     * 新增一个项目
+     * @param project 项目的基本信息
+     * @return 返回插入后的信息
+     */
+    DetectProject insertProject(DetectProject project);
 }

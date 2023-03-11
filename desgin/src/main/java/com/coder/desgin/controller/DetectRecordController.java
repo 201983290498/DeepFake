@@ -32,7 +32,7 @@ public class DetectRecordController {
     }
 
     @ApiOperation(value="条件查询--查检测记录", notes="条件查询")
-    @ApiImplicitParams({@ApiImplicitParam(name = "field", value = "projectName"), @ApiImplicitParam(name = "value", value="deepfake"), @ApiImplicitParam(name = "ordered", value = "true"), @ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10"), @ApiImplicitParam(name = "orderField", value="createTime")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "field", defaultValue = "projectName"), @ApiImplicitParam(name = "value", defaultValue="deepfake"), @ApiImplicitParam(name = "ordered", defaultValue = "true"), @ApiImplicitParam(name="userId", defaultValue="default"), @ApiImplicitParam(name="current", defaultValue="1"), @ApiImplicitParam(name="pageSize", defaultValue = "10"), @ApiImplicitParam(name = "orderField", defaultValue="createTime")})
     @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
     @PostMapping("record/similarSearch")
     public String getRecords(String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, String field, String value, @RequestParam(value = "ordered", defaultValue = "true") Boolean ordered, @RequestParam(value = "orderField", defaultValue = "createTime") String orderField) {

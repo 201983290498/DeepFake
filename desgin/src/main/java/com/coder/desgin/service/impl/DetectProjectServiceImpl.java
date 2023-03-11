@@ -187,4 +187,16 @@ public class DetectProjectServiceImpl implements DetectProjectService {
         int update = detectProjectDao.update(project, updateWrapper);
         return update == 1;
     }
+
+    /**
+     * 新增一个项目
+     *
+     * @param project 项目的基本信息
+     * @return 返回插入后的信息
+     */
+    @Override
+    public DetectProject insertProject(DetectProject project) {
+        detectProjectDao.insert(project);
+        return project;
+    }
 }

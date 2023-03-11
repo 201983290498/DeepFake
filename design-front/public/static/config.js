@@ -10,7 +10,8 @@ window.server = { // 1. 定义服务器url接口
     bigFileUpload: {
       base: '/api/bigfile',
       chunk: '/api/bigfile/chunk',
-      merge: '/api/bigfile/mergeFile'
+      merge: '/api/bigfile/mergeFile',
+      projectFileMerge: '/api/bigfile/projectFileMergeFile'
     },
     userUrl: {
       base: '/api/users',
@@ -36,7 +37,8 @@ window.server = { // 1. 定义服务器url接口
       projects: '/api/detectProject/projects',
       similarSearch: '/api/detectProject/project/similarSearch',
       delete: '/api/detectProject/project/delete',
-      update: '/api/detectProject/project/update'
+      update: '/api/detectProject/project/update',
+      insert: '/api/detectProject/project/insert'
     },
     record: {
       recentImages: '/api/detectProject/recent/images',

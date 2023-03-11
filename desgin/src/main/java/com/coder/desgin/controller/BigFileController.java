@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class BigFileController {
         return chunk;
     }
 
-    @ApiOperation("文件分页合并")
+    @ApiOperation("文件分页合并--首页检测加合并")
     @PostMapping("/mergeFile")
     public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request){
         String contentPath = request.getSession().getServletContext().getRealPath("/");
@@ -111,4 +110,43 @@ public class BigFileController {
             return RespMessageUtils.ERROR("服务器出错");
         }
     }
+
+    @ApiOperation("文件分页合并--添加项目文件合并")
+    @PostMapping("/projectFileMergeFile")
+    public String mergeFileOnly(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request){
+        String contentPath = request.getSession().getServletContext().getRealPath("/");
+        File bigFileDirPath = new File(contentPath+bigFileDir);
+        log.warn("Merging file exists in:" + bigFileDirPath);
+        String finalFilePath = contentPath + bigFileDir + File.separator + fileInfoVO.getName();
+        if (!bigFileDirPath.exists()) {
+            bigFileDirPath.mkdirs();
+        }
+        String md5 = fileInfoVO.getUniqueIdentifier();
+        System.out.println("merge:"+ md5);
+        File fileDir = new File(contentPath+bigFileDirTemp+File.separator+ md5);
+        try {
+            if (fileDir.isDirectory()) {
+                File[] subFiles = fileDir.listFiles();
+                if (subFiles != null && subFiles.length > 0) {
+                    File partFile = new File(finalFilePath);
+                    for (int i = 1; i <= subFiles.length; i++) {
+                        File s = new File(contentPath+bigFileDirTemp+File.separator+md5, i + ".part");
+                        FileOutputStream destTempfos = new FileOutputStream(partFile, true);
+                        FileUtils.copyFile(s,destTempfos);
+                        destTempfos.close();
+                    }
+                    FileUtils.deleteDirectory(fileDir);
+                }
+            }
+            // todo location 怎么弄 还有本地地址存在一些问题
+            UploadFile uploadFile = new UploadFile(fileInfoVO);
+            String textUrl = fileService.detectZip(finalFilePath, uploadFile);
+            return RespMessageUtils.SUCCESS(textUrl);
+        }
+        catch (Exception e) {
+            log.warn(e.getMessage());
+            return RespMessageUtils.ERROR("服务器出错");
+        }
+    }
+
 }

@@ -7,7 +7,6 @@ import com.coder.common.util.login.VerificationCodeFactory;
 import com.coder.desgin.entity.Constants;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectProject;
-import com.coder.desgin.entity.mysql.ProjectFile;
 import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.service.DetectProjectService;
 import com.coder.desgin.service.UserService;
@@ -58,7 +57,7 @@ public class DetectProjectController {
      * @Description : 分页查询用户的项目记录
      */
     @ApiOperation(value = "查询项目", notes = "查询用户的所有项目记录")
-    @ApiImplicitParams({@ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10")})
+    @ApiImplicitParams({@ApiImplicitParam(name="userId", defaultValue="default"), @ApiImplicitParam(name="current", defaultValue="1"), @ApiImplicitParam(name="pageSize", defaultValue = "10")})
     @ApiResponse(code = 200, message = "检测成功", response = IPage.class)
     @PostMapping("/projects")
     public String getProjects(@RequestParam("userId") String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
@@ -69,7 +68,7 @@ public class DetectProjectController {
 
 
     @ApiOperation(value="条件查询检测项目", notes="条件查询")
-    @ApiImplicitParams({@ApiImplicitParam(name = "field", value = "projectName"), @ApiImplicitParam(name = "value", value="deepfake"), @ApiImplicitParam(name = "ordered", value = "true"), @ApiImplicitParam(name="userId", value="default"), @ApiImplicitParam(name="current", value="1"), @ApiImplicitParam(name="pageSize", value = "10"), @ApiImplicitParam(name = "orderField", value="createTime")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "field", defaultValue = "projectName"), @ApiImplicitParam(name = "value", defaultValue="deepfake"), @ApiImplicitParam(name = "ordered", defaultValue = "true"), @ApiImplicitParam(name="userId", defaultValue="default"), @ApiImplicitParam(name="current", defaultValue="1"), @ApiImplicitParam(name="pageSize", defaultValue = "10"), @ApiImplicitParam(name = "orderField", defaultValue="createTime")})
     @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
     @PostMapping("project/similarSearch")
     public String getProjects(@RequestParam("userId") String userId, @RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam("field") String field, @RequestParam("value") String value, @RequestParam(value = "ordered", defaultValue = "true") Boolean ordered, @RequestParam(value = "orderField", defaultValue = "createTime") String orderField) {
@@ -79,7 +78,7 @@ public class DetectProjectController {
     }
 
     @ApiOperation(value = "删项目", notes = "根据列表删除项目")
-    @ApiImplicitParams({@ApiImplicitParam(name = "email", value = "1023668958@qq.com"), @ApiImplicitParam(name = "token", value = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsInRpbWUiOjE2NzgyNjk0OTUwNjEsImV4cCI6MTY3ODM1NTg5NSwidXNlcm5hbWUiOiJjN2Y0ZmE1MjM0OTVlYmIxOGE3Mjk0NTVjZGQxMWY1NyJ9.FGC1oZYdqHEsLm5ufV21lGMZIzz2KS7s4i9jS1yGkHU"), @ApiImplicitParam(name = "validationInfo"), @ApiImplicitParam(name="detectIds")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "email", defaultValue = "1023668958@qq.com"), @ApiImplicitParam(name = "token", defaultValue = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsInRpbWUiOjE2NzgyNjk0OTUwNjEsImV4cCI6MTY3ODM1NTg5NSwidXNlcm5hbWUiOiJjN2Y0ZmE1MjM0OTVlYmIxOGE3Mjk0NTVjZGQxMWY1NyJ9.FGC1oZYdqHEsLm5ufV21lGMZIzz2KS7s4i9jS1yGkHU"), @ApiImplicitParam(name = "validationInfo"), @ApiImplicitParam(name="detectIds")})
     @PostMapping("/project/delete")
     @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
     public String deleteProjectList(String userId,String email, String token, String validationInfo,String detectIds) {
@@ -106,7 +105,7 @@ public class DetectProjectController {
     }
 
     @ApiOperation(value = "更新项目", notes = "根据列表删除项目")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "detectId", value= "1789"), @ApiImplicitParam(name="projectName", value= "changeName") })
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "detectId", defaultValue= "1789"), @ApiImplicitParam(name="projectName", defaultValue= "changeName") })
     @PostMapping("/project/update")
     @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
     public String updateProject(DetectProject project) {
@@ -114,6 +113,19 @@ public class DetectProjectController {
             return RespMessageUtils.SUCCESS();
         } else {
             return RespMessageUtils.ERROR("账号异常, 您需要修改的项目名不属于对应的账号!");
+        }
+    }
+
+    @ApiOperation(value = "增项目", notes = "新增项目")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "mode", defaultValue = "speed"), @ApiImplicitParam(name = "projectName", defaultValue = "deepfake image detection"), @ApiImplicitParam(name = "projectLevel", defaultValue = "project")})
+    @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
+    @PostMapping("/project/insert")
+    public String createProject(DetectProject project) {
+        DetectProject newProject = projectService.insertProject(project);
+        if (newProject.getDetectId() != null ) {
+            return RespMessageUtils.SUCCESS(newProject);
+        } else {
+            return RespMessageUtils.ERROR("服务器异常, 暂时无法新增项目");
         }
     }
 }

@@ -114,8 +114,13 @@ public class DetectProjectServiceImpl implements DetectProjectService {
                 wrapper.gt(StringUtil.camelCaseToUnderlineCase(field), new Date(Long.valueOf(value)));
                 break;
         }
+        if (ordered == null) {
+            return detectProjectDao.selectProjects(page, wrapper, wrapper2);
+        }
         if (ordered) {
             wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
+        } else {
+            wrapper2.orderByAsc(StringUtil.camelCaseToUnderlineCase(orderField));
         }
         return detectProjectDao.selectProjects(page, wrapper, wrapper2);
     }
@@ -177,8 +182,13 @@ public class DetectProjectServiceImpl implements DetectProjectService {
                 wrapper.gt(StringUtil.camelCaseToUnderlineCase(field), new Date(Long.parseLong(value)));
                 break;
         }
+        if (ordered == null) {
+            return detectProjectDao.selectRecords(page, wrapper, wrapper2);
+        }
         if (ordered) {
             wrapper2.orderByDesc(StringUtil.camelCaseToUnderlineCase(orderField));
+        } else {
+            wrapper2.orderByAsc(StringUtil.camelCaseToUnderlineCase(orderField));
         }
         return detectProjectDao.selectRecords(page, wrapper, wrapper2);
     }

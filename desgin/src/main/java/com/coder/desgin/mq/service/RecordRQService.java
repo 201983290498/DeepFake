@@ -115,27 +115,29 @@ public class RecordRQService {
         wrapper.in("detect_id", ids);
         // 2. 查找文件
         List<ProjectFile> temFiles = projectFileDao.selectList(wrapper);
-        List<Long> fileIds = new LinkedList<>();
-        for (ProjectFile file: temFiles) {
-            fileIds.add(file.getFileId());
-        }
-        wrapper.clear();
-        wrapper.in("file_id", fileIds);
-        List<UploadFile> files = fileDao.selectList(wrapper);
-        // 3. 删除结果文件, 检测文件暂时不删除
-        List<String> results = new LinkedList<>();
-        for (UploadFile file: files) {
-            String fileResults = file.getFileResults();
-            if (fileResults.startsWith("\"http")) {
-                results.add((String) JSON.parse(fileResults));
+        if (temFiles.size() != 0) {
+            List<Long> fileIds = new LinkedList<>();
+            for (ProjectFile file: temFiles) {
+                fileIds.add(file.getFileId());
             }
+            wrapper.clear();
+            wrapper.in("file_id", fileIds);
+            List<UploadFile> files = fileDao.selectList(wrapper);
+            // 3. 删除结果文件, 检测文件暂时不删除
+            List<String> results = new LinkedList<>();
+            for (UploadFile file: files) {
+                String fileResults = file.getFileResults();
+                if (fileResults.startsWith("\"http")) {
+                    results.add((String) JSON.parse(fileResults));
+                }
+            }
+            imageService.deleteByUrl(results);
+            // 4. 删除记录和对应的检测记录
+            projectFileDao.delete(wrapper);
+            wrapper.clear();
+            wrapper.in("file_id", fileIds);
+            fileDao.delete(wrapper);
         }
-        imageService.deleteByUrl(results);
-        // 4. 删除记录和对应的检测记录
-        projectFileDao.delete(wrapper);
-        wrapper.clear();
-        wrapper.in("file_id", fileIds);
-        fileDao.delete(wrapper);
         projectDao.deleteBatchIds(ids);
     }
 }

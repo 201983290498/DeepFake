@@ -22,12 +22,44 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>记录名称</th>
-                    <th>开始日期</th>
+                    <th>
+                      记录名称
+                      <div class="d-inline-block">
+                        <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('projectName', false)">
+                          <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                        </div>
+                        <div @click="orderRecords('projectName', true)">
+                          <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                        </div>
+                      </div>
+                    </th>
+                    <th>
+                      开始日期
+                      <div class="d-inline-block">
+                        <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('createTime', false)">
+                          <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                        </div>
+                        <div @click="orderRecords('createTime', true)">
+                          <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                        </div>
+                      </div>
+                    </th>
                     <th>截止日期</th>
                     <th>项目级别</th>
-                    <th>检测文件</th>
-                    <th>检测模式</th>
+                    <th>
+                      检测文件
+                      <div class="d-inline-block">
+                        <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('detectFile', false)">
+                          <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                        </div>
+                        <div @click="orderRecords('detectFile', true)">
+                          <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                        </div>
+                      </div>
+                    </th>
+                    <th>
+                      检测模式
+                    </th>
                     <th>操作</th>
                   </tr>
                 </thead>
@@ -198,6 +230,10 @@ export default {
         image.name = record.detectFile
         _this.$emit('oneImageShow', image)
       }
+    },
+    // 页面排序
+    orderRecords: function (orderField, ordered) {
+      this.searchProject(this.user.userId, this.conditionField, this.conditionValue, ordered, orderField, 1, this.detectPage.size)
     }
   },
   created () {

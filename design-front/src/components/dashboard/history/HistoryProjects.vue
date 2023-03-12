@@ -31,12 +31,53 @@
                     </label>
                   </th>
                   <th v-show="!deleteMode">#</th>
-                  <th>项目编号</th>
-                  <th>项目名称</th>
+                  <th>
+                    项目编号
+                    <div class="d-inline-block">
+                      <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('detectId', false)">
+                        <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                      </div>
+                      <div @click="orderRecords('detectId', true)">
+                        <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                      </div>
+                    </div></th>
+                  <th>
+                    项目名称
+                    <div class="d-inline-block">
+                      <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('projectName', false)">
+                        <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                      </div>
+                      <div @click="orderRecords('projectName', true)">
+                        <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                      </div>
+                    </div>
+                  </th>
                   <th>级别</th>
-                  <th>开始日期</th>
-                  <th>图片数量</th>
-                  <th>检测模式</th>
+                  <th>
+                    开始日期
+                    <div class="d-inline-block">
+                      <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('createTime', false)">
+                        <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                      </div>
+                      <div @click="orderRecords('createTime', true)">
+                        <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                      </div>
+                    </div>
+                  </th>
+                  <th>
+                    图片数量
+                    <div class="d-inline-block">
+                      <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('imageQuantity', false)">
+                        <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
+                      </div>
+                      <div @click="orderRecords('imageQuantity', true)">
+                        <span class="caret d-block" style="border-top: 6px dashed !important"></span>
+                      </div>
+                    </div>
+                  </th>
+                  <th>
+                    检测模式
+                  </th>
                   <th>状态</th>
                   <th>操作</th>
                 </tr>
@@ -344,6 +385,10 @@ export default {
           }
         })
       })
+    },
+    // 排序模型
+    orderRecords: function (orderField, ordered) {
+      this.searchProject(this.user.userId, this.conditionField, this.conditionValue, ordered, orderField, 1, this.detectPage.size)
     }
   },
   created () {
@@ -358,5 +403,10 @@ export default {
 </script>
 
 <style scoped>
-
+.dropdown .caret {
+  border-top: 8px dashed !important;
+}
+.dropup .caret {
+  border-bottun: 8px dashed !important;
+}
 </style>

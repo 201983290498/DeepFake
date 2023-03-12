@@ -131,7 +131,9 @@ public class RecordRQService {
                     results.add((String) JSON.parse(fileResults));
                 }
             }
-            imageService.deleteByUrl(results);
+            if (results.size() > 0) {
+                imageService.deleteByUrl(results);
+            }
             // 4. 删除记录和对应的检测记录
             projectFileDao.delete(wrapper);
             wrapper.clear();

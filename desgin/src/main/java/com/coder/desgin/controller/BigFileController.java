@@ -144,7 +144,7 @@ public class BigFileController {
         }
         catch (Exception e) {
             log.warn(e.getMessage());
-            return RespMessageUtils.ERROR("服务器出错");
+            return RespMessageUtils.ERROR("文件合并时服务器出错。");
         }
     }
 

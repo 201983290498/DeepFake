@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 /**
@@ -107,11 +109,20 @@ public class OssServiceImpl implements OssService {
     }
 
     @Override
-    public InputStreamReader downloadFile(String url) {
+    public InputStreamReader downloadFile(String url1) {
         try {
-            OSSObject object = ossClient.getObject(new GetObjectRequest(ossProperty.getBucketName(), getObjectNameFromUrl(url)));
-            return new InputStreamReader(object.getObjectContent());
+//            OSSObject object = ossClient.getObject(new GetObjectRequest(ossProperty.getBucketName(), getObjectNameFromUrl(url)));
+            URL url = new URL(url1);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(6000);
+            urlConnection.setReadTimeout(6000);
+            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new RuntimeException("文件读取失败");
+            }
+            InputStream inputStream = urlConnection.getInputStream();
+            return new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         } catch (Exception e){
+            log.warn(e.getMessage());
             return null;
         }
     }
@@ -119,6 +130,7 @@ public class OssServiceImpl implements OssService {
     @Override
     public Boolean deleteFile(String url) {
         try {
+            System.out.println("the deleteFile " + url + ossClient.doesObjectExist(new GetObjectRequest(ossProperty.getBucketName(), getObjectNameFromUrl(url))));
             ossClient.deleteObject(new GetObjectRequest(ossProperty.getBucketName(), getObjectNameFromUrl(url)));
             return true;
         } catch (Exception e){

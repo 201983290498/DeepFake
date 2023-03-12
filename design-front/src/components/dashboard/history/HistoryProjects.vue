@@ -65,7 +65,7 @@
                     </div>
                   </th>
                   <th>
-                    图片数量
+                    文件数量
                     <div class="d-inline-block">
                       <div class="dropup" style="margin-bottom: 2px;" @click="orderRecords('imageQuantity', false)">
                         <span class="caret d-block" style="border-bottom: 6px dashed !important"></span>
@@ -205,6 +205,7 @@ export default {
   methods: {
     // 查询记录
     queryRecord: function (userId, pageNum, pageSize) {
+      console.log(userId, pageNum, pageSize)
       const _this = this
       $.ajax({
         url: window.server.Project.detectProject.projects,
@@ -313,14 +314,15 @@ export default {
         if (!resp.data.result) {
           _this.$message.warning(resp.data.msg)
         } else {
+          console.log(1)
           _this.deleteMode = false
-          if (this.conditionValue === '' || this.conditionValue === null) {
-            this.queryRecord(this.user.userId, 1, this.detectPage.size)
+          if (_this.conditionValue === '' || _this.conditionValue === null) {
+            _this.queryRecord(_this.user.userId, 1, _this.detectPage.size)
           } else {
-            if (this.conditionField !== 'createTime') {
-              this.searchProject(this.user.userId, this.conditionField, this.conditionValue, true, 'createTime', 1, this.detectPage.size)
+            if (_this.conditionField !== 'createTime') {
+              _this.searchProject(_this.user.userId, _this.conditionField, _this.conditionValue, true, 'createTime', 1, _this.detectPage.size)
             } else {
-              this.searchProject(this.user.userId, this.conditionField, this.conditionValue.getTime(), false, 'createTime', 1, this.detectPage.size)
+              _this.searchProject(_this.user.userId, _this.conditionField, _this.conditionValue.getTime(), false, 'createTime', 1, _this.detectPage.size)
             }
           }
         }

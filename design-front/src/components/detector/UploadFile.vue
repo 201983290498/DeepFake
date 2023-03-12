@@ -114,7 +114,7 @@ export default {
             },
             success: function (resp) {
               if (resp.result) {
-                _this.$message.info('检测完成, 检测结果位于:' + resp.data)
+                _this.$message.info('检测完成, 检测结果位于:' + JSON.parse(resp.data).fileResults)
                 file.cancel()
               }
             }

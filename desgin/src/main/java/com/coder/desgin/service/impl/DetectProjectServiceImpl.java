@@ -238,9 +238,9 @@ public class DetectProjectServiceImpl implements DetectProjectService {
             LinkedList<String> results = new LinkedList<>();
             for (UploadFile projectFile : projectFiles) {
                 String fileResults = projectFile.getFileResults();
-                if (fileResults.startsWith("\"https")) { // 如果是检测文件
+                if (fileResults.startsWith("https")) { // 如果是检测文件
                     results.add(projectFile.getFileName() + ":\n");
-                    String detectUrl = JSON.parseObject(fileResults, String.class);
+                    String detectUrl = fileResults;
                     InputStreamReader inputStreamReader = ossService.downloadFile(detectUrl);
                     BufferedReader reader = new BufferedReader(inputStreamReader);
                     while ((line = reader.readLine()) != null) {
@@ -259,6 +259,8 @@ public class DetectProjectServiceImpl implements DetectProjectService {
             }
             writer.close();
             DetectProject detectProject = detectProjectDao.selectById(detectId);
+            detectProject.setFinishTime(new Date());
+            detectProjectDao.updateById(detectProject);
             User user = userDao.selectById(detectProject.getUserId());
             javaEmailProducer.sendEmailMsg("file", user.getEmail(), new File(filePath).getAbsolutePath());
         } catch (IOException e) {

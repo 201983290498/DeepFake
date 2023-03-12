@@ -4,10 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,5 +25,23 @@ class OssServiceImplTest {
         InputStream inputStream = new FileInputStream(file);
         String s = ossService.uploadFile(file.getName(), inputStream);
         System.out.println(s);
+    }
+
+    @Test
+    void downloadFile() throws IOException {
+        InputStreamReader inputStreamReader = ossService.downloadFile("");
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line;
+        LinkedList<String> results = new LinkedList<String>();
+        while ((line = reader.readLine()) != null) {
+            line = line.endsWith("\n") ? line : line + "\n";
+            results.add(line);
+        }
+        System.out.println(results);
+    }
+
+    @Test
+    void deleteFile() {
+        ossService.deleteFile("https://deepfakedetector.oss-cn-hangzhou.aliyuncs.com/detectId1.txt");
     }
 }

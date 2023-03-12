@@ -36,7 +36,7 @@ public class RecordProducer {
     }
 
     public void sendRecordMsg(String filePath, TempFileInfoVO file, String detectResult) {
-        String msg = filePath + paramSplit + file.getUniqueIdentifier() + paramSplit + file.getFileName() + paramSplit + file.getFileSize().toString() + paramSplit + file.getFileType() + paramSplit + detectResult + paramSplit + file.getDetectId();
+        String msg = filePath + paramSplit + file.getUniqueIdentifier() + paramSplit + file.getName() + paramSplit + file.getSize().toString() + paramSplit + file.getFileType() + paramSplit + detectResult + paramSplit + file.getDetectId();
         amqpTemplate.convertAndSend(exchangeName, "record", msg);
     }
 

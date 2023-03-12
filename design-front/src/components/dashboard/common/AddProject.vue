@@ -100,7 +100,7 @@ export default {
     },
     mergeFile: function (data) {
       data.userId = JSON.parse(this.$store.state.data).userId
-      data.mode = this.mode
+      data.mode = this.project.mode
       data.detectId = this.project.detectId
       return this.axios({
         url: window.server.COMMONS.bigFileUpload.projectFileMerge,

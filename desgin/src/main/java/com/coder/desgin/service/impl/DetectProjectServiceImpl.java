@@ -247,6 +247,8 @@ public class DetectProjectServiceImpl implements DetectProjectService {
                         line = line.endsWith("\n") ? line : line + "\n";
                         results.add(line);
                     }
+                    inputStreamReader.close();
+                    reader.close();
                 } else {
                     ImgDetectorResult imgDetectorResult = JSON.parseObject(fileResults, ImgDetectorResult.class);
                     for (DetectorRect rect: imgDetectorResult.getRects()) {

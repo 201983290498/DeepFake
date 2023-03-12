@@ -143,4 +143,15 @@ public class ImageServiceImpl implements ImageService {
             }
         }
     }
+
+    /**
+     * 下载图片
+     *
+     * @param url 图片的地址
+     * @return 返回对应的文件输入流
+     */
+    @Override
+    public InputStreamReader downloadByUrl(String url) {
+        return ossService.downloadFile(url);
+    }
 }

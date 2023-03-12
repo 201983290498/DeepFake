@@ -171,7 +171,7 @@ export default {
       deleteMode: false,
       deleteIds: [],
       deleteNum: 0,
-      lastDetectIds: []
+      lastDeleteIds: []
     }
   },
   watch: {
@@ -206,7 +206,6 @@ export default {
   methods: {
     // 查询记录
     queryRecord: function (userId, pageNum, pageSize) {
-      console.log(userId, pageNum, pageSize)
       const _this = this
       $.ajax({
         url: window.server.Project.detectProject.projects,
@@ -231,7 +230,7 @@ export default {
       if (resp.result) {
         _this.detectPage = resp.data
         for (let i = 0; i < _this.detectPage.records.length; i++) {
-          if (_this.lastDetectIds.indexOf(_this.detectPage.records[i].detectId) === -1) { // 如果文件已经被删除了, 则直接删除
+          if (this.lastDeleteIds.indexOf(_this.detectPage.records[i].detectId) !== -1) { // 如果文件已经被删除了, 则直接删除
             continue
           }
           if (_this.deleteIds.indexOf(_this.detectPage.records[i].detectId) !== -1) {
@@ -318,7 +317,7 @@ export default {
         if (!resp.data.result) {
           _this.$message.warning(resp.data.msg)
         } else {
-          _this.lastDetectIds = _this.detectId
+          _this.lastDeleteIds = _this.deleteIds
           _this.deleteMode = false
           if (_this.conditionValue === '' || _this.conditionValue === null) {
             _this.queryRecord(_this.user.userId, 1, _this.detectPage.size)

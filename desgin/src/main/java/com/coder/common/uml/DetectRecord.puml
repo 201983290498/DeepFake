@@ -36,6 +36,7 @@ class DetectProject<Table>{
 -finishTime
 -projectName 无
 -mode 检测模式 speed accuracy
+-project_result_url 检测结果文本
 检测记录n:1检测项目
 }
 class DetectRecord{

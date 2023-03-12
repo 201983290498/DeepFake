@@ -3,10 +3,7 @@ package com.coder.desgin.service;
 import com.coder.desgin.entity.mysql.Image;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -71,4 +68,11 @@ public interface ImageService {
      * @Description 根据图片地址删除图片本地和服务器上的记录
      */
     void deleteByUrl(List<String> urls);
+
+    /**
+     * 下载图片
+     * @param url 图片的地址
+     * @return 返回对应的文件输入流
+     */
+    InputStreamReader downloadByUrl(String url);
 }

@@ -135,4 +135,17 @@ public class DetectProjectController {
             return RespMessageUtils.ERROR("服务器异常, 暂时无法新增项目");
         }
     }
+
+    @ApiOperation(value = "查项目--查结果", notes = "对于一些没有项目检测文本的生成项目检测文本")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "detectId", defaultValue = "1792")})
+    @ApiResponse(code = 200, message = "检测成功", response = RespMessageUtils.class)
+    @PostMapping("/project/results")
+    public String getProjectResults(String userId, Long detectId) {
+        String url = projectService.getProjectResults(userId, detectId);
+        if (url != null && (!url.equals(""))) {
+            return RespMessageUtils.SUCCESS(url);
+        } else {
+            return RespMessageUtils.ERROR();
+        }
+    }
 }

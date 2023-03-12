@@ -47,6 +47,8 @@ public class DetectProject  implements Serializable {
      */
     protected String mode;
 
+    protected String projectResultUrl;
+
     public DetectProject(Date finishTime, String projectName, String userId, String mode) {
         this.finishTime = finishTime;
         this.projectName = projectName;

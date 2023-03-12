@@ -11,13 +11,11 @@ import com.coder.desgin.dao.UserDao;
 import com.coder.desgin.entity.DetectorRect;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
-import com.coder.desgin.entity.mysql.DetectProject;
-import com.coder.desgin.entity.mysql.DetectRecord;
-import com.coder.desgin.entity.mysql.UploadFile;
-import com.coder.desgin.entity.mysql.User;
+import com.coder.desgin.entity.mysql.*;
 import com.coder.desgin.mq.producer.JavaEmailProducer;
 import com.coder.desgin.mq.producer.RecordProducer;
 import com.coder.desgin.service.DetectProjectService;
+import com.coder.desgin.service.ImageService;
 import com.coder.desgin.service.OssService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,17 +37,18 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
     private final RecordProducer recordProducer;
 
-    private final OssService ossService;
 
     private final JavaEmailProducer javaEmailProducer;
 
+    private final ImageService imageService;
+
     private final UserDao userDao;
 
-    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao, RecordProducer recordProducer, OssService ossService, JavaEmailProducer javaEmailProducer, UserDao userDao) {
+    public DetectProjectServiceImpl(DetectProjectDao detectProjectDao, RecordProducer recordProducer, JavaEmailProducer javaEmailProducer, ImageService imageService, UserDao userDao) {
         this.detectProjectDao = detectProjectDao;
         this.recordProducer = recordProducer;
-        this.ossService = ossService;
         this.javaEmailProducer = javaEmailProducer;
+        this.imageService = imageService;
         this.userDao = userDao;
     }
 
@@ -225,11 +224,16 @@ public class DetectProjectServiceImpl implements DetectProjectService {
 
     /**
      * 根据检测项目生成检测文件
-     *
+     * 1.项目结果已经存在, 则直接返回; 2.项目结果不存在, 则直接进行检测
      * @param detectId 项目Id
+     * @return 返回检测结果的Id
      */
     @Override
-    public void postFinalResultTxt(Long detectId) {
+    public String postFinalResultTxt(Long detectId) {
+        DetectProject detectProject = detectProjectDao.selectById(detectId);
+        if ((detectProject.getProjectResultUrl() != null) && (!detectProject.getProjectResultUrl().equals(""))) {
+            return detectProject.getProjectResultUrl();
+        }
         List<UploadFile> projectFiles = detectProjectDao.selectFiles(detectId);
         String filePath = "./" + UUID.randomUUID().toString().substring(0,10) + ".txt";
         String line;
@@ -241,7 +245,7 @@ public class DetectProjectServiceImpl implements DetectProjectService {
                 if (fileResults.startsWith("https")) { // 如果是检测文件
                     results.add(projectFile.getFileName() + ":\n");
                     String detectUrl = fileResults;
-                    InputStreamReader inputStreamReader = ossService.downloadFile(detectUrl);
+                    InputStreamReader inputStreamReader = imageService.downloadByUrl(detectUrl);
                     BufferedReader reader = new BufferedReader(inputStreamReader);
                     while ((line = reader.readLine()) != null) {
                         line = line.endsWith("\n") ? line : line + "\n";
@@ -260,13 +264,34 @@ public class DetectProjectServiceImpl implements DetectProjectService {
                 writer.write(lin);
             }
             writer.close();
-            DetectProject detectProject = detectProjectDao.selectById(detectId);
+            Image image = imageService.insertOneByFile(new File(filePath));
+            detectProject.setProjectResultUrl(image.getImageUrl());
             detectProject.setFinishTime(new Date());
             detectProjectDao.updateById(detectProject);
             User user = userDao.selectById(detectProject.getUserId());
             javaEmailProducer.sendEmailMsg("file", user.getEmail(), new File(filePath).getAbsolutePath());
+            return image.getImageUrl();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 查询项目的检测结果
+     *
+     * @param userId   用户Id
+     * @param detectId 项目Id
+     * @return 检测结果的路径
+     */
+    @Override
+    public String getProjectResults(String userId, Long detectId) {
+        QueryWrapper<DetectProject> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        wrapper.eq("detect_id", detectId);
+        if (detectProjectDao.selectCount(wrapper) == 0) {
+            return  null;
+        } else {
+            return postFinalResultTxt(detectId);
         }
     }
 }

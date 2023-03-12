@@ -97,5 +97,13 @@ public interface DetectProjectService {
      * 根据检测项目生成检测文件
      * @param detectId 项目Id
      */
-    void postFinalResultTxt(Long detectId);
+    String postFinalResultTxt(Long detectId);
+
+    /**
+     * 查询项目的检测结果
+     * @param userId 用户Id
+     * @param detectId 项目Id
+     * @return 检测结果的路径
+     */
+    String getProjectResults(String userId, Long detectId);
 }

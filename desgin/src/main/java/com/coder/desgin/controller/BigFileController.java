@@ -138,6 +138,7 @@ public class BigFileController {
                     FileUtils.deleteDirectory(fileDir);
                 }
             }
+            finalFilePath.replace("/", "");
             fileService.detectProject(fileInfoVO, finalFilePath);
             return RespMessageUtils.SUCCESS();
         }

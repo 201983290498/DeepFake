@@ -20,6 +20,7 @@
             <li class="nav-item nav-item-has-subnav">
               <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>历史项目</a>
               <ul class="nav nav-subnav">
+                <li> <router-link to="/showBoard/addProject">创建项目</router-link> </li>
                 <li> <router-link to="/showBoard/historyProjects">项目记录</router-link> </li>
                 <li> <router-link to="/showBoard/picBoard">历史图库</router-link></li>
               </ul>

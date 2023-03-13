@@ -1,21 +1,19 @@
 <template>
-  <div id="picBoard" class="lyear-layout-content">
+  <div id="picBoard">
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
               <div class="masonry-grid" data-provide="photoswipe">
-                <a v-for="(file, i) in files" :key="i" class="masonry-item" href="#">
-                  <img src="" :alt="file.fileName">
-                </a>
+                <for v-for="record in files" :key="record.fileId" class="masonry-item" href="#">
+                  <img src="#" :alt="record.detectFile">
+                </for>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
 </template>
@@ -32,16 +30,21 @@ export default {
     }
   },
   watch: {
-    files: function (newValue) {
-      $('#picBoard masonry-item').each(function (index, node) { // 待检测
+    files: function () {
+      for (const item in this.files) {
+        const file = this.files[item]
         const img = new Image()
-        img.src = newValue[index].fileLocation
+        img.src = file.fileLocation
         img.setAttribute('crossOrigin', 'anonymous')
         img.onload = function () {
-          const base64 = common.drawDetections(img, JSON.parse(newValue[index].fileResults).rects)
-          node.attr('src', base64)
+          console.log(img)
+          const base64 = common.drawDetections(img, JSON.parse(file.fileResults).rects)
+          $($('#picBoard .masonry-item img').get(item)).attr('src', base64)
         }
-      })
+      }
+    },
+    showFiles: function () {
+      this.files = this.showFiles
     }
   },
   props: {
@@ -50,13 +53,28 @@ export default {
       default: () => { // todo 记住这个用法
         return []
       }
+    },
+    detail: {
+      type: Boolean,
+      default: () => {
+        return false
+      }
     }
   },
   created () {
     const _this = this
-    if (this.showFiles.length === 0) { // 分两种模式, 传入数据和自动获取数据
+    if (!_this.detail) { // 分两种模式, 传入数据和自动获取数据
       common.getAllRecords(this.user.userId, null, 'image').then((resp) => {
-        _this.files = resp.data.data
+        if (resp.data.result) {
+          const files = []
+          for (const item in resp.data.data) {
+            const file = resp.data.data[item]
+            if (file.fileLocation !== '') {
+              files.push(file)
+            }
+          }
+          _this.files = files
+        }
       })
     } else {
       this.files = this.showFiles

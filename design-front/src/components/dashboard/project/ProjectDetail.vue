@@ -34,6 +34,7 @@
               </div>
               <div class="form-group col-md-12">
                 <label>文件详情</label>
+                <PicBoard :show-files="files" :detail="true"></PicBoard>
               </div>
             </form>
           </div>
@@ -46,6 +47,7 @@
 <script>
 import $ from 'jquery'
 import common from '@/assets/js/common'
+import PicBoard from '@/components/dashboard/common/PicBoard.vue'
 export default {
   name: 'ProjectDetail',
   data () {
@@ -53,8 +55,12 @@ export default {
       project: this.$route.params.detectProject,
       user: JSON.parse(this.$store.state.data),
       pageTitle: '项目详情',
-      createTimeLocal: ''
+      createTimeLocal: '',
+      files: []
     }
+  },
+  components: {
+    PicBoard
   },
   methods: {
     editProject: function () {
@@ -93,7 +99,13 @@ export default {
     }
   },
   created () {
+    const _this = this
     this.$emit('changeActivePage', this.pageTitle)
+    common.getAllRecords(this.user.userId, this.project.detectId, 'image').then((resp) => {
+      if (resp.data.result) {
+        _this.files = resp.data.data
+      }
+    })
   }
 }
 </script>

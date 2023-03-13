@@ -170,6 +170,7 @@ export default {
         data: data
       })
     },
+    // 根据浏览器的大小选择合适的图片数量和质量
     getDisplayImages: function (showImage) {
       const _this = this
       let height = 170
@@ -209,6 +210,7 @@ export default {
         }
       }
     },
+    // 查询最近的选择结果
     queryRecentList: function (maxNum) {
       const _this = this
       if (_this.loginStatus) {
@@ -245,12 +247,15 @@ export default {
         }
       }
     },
+    // 添加新选择的图片
     addShowImage: function (url) {
+      console.log(url, this.disImgs)
       if (typeof url === 'undefined') {
         return
       }
       const _this = this
-      const imageName = url.substring(url.lastIndexOf('/') + 1)
+      const imageName = url.substring(Math.max(url.lastIndexOf('/'), url.lastIndexOf(' '), url.lastIndexOf('=')) + 1)
+      console.log(imageName)
       let i = 0
       for (; i < _this.disImgs.length; i++) {
         if (_this.disImgs[i].indexOf(imageName) !== -1) {

@@ -39,6 +39,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (!fileType.equals("")) {
             wrapper2.apply("file_type like '%"  + fileType + "%'");
         }
+        wrapper2.orderByDesc("file_id");
         return fileDao.selectListCondition(wrapper, wrapper2);
     }
 }

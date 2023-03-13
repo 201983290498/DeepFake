@@ -37,7 +37,6 @@ export default {
         img.src = file.fileLocation
         img.setAttribute('crossOrigin', 'anonymous')
         img.onload = function () {
-          console.log(img)
           const base64 = common.drawDetections(img, JSON.parse(file.fileResults).rects)
           $($('#picBoard .masonry-item img').get(item)).attr('src', base64)
         }

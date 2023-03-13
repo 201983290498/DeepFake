@@ -14,11 +14,9 @@
         <nav class="sidebar-main">
           <ul class="nav nav-drawer">
             <li class="nav-item active"> <router-link to="/showBoard"><i class="mdi mdi-home"></i>控制台</router-link> </li>
+
             <li class="nav-item nav-item-has-subnav">
-              <router-link to="/showBoard/runningProject"><i class="mdi mdi-palette"></i>运行项目</router-link>
-            </li>
-            <li class="nav-item nav-item-has-subnav">
-              <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>历史项目</a>
+              <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>项目管理</a>
               <ul class="nav nav-subnav">
                 <li> <router-link to="/showBoard/addProject">创建项目</router-link> </li>
                 <li> <router-link to="/showBoard/historyProjects">项目记录</router-link> </li>
@@ -60,7 +58,6 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-right">
                 <li> <router-link to="/showBoard"><i class="mdi mdi-home"></i> 控制台</router-link> </li>
-                <li> <router-link to="/showBoard/runningProject"><i class="mdi mdi-palette"></i> 运行项目</router-link> </li>
                 <li> <router-link to="/showBoard/historyProjects"><i class="mdi mdi-format-align-justify"></i> 历史项目</router-link></li>
                 <li><router-link to="/showBoard/personalInfo"><i class="mdi mdi-account"></i>个人信息</router-link></li>
                 <li class="divider"></li>

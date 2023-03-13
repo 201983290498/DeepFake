@@ -163,7 +163,7 @@ export default {
   data () {
     return {
       cardTitle: '项目记录',
-      pageTitle: '历史项目',
+      pageTitle: '项目管理',
       detectPage: [],
       user: JSON.parse(this.$store.state.data),
       conditionValue: '',

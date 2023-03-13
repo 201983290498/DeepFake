@@ -43,6 +43,13 @@ spring:
     password: ${RABBIT_PASSWORD}
     port: ${RABBIT_PORT}
     virtual-host: /
+  application:
+    name: desgin
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: 30MB
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
@@ -51,3 +58,29 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+server:
+  port: 8080
+  servlet:
+    context-path: /detector
+
+deepfake:
+  rq:
+    email:
+      queue: deepfake.email.queue
+    record:
+      queue: deepfake.record.queue
+      deleteQueue: deepfake.record.deleteQueue
+    redis:
+      queue: deepfake.redis.queue
+  ex: deepfake.ex
+rabbitmq:
+  params:
+    split: ;;;
+redis:
+  expireTime: 1800
+
+oss:
+  server:
+    url:
+      prefix: https://deepfakedetector.oss-cn-hangzhou.aliyuncs.com/

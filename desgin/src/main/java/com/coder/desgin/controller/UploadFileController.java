@@ -1,13 +1,17 @@
 package com.coder.desgin.controller;
 
 import com.coder.common.util.RespMessageUtils;
+import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.UploadFileService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @Author coder
@@ -35,5 +39,18 @@ public class UploadFileController {
     public String getDetectedFile(String fileId) {
         UploadFile uploadFile = uploadFileService.selectById(fileId);
         return RespMessageUtils.SUCCESS(uploadFile);
+    }
+
+    @ApiOperation("查记录--检测文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", defaultValue = "c7f4fa523495ebb18a729455cdd11f57"), @ApiImplicitParam(name = "detectId", defaultValue = ""), @ApiImplicitParam(name = "fileType", value = "image")})
+    @ApiResponse(code = 200, message = "检测成功", response = DetectProjectDTO.class)
+    @PostMapping("/files")
+    public String getAllRecords(@RequestParam("userId") String userId, @RequestParam(value = "detectId", required = false, defaultValue = "") String detectId, @RequestParam(value = "fileType", required = false, defaultValue = "") String fileType) {
+        List<UploadFile> files = uploadFileService.selectFiles(userId, detectId, fileType);
+        if (files == null || files.size() == 0) {
+            return RespMessageUtils.SUCCESS(new LinkedList<UploadFile>());
+        } else {
+            return RespMessageUtils.SUCCESS(files);
+        }
     }
 }

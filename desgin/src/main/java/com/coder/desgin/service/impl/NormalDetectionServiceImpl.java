@@ -35,9 +35,9 @@ import java.io.IOException;
 @PropertySource(value = "classpath:mySetting.properties")
 public class NormalDetectionServiceImpl implements NormalDetectionService {
     private HttpUtil httpUtil;
-    @Value("${flask.copymove.url}")
+    @Value("${flask.host}:${flask.port}${flask.copymove.url}")
     private String copymoveDetectUrl;
-    @Value("${flask.splicing.url}")
+    @Value("${flask.host}:${flask.port}:${flask.splicing.url}")
     private String splicingDetectUrl;
 
     @Autowired

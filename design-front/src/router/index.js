@@ -103,7 +103,12 @@ const routes = [
       {
         path: 'addProject',
         name: 'AddProject',
-        component: () => import('@/components/dashboard/common/AddProject.vue')
+        component: () => import('@/components/dashboard/project/AddProject.vue')
+      },
+      {
+        path: 'projectDetail',
+        name: 'ProjectDetail',
+        component: () => import('@/components/dashboard/project/ProjectDetail.vue')
       }
     ]
   }

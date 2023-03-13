@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coder.common.util.RespMessageUtils;
 import com.coder.desgin.entity.dto.DetectProjectDTO;
 import com.coder.desgin.entity.mysql.DetectRecord;
+import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.DetectProjectService;
+import com.coder.desgin.service.UploadFileService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,7 +65,7 @@ public class DetectRecordController {
     }
 
 
-    @ApiOperation("查检测记录")
+    @ApiOperation("查记录")
     @PostMapping("/records")
     public String getAllDetectionRecords(String userId, Integer pageNum, Integer pageSize) {
         log.info(userId + "正在查询所有个人检测记录");

@@ -90,15 +90,15 @@
                       <input type="checkbox" :data-detect-id="record.detectId" @change="checkboxChange" :checked="deleteIds.indexOf(record.detectId) !== -1"><span></span>
                     </label>
                   </td>
-                  <td>{{record.detectId}}</td>
+                  <td class="projectId"><router-link :to="{ name: 'ProjectDetail', params: { detectProject: record } }"> {{record.detectId}} </router-link></td>
                   <td class="project-name-td">{{record.projectName}}</td>
                   <td>{{record.projectLevel}}</td>
-                  <td>{{record.createTime}}</td>
+                  <td>{{getLocalTime(record.createTime)}}</td>
                   <td>{{record.imageQuantity}}</td>
                   <td>{{record.mode}}</td>
                   <td>
                     <div class="progress progress-striped progress-sm">
-                      <div :class="'progress-bar ' + (record.finishTime === '已完成'? 'progress-bar-success' : 'progress-bar-warning')" :style="'width: ' + (record.finishTime === '已完成'? '100%;' : '75%;')">
+                      <div :class="'progress-bar ' + (record.finishTime !== null? 'progress-bar-success' : 'progress-bar-warning')" :style="'width: ' + (record.finishTime !== null? '100%;' : '75%;')">
                       </div>
                     </div>
                   </td>
@@ -235,12 +235,6 @@ export default {
           }
           if (_this.deleteIds.indexOf(_this.detectPage.records[i].detectId) !== -1) {
             _this.deleteNum += 1
-          }
-          _this.detectPage.records[i].createTime = common.getLocalTime(_this.detectPage.records[i].createTime)
-          if (_this.detectPage.records[i].finishTime != null) {
-            _this.detectPage.records[i].finishTime = '已完成'
-          } else {
-            _this.detectPage.records[i].finishTime = '检测中'
           }
         }
       } else {
@@ -394,6 +388,10 @@ export default {
     // 排序模型
     orderRecords: function (orderField, ordered) {
       this.searchProject(this.user.userId, this.conditionField, this.conditionValue, ordered, orderField, 1, this.detectPage.size)
+    },
+    // 获取本地时间
+    getLocalTime: function (timeStamp) {
+      return common.getLocalTime(timeStamp)
     }
   },
   created () {
@@ -413,5 +411,8 @@ export default {
 }
 .dropup .caret {
   border-bottun: 8px dashed !important;
+}
+#historyProject .projectId:hover {
+  text-decoration: underline;
 }
 </style>

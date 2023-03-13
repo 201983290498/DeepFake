@@ -65,7 +65,7 @@
                 </thead>
 <!--                table的表格主体-->
                 <tbody>
-                <tr v-for="(record, i) in detectPage.records" :key="record.detectId">
+                <tr v-for="(record, i) in detectPage.records" :key="record.fileId">
                   <td>{{(detectPage.current-1)*detectPage.size+i+1}}</td>
                   <td>{{record.projectName}}</td>
                   <td>{{record.createTime}}</td>

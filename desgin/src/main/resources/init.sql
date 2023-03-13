@@ -39,6 +39,7 @@ create table if not exists `project_tbl` (
     project_name nvarchar(50) default '',
     user_id nvarchar(50) default 'default',
     mode nvarchar(50) default 'accuracy',
+    project_result_url nvarchar(200) default '',
     foreign key (user_id) references usr_tbl(user_id)
 );
 create table if not exists `file_tbl` (

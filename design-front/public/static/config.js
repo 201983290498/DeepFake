@@ -38,7 +38,8 @@ window.server = { // 1. 定义服务器url接口
       similarSearch: '/api/detectProject/project/similarSearch',
       delete: '/api/detectProject/project/delete',
       update: '/api/detectProject/project/update',
-      insert: '/api/detectProject/project/insert'
+      insert: '/api/detectProject/project/insert',
+      getResult: '/api/detectProject/project/results'
     },
     record: {
       recentImages: '/api/detectProject/recent/images',
@@ -47,6 +48,7 @@ window.server = { // 1. 定义服务器url接口
     },
     file: {
       file: '/api/detectProject/detectedFile',
+      conditionFile: '/api/detectProject/files'
     }
   }
 }

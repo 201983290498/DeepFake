@@ -50,7 +50,6 @@ public class FileServiceImpl implements FileService {
 
     public final JavaEmailProducer emailAsynHandler;
     private final RecordProducer recordProducer;
-
     private final RedisProducer redisAsynHandler;
 
     @Value("${oss.server.url.prefix}")

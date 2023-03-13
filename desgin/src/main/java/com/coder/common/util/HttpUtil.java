@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
@@ -28,12 +29,14 @@ import java.nio.charset.StandardCharsets;
 @NoArgsConstructor
 @Scope("singleton")
 @PropertySource(value = "classpath:mySetting.properties")
+@Slf4j
 public class HttpUtil {
 
-    @Value("${flask.deepfake.url}")
+
+    @Value("${flask.host}:${flask.port}${flask.deepfake.url}")
     private String detectUrl;
 
-    @Value("${flask.deepfake.quick_url}")
+    @Value("${flask.host}:${flask_port}${flask.deepfake.quick_url}")
     private String detectQuick;
 
     /**
@@ -48,6 +51,7 @@ public class HttpUtil {
         } else if (url == null && mode.equals("speed")) {
             url = getDetectQuick();
         }
+        url = "http://" + url;
         RestTemplate client = new RestTemplate();
         client.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         HttpHeaders headers = new HttpHeaders();

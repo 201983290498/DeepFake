@@ -42,11 +42,11 @@ export default {
     return hexHash
   },
   downLoadPic: function (picture) {
+    // todo 如何给下载的文件命名
     const a = document.createElement('a')
-    const event = new MouseEvent('click')
     a.download = picture.name
     a.href = picture.base64
-    a.dispatchEvent(event)
+    a.click()
   },
   checkToken: function () {
     const token = store.state.Authorization
@@ -108,5 +108,22 @@ export default {
       method: 'post',
       data: data
     })
+  },
+  getProjectResult: function (userId, detectId) {
+    const data = new FormData()
+    data.append('userId', userId)
+    data.append('detectId', detectId)
+    return axios.post(window.server.Project.detectProject.getResult, data)
+  },
+  getAllRecords: function (userId, detectId, detectType) {
+    const data = new FormData()
+    data.append('userId', userId)
+    if (detectId !== null) {
+      data.append('detectId', detectId)
+    }
+    if (detectType !== null) {
+      data.append('detectType', detectType)
+    }
+    return axios.post(window.server.Project.file.conditionFile, data)
   }
 }

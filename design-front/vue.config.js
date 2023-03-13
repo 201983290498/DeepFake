@@ -18,8 +18,8 @@ module.exports = defineConfig({
   },
   devServer: {
     host: '127.0.0.1',
-    port: 8090,
-    open: true, // vue项目启动时自动打开浏览器
+    port: 8099,
+    open: false, // vue项目启动时自动打开浏览器
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8080/detector',

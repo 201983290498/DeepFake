@@ -28,7 +28,6 @@ import java.io.InputStream;
 @RestController
 @RequestMapping("/bigfile")
 @Slf4j
-@PropertySource(value = "classpath:mySetting.properties")
 public class BigFileController {
 
     /**

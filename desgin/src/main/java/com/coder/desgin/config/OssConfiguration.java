@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@PropertySource("classpath:mySetting.properties") // 加载配置文件
 public class OssConfiguration {
 
     @Value("${aliyun.oss.endpoint}")

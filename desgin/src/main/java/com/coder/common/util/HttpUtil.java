@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 @AllArgsConstructor
 @NoArgsConstructor
 @Scope("singleton")
-@PropertySource(value = "classpath:mySetting.properties")
 @Slf4j
 public class HttpUtil {
 
@@ -36,7 +35,7 @@ public class HttpUtil {
     @Value("${flask.host}:${flask.port}${flask.deepfake.url}")
     private String detectUrl;
 
-    @Value("${flask.host}:${flask_port}${flask.deepfake.quick_url}")
+    @Value("${flask.host}:${flask.port}${flask.deepfake.quick_url}")
     private String detectQuick;
 
     /**

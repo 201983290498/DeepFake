@@ -1,0 +1,71 @@
+spring:
+  mail:
+    host: smtp.qq.com
+    username: ${QQ_EMAIL}
+    password: ${QQ_EMAIL_PWD}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWD}
+    timeout: 50000
+    database: 0
+    lettuce:
+      pool:
+        max-wait: 50000
+  datasource:
+    name: defaultDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWD}
+    hikari:
+      connection-timeout: 10000
+      validation-timeout: 3000
+      idle-timeout: 60000
+      login-timeout: 5
+      max-lifetime: 60000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      read-only: false
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    port: ${RABBIT_PORT}
+    virtual-host: /
+
+flask:
+  host: ${FLASK_HOST}
+  port: ${FLASK_PORT}
+  deepfake:
+    url: /infer
+    quick_url: /infer_quick
+  copymove:
+    url: /copymove/detect
+  splicing:
+    url: /splicing/detect
+email:
+  emailAddress: ${QQ_EMAIL}
+  emailPwd: ${QQ_EMAIL_PWD}
+  timeout: 600000
+
+bigFile:
+  temp: /big_file_temp
+  directory: /big_file_directory
+
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: ${ALIYUN_ACCESSKEY_ID}
+    accessKeySecret: ${ALIYUN_ACCESSKEY_SECRET}
+    bucketName: deepfakedetector
+
+logging:
+  level:
+    root: info
+    com.coder.design.controller: trace
+  pattern:
+    console: "%d{yyyy-MM-dd} ---- %-5level [%thread] %logger{10}:%msg%n"
+  file:
+    path: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog
+    name: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog\\design.log

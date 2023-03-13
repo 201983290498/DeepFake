@@ -32,7 +32,6 @@ import java.io.IOException;
 @Data
 @NoArgsConstructor
 @Slf4j
-@PropertySource(value = "classpath:mySetting.properties")
 public class NormalDetectionServiceImpl implements NormalDetectionService {
     private HttpUtil httpUtil;
     @Value("${flask.host}:${flask.port}${flask.copymove.url}")

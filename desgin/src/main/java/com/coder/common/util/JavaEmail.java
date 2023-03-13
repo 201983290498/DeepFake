@@ -30,7 +30,6 @@ import java.util.*;
 @Scope("singleton") // 设置单例模式
 @AllArgsConstructor
 @NoArgsConstructor
-@PropertySource("classpath:mySetting.properties") // 加载配置文件
 public class JavaEmail {
 
     /**

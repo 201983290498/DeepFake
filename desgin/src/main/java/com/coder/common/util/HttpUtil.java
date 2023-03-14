@@ -44,13 +44,16 @@ public class HttpUtil {
      * @param params 请求参数
      * @return 返回POST请求的JSON结果
      */
-    public JSONObject sendPost(String url, MultiValueMap<String, String>params, String mode){
+    public JSONObject sendPost(String url, MultiValueMap<String, String>params, String mode, Boolean sendFile){
         if(url==null && mode.equals("accuracy")){
             url = getDetectUrl();
         } else if (url == null && mode.equals("speed")) {
             url = getDetectQuick();
         }
         url = "http://" + url;
+        if (sendFile) {
+            url += "/file";
+        }
         RestTemplate client = new RestTemplate();
         client.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         HttpHeaders headers = new HttpHeaders();

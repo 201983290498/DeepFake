@@ -22,7 +22,7 @@ module.exports = defineConfig({
     open: false, // vue项目启动时自动打开浏览器
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8080/detector',
+        target: 'http://106.15.176.6:8080/detector',
         changOrigin: true,
         pathRewrite: {
           '^/api': ''

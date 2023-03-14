@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,9 @@ public class FileController {
 
     private static String ZIP = "zip";
 
+    @Value("${model.location}")
+    private Boolean sendFile;
+
 
     public FileController(FileService uploadFileService, NormalDetectionServiceImpl normalDetectionService) {
         this.uploadFileService = uploadFileService;
@@ -54,14 +58,14 @@ public class FileController {
         if (file.getFileType().contains(ZIP)) {
             String resultsFile;
             try {
-                resultsFile = uploadFileService.detectZip(file, request);
+                resultsFile = uploadFileService.detectZip(file, sendFile, request);
                 return RespMessageUtils.SUCCESS(resultsFile);
             } catch (Exception e) {
                 log.warn(e.getMessage());
                 return RespMessageUtils.ERROR("服务器故障!");
             }
         } else {// 处理单个文件
-            ImgDetectorResult result = uploadFileService.detectImg(file, request);
+            ImgDetectorResult result = uploadFileService.detectImg(file, sendFile, request);
             return RespMessageUtils.SUCCESS(result);
         }
     }

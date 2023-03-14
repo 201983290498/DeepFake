@@ -1,5 +1,6 @@
 package com.coder.desgin.controller;
 
+import com.coder.common.util.ZipUtil;
 import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.TempChunkInfo;
 import com.coder.desgin.entity.mysql.UploadFile;
@@ -10,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +38,9 @@ public class BigFileController {
 
     @Value("${bigFile.directory}")
     private String bigFileDir;
+
+    @Value("${model.location}")
+    private Boolean sendFile;
 
     private final FileService fileService;
 
@@ -101,7 +104,15 @@ public class BigFileController {
             }
             // todo location 怎么弄 还有本地地址存在一些问题
             UploadFile uploadFile = new UploadFile(fileInfoVO);
-            String textUrl = fileService.detectZip(finalFilePath, uploadFile);
+            String textUrl;
+            if (sendFile) {
+                String s = ZipUtil.fileToBase64(finalFilePath);
+                uploadFile.setBase64(s);
+                textUrl = fileService.detectZipWithFile(uploadFile);
+            }
+            else {
+                textUrl = fileService.detectZip(finalFilePath, uploadFile);
+            }
             return RespMessageUtils.SUCCESS(textUrl);
         }
         catch (Exception e) {
@@ -138,6 +149,16 @@ public class BigFileController {
                 }
             }
             finalFilePath.replace("/", "");
+            if (sendFile) {
+                UploadFile uploadFile = new UploadFile(fileInfoVO);
+                String s = ZipUtil.fileToBase64(finalFilePath);
+                uploadFile.setBase64(s);
+                fileService.detectProjectWithFile(uploadFile, fileInfoVO, finalFilePath);
+            }
+            else {
+                fileService.detectProject(fileInfoVO, finalFilePath);
+
+            }
             fileService.detectProject(fileInfoVO, finalFilePath);
             return RespMessageUtils.SUCCESS();
         }

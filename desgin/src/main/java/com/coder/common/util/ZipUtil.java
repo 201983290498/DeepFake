@@ -302,4 +302,20 @@ public class ZipUtil {
         new File(filePath).delete();
         return zipDir;
     }
+
+    public static String fileToBase64(String filePath) {
+        byte[] data = null;
+        try {
+            InputStream in = new FileInputStream(filePath);
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 对字节数组进行Base64编码，得到Base64编码的字符串
+        Base64.Encoder encoder = Base64.getEncoder();
+        String base64Str = encoder.encodeToString(data);
+        return base64Str;
+    }
 }

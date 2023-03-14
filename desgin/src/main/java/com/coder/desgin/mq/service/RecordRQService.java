@@ -66,7 +66,7 @@ public class RecordRQService {
         String projectLevel;
         // 1.上传图片或者压缩包的地址
         // 如果不是zip文件
-        if (!messages[0].substring(messages[0].lastIndexOf(".")+1).equals("zip")) {
+        if (!messages[0].substring(messages[0].lastIndexOf(".")+1).equals("zip") && !messages[0].equals("on computer server")) {
             File uploadFile = new File(messages[0]);
             image = imageService.insertOneByFile(uploadFile);  // 检测图片上传在本地的位置
             md5 = image.getMd5();

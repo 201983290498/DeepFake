@@ -23,7 +23,7 @@ public interface FileService {
      * @return 返回检测文档的url地址
      * @throws  IOException 检测文本生成错误
      */
-    String detectZip(BaseFile file, HttpServletRequest request) throws IOException;
+    String detectZip(BaseFile file, Boolean sendFile, HttpServletRequest request) throws IOException;
 
     /**
      * 检测zip文件
@@ -46,10 +46,11 @@ public interface FileService {
     /**
      * 检测图片文件
      * @param file 压缩文件
+     * @Param sendFile 是否发送文件
      * @param request request请求，获取项目地址
      * @return 返回检测框的结果
      */
-    ImgDetectorResult detectImg(BaseFile file, HttpServletRequest request);
+    ImgDetectorResult detectImg(BaseFile file, Boolean sendFile, HttpServletRequest request);
 
     /**
      * 负责解析flask传来的字符串
@@ -83,4 +84,17 @@ public interface FileService {
      * @param finalFilePath 文件的路径
      */
     void detectProject(TempFileInfoVO fileInfoVO, String finalFilePath) throws FileNotFoundException;
+
+    /**
+     * 发送文件给后端 检测
+     * @param uploadFile 需要上传的文件
+     * @return 返回检测文本的地址
+     */
+    String detectZipWithFile(UploadFile uploadFile) throws FileNotFoundException;
+
+    /**
+     * 传输文件版本的检测
+     * @param uploadFile 需要上传的文件
+     */
+    void detectProjectWithFile(UploadFile uploadFile, TempFileInfoVO fileInfoVO, String filePath) throws FileNotFoundException;
 }

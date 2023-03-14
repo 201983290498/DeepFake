@@ -69,3 +69,5 @@ logging:
   file:
     path: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog
     name: E:\\code\\github\\bs\\DeepFake\\desgin\\mylog\\design.log
+model:
+  location: false

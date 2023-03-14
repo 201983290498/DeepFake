@@ -64,26 +64,50 @@ public class FileServiceImpl implements FileService {
         this.recordProducer = recordProducer;
         this.redisAsynHandler = redisAsynHandler;
     }
+
     @Override
     public List<ImgDetectorResult> detectFile(String filePath, String detectMode){
         // 打包参数
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("path", filePath);
         // url 使用默认参数
-        JSONObject jsonObject = httpUtil.sendPost(null, params, detectMode);
+        JSONObject jsonObject = httpUtil.sendPost(null, params, detectMode, false);
         log.info(jsonObject.toString());
         List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
         log.info("Analysis result: path".concat(filePath).concat(";  detections:").concat(analysisResult.toString()));
         return analysisResult;
     }
 
+    public List<ImgDetectorResult> detectFile2(BaseFile file) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("file", JSON.toJSONString(file));
+        JSONObject jsonObject = httpUtil.sendPost(null, params, file.getMode(), true);
+        log.info(jsonObject.toString());
+        List<ImgDetectorResult> analysisResult = getAnalysisResult(jsonObject);
+        log.info("Analysis result: ".concat("detections:").concat(analysisResult.toString()));
+        return analysisResult;
+    }
+
     @Override
-    public String detectZip(BaseFile file, HttpServletRequest request) throws IOException{
+    public String detectZip(BaseFile file, Boolean sendFile, HttpServletRequest request) throws IOException{
         // zipPath 解压文件夹的路径
-        String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
-        UploadFile uploadFile = new UploadFile(file);
-        uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
-        return detectZip(zipPath, uploadFile);
+        if (sendFile) { // 本地不处理
+            String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
+            UploadFile uploadFile = new UploadFile(file);
+            uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
+            String result = JSON.toJSONString(detectFile2(file));
+            String detectTextPath = mkResultText(result, "./" );
+            emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+            // 1. 检测结果上传
+            Image image = imageService.insertOneByFile(new File(detectTextPath));
+            insertRecord("on computer server", uploadFile, image.getImageUrl());
+            return image.getImageUrl();
+        } else {
+            String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
+            UploadFile uploadFile = new UploadFile(file);
+            uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
+            return detectZip(zipPath, uploadFile);
+        }
     }
 
     @Override
@@ -101,11 +125,16 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ImgDetectorResult detectImg(@NotNull BaseFile file, HttpServletRequest request) {
+    public ImgDetectorResult detectImg(@NotNull BaseFile file, Boolean sendFile, HttpServletRequest request) {
         String filePath = ImageUtil.generateImage(file.getFileName(), file.getBase64(), request);
         assert filePath != null;
         log.info("解压文件地址为:".concat(filePath));
-        List<ImgDetectorResult> analysisResult = detectFile(filePath, file.getMode());
+        List<ImgDetectorResult> analysisResult;
+        if (sendFile) {
+            analysisResult = detectFile2(file);
+        } else {
+            analysisResult = detectFile(filePath, file.getMode());
+        }
         try {
             // 1. 默认项目添加, 文件上传,添加
             UploadFile uploadFile = new UploadFile(file);
@@ -141,6 +170,44 @@ public class FileServiceImpl implements FileService {
             fileResults = JSON.toJSONString(imgDetectorResults.get(0));
         }
         recordProducer.sendRecordMsg(filePath, fileInfoVO, fileResults);
+    }
+
+    /**
+     * 传输文件版本的检测
+     *
+     * @param uploadFile 需要上传的文件
+     */
+    @Override
+    public void detectProjectWithFile(UploadFile uploadFile, TempFileInfoVO fileInfoVO, String filePath) throws FileNotFoundException {
+        String fileResults;
+        if (uploadFile.getFileName().endsWith("zip")) {
+            String result = JSON.toJSONString(detectFile2(uploadFile));
+            String detectTextPath = mkResultText(result, "./");
+            // 检测结果上传, 获取成为url
+            Image image = imageService.insertOneByFile(new File(detectTextPath));
+            fileResults = image.getImageUrl();
+        } else {
+            List<ImgDetectorResult> imgDetectorResults = detectFile2(uploadFile);
+            fileResults = JSON.toJSONString(imgDetectorResults.get(0));
+        }
+        recordProducer.sendRecordMsg(filePath, fileInfoVO, fileResults);
+    }
+
+    /**
+     * 发送文件给后端 检测
+     *
+     * @param uploadFile 需要上传的文件
+     * @return 返回检测文本的地址
+     */
+    @Override
+    public String detectZipWithFile(UploadFile uploadFile) throws FileNotFoundException {
+        String result = JSON.toJSONString(detectFile2(uploadFile));
+        String detectTextPath = mkResultText(result, "./");
+        emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+        // 1. 检测结果上传
+        Image image = imageService.insertOneByFile(new File(detectTextPath));
+        insertRecord("on computer server", uploadFile, image.getImageUrl());
+        return image.getImageUrl();
     }
 
     @Override

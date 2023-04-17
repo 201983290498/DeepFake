@@ -1,5 +1,5 @@
 # 创建数据库的基本表格
-create database if not exists graduate_design;
+create database if not exists `graduate_design`;
 use graduate_design;
 drop table if exists `file_tbl`, `project_tbl`, `project_file_tbl`;
 drop table if exists  `image`, `usr_tbl`;

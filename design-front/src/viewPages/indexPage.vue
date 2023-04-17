@@ -15,12 +15,12 @@
         <div class="collapse navbar-collapse">
           <!--主要功能-->
           <ul class="nav navbar-nav mg-auto">
-            <li>
+            <li class="active">
               <router-link to="/detectorPage/deepfakeDetector" active-class="func-active">deepfake篡改检测</router-link>
             </li>
-            <li class="active">
-              <router-link to="/detectorPage/normalDetector" active-class="func-active">普通篡改检测</router-link>
-            </li>
+<!--            <li class="active">-->
+<!--              <router-link to="/detectorPage/normalDetector" active-class="func-active">普通篡改检测</router-link>-->
+<!--            </li>-->
           </ul>
           <!--用户信息栏-->
           <ul class="nav navbar-nav ml-auto">
@@ -31,7 +31,7 @@
               <a class="dropdown-toggle" data-toggle="dropdown"><img id="headPortrait" class="rounded-circle mr-2" src="@/../static/imgs/av.png" style="width:30px;height: 30px" alt=""><span class="align-middle">{{userStatus}}<span class="caret"></span></span></a>
               <ul class="dropdown-menu dropdown-menu-right">
                 <li> <router-link to="/showBoard"><i class="mdi mdi-home"></i> 控制台</router-link> </li>
-                <li> <router-link to="/showBoard/runningProject"><i class="mdi mdi-palette"></i> 运行项目</router-link> </li>
+<!--                <li> <router-link to="/showBoard/runningProject"><i class="mdi mdi-palette"></i> 运行项目</router-link> </li>-->
                 <li> <router-link to="/showBoard/historyProjects"><i class="mdi mdi-format-align-justify"></i> 历史项目</router-link></li>
                 <li class="divider"></li>
                 <li> <a @click="loginOut"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>

@@ -13,20 +13,33 @@ export default {
     canvas.width = img.width
     canvas.height = img.height
     const ctx = canvas.getContext('2d')
+    let multiFactor = 1
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-    ctx.font = '20px Arial'
+    if (canvas.width > 1000 && canvas.height > 1000) {
+      multiFactor = 2
+    }
     detections.forEach(function (detection) {
       if (detection.type === 'fake') {
         ctx.strokeStyle = 'red' // 边框颜色
       } else {
         ctx.strokeStyle = 'green' // 边框颜色
       }
-      ctx.lineWidth = 2 // 线条宽度
+      ctx.font = 30 * multiFactor + 'px Arial'
+      ctx.lineWidth = 2 * multiFactor // 线条宽度
       ctx.strokeRect(detection.x1, detection.y1, detection.x2 - detection.x1, detection.y2 - detection.y1)
-      const txt = '[ ' + detection.type + ', ' + detection.confidence + ' ]'
-      ctx.lineWidth = 1 // 线条宽度
-      ctx.strokeText(txt, detection.x1 + 3, detection.y2 - 5)
+      const txt = '[ ' + Math.round(100 - detection.confidence * 100) / 100 + ', ' + Math.round(detection.confidence * 100) / 100 + ' ]'
+      ctx.lineWidth = 2 * multiFactor // 线条宽度
+      ctx.textAlign = 'center'
+      ctx.strokeText(txt, detection.x1 + (detection.x2 - detection.x1) / 2, detection.y2 - 5)
+      ctx.lineWidth = 3 * multiFactor
+      ctx.font = 50 * multiFactor + 'px Arial'
+      ctx.strokeText(detection.type, detection.x1 + (detection.x2 - detection.x1) / 2, detection.y1 - 5)
     })
+    ctx.strokeStyle = 'white'
+    ctx.font = 20 * multiFactor + 'px Serif'
+    ctx.lineWidth = 1 * multiFactor // 线条宽度
+    ctx.textAlign = 'left'
+    ctx.strokeText('注：[a,b]表示为[真概率，为假概率]', 3, canvas.height - 3)
     return canvas.toDataURL()
   },
   base64ToArrayBufferToMD5: function (base64) {

@@ -332,7 +332,7 @@ export default {
       }
     },
     sendValidationMsg: function () {
-      common.sendValidationMsg(this.user.email, window.CONSTANT.EMAIL.delete, $('#resendBtn'), 120000)
+      common.sendValidationMsg(this.user.email, window.CONSTANT.EMAIL.delete, $('#resendBtn'), 300000)
     },
     checkAll: function (event) { // 复选框变化事件
       const _this = event.target

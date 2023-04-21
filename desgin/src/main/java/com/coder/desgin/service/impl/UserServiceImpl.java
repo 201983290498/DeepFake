@@ -62,6 +62,9 @@ public class UserServiceImpl implements UserService {
             account = user.getUserId();
         }
         User temUser = userdao.selectOne(account);
+        if (temUser == null) {
+            temUser = userdao.selectOneOnlyAccout(account);
+        }
         if(temUser.getPassword().equals(user.getPassword())){
             return temUser;
         }
@@ -72,7 +75,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User isExist(String account) {
-        return userdao.selectOne(account);
+        User user = userdao.selectOne(account);
+        if (user == null) {
+            user = userdao.selectOneOnlyAccout(account);
+        }
+        return user;
     }
 
     @Override
@@ -89,6 +96,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updatePhoto(String userId, MultipartFile photo) throws IOException {
         User user = userdao.selectOne(userId);
+        if (user == null)
+            user = userdao.selectOneOnlyAccout(userId);
         String oldImageId = user.getImageId();
         Image image = imageService.insertOne(photo.getName(), photo.getInputStream());
         user.setImageId(image.getImageId());

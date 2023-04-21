@@ -29,6 +29,7 @@ deepfake:
     record:
       queue: deepfake.record.queue
       deleteQueue: deepfake.record.deleteQueue
+      insertQueue: deepfake.record.insertRecord # 仅仅插入项目
     redis:
       queue: deepfake.redis.queue
   ex: deepfake.ex

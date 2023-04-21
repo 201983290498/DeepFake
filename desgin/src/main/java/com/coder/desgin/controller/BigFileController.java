@@ -78,6 +78,7 @@ public class BigFileController {
     @ApiOperation("文件分页合并--首页检测加合并")
     @PostMapping("/mergeFile")
     public String mergeFile(@RequestBody TempFileInfoVO fileInfoVO, HttpServletRequest request){
+        String userEmail = fileInfoVO.getDetectId();
         String contentPath = request.getSession().getServletContext().getRealPath("/");
         File bigFileDirPath = new File(contentPath+bigFileDir);
         log.warn("Merging file exists in:" + bigFileDirPath);
@@ -108,10 +109,10 @@ public class BigFileController {
             if (sendFile) {
                 String s = ZipUtil.fileToBase64(finalFilePath);
                 uploadFile.setBase64(s);
-                textUrl = fileService.detectZipWithFile(uploadFile);
+                textUrl = fileService.detectZipWithFile(uploadFile,userEmail);
             }
             else {
-                textUrl = fileService.detectZip(finalFilePath, uploadFile);
+                textUrl = fileService.detectZip(finalFilePath, uploadFile, userEmail);
             }
             return RespMessageUtils.SUCCESS(textUrl);
         }

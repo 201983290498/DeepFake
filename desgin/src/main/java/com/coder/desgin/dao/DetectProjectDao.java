@@ -38,6 +38,9 @@ public interface DetectProjectDao extends BaseMapper<DetectProject> {
     @Select("select a.*, sum(c.image_quantity)  as image_quantity from (select * from project_tbl ${ew.customSqlSegment}) a left join project_file_tbl b on a.detect_id = b.detect_id left join file_tbl c on b.file_id = c.file_id group by a.detect_id ${wrapper2.customSqlSegment}")
     IPage<DetectProjectDTO> selectProjects(Page<DetectProjectDTO> page, @Param(Constants.WRAPPER) Wrapper queryWrapper, @Param("wrapper2") Wrapper wrapper2) ;
 
-    @Select("select a.* from project_file_tbl b left join file_tbl a on a.file_id = b.file_id where b.detect_id = ${detectId}")
+    @Select("select a.* from project_file_tbl b left join file_tbl a on a.file_id = b.file_id where b.detect_id = #{detectId}")
     List<UploadFile> selectFiles(@Param("detectId") Long detectId);
+
+    @Select("select a.* from project_file_tbl b left join project_tbl a on a.detect_id = b.detect_id where user_id =  #{param2} and file_id = #{param1} and mode = #{param3}")
+    DetectProject selectProjectByFileIdAndUserId(Long fileId, String userId, String mode);
 }

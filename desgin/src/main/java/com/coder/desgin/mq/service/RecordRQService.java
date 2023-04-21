@@ -142,4 +142,25 @@ public class RecordRQService {
         }
         projectDao.deleteBatchIds(ids);
     }
+
+    @Transactional
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(value="${deepfake.rq.record.insertQueue}", autoDelete = "false"), exchange = @Exchange(value = "${deepfake.ex}"), key = "record_project"))
+    public void insertProject(String msg) {
+        String[] messages = msg.split(paramSplit);
+        Long fileId = Long.valueOf(messages[0]);
+        String userId = messages[1];
+        String mode = messages[2];
+        DetectProject detectProject = new DetectProject(new Date(System.currentTimeMillis()),"deepfake image detection", userId, mode);
+        UploadFile uploadFile = fileDao.selectById(fileId);
+        if (uploadFile.getFileResults().startsWith("http")) {
+            detectProject.setProjectLevel("zip");
+        } else {
+            detectProject.setProjectLevel("image");
+        }
+        projectDao.insert(detectProject);
+        projectFileDao.insert(new ProjectFile(detectProject.getDetectId(), fileId));
+        if (uploadFile.getFileResults().startsWith("http")) {
+            projectService.postFinalResultTxt(detectProject.getDetectId());
+        }
+    }
 }

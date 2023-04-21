@@ -49,4 +49,13 @@ public class RecordProducer {
         amqpTemplate.convertAndSend(exchangeName, "deleteRecords", msg);
     }
 
+    /**
+     * 添加记录
+     * @param fileId 文件Id
+     * @param userId 用户Id
+     */
+    public void sendRecordMsg(Long fileId, String userId, String mode) {
+        String msg = fileId + paramSplit + userId + paramSplit + mode;
+        amqpTemplate.convertAndSend(exchangeName, "record_project", msg);
+    }
 }

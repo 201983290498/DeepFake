@@ -231,9 +231,9 @@ public class DetectProjectServiceImpl implements DetectProjectService {
     @Override
     public String postFinalResultTxt(Long detectId) {
         DetectProject detectProject = detectProjectDao.selectById(detectId);
-        if ((detectProject.getProjectResultUrl() != null) && (!detectProject.getProjectResultUrl().equals(""))) {
-            return detectProject.getProjectResultUrl();
-        }
+//        if ((detectProject.getProjectResultUrl() != null) && (!detectProject.getProjectResultUrl().equals(""))) {
+//            return detectProject.getProjectResultUrl();
+//        }
         List<UploadFile> projectFiles = detectProjectDao.selectFiles(detectId);
         String filePath = "./" + UUID.randomUUID().toString().substring(0,10) + ".txt";
         String line;

@@ -54,7 +54,8 @@ export default {
       },
       isUploadOk: true, // 是否还有没有上传完成的文件
       panelShow: true,
-      show_filename: true
+      show_filename: true,
+      user: JSON.parse(this.$store.state.data)
     }
   },
   props: {
@@ -110,7 +111,8 @@ export default {
             dataType: 'json',
             data: {
               md5: file.uniqueIdentifier,
-              mode: _this.mode
+              mode: _this.mode,
+              userId: _this.user.userId
             },
             success: function (resp) {
               if (resp.result) {
@@ -144,6 +146,7 @@ export default {
     },
     onFileSuccess: function (rootFile, file, response, chunk) {
       const _this = this
+      file.detectId = this.user.email
       _this.mergeFile(file).then(response => {
         if (response.data.result) {
           console.log('合并成功')

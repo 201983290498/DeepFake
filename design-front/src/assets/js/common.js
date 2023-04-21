@@ -42,6 +42,19 @@ export default {
     ctx.strokeText('注：[a,b]表示为[真概率，为假概率]', 3, canvas.height - 3)
     return canvas.toDataURL()
   },
+  drawText: function (img, text) {
+    const canvas = document.createElement('canvas')
+    canvas.width = img.width
+    canvas.height = img.height
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+    ctx.strokeStyle = 'black'
+    ctx.font = 40 + 'px Serif'
+    ctx.lineWidth = 2 // 线条宽度
+    ctx.textAlign = 'center'
+    ctx.strokeText(text, img.width / 2, canvas.height - 5)
+    return canvas.toDataURL()
+  },
   base64ToArrayBufferToMD5: function (base64) {
     const binaryString = window.atob(base64)
     const len = binaryString.length

@@ -1,7 +1,9 @@
 package com.coder.desgin.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.internal.util.StringUtils;
 import com.coder.desgin.entity.NormalDetectionFile;
+import com.coder.desgin.entity.mysql.UploadFile;
 import com.coder.desgin.service.FileService;
 import com.coder.desgin.service.impl.NormalDetectionServiceImpl;
 import com.coder.desgin.entity.ImgDetectorResult;
@@ -99,11 +101,13 @@ public class FileController {
     @ResponseBody
     @PostMapping("/files/checkMd5")
     @ApiOperation("查Md5检测结果缓存")
-    public String checkMd5(String fileName, String md5, String mode) {
+    public String checkMd5(String fileName, String md5, String mode, String userId) {
         String result = uploadFileService.checkMd5(fileName, md5, mode);
         if(StringUtils.isEmpty(result)) {
             return RespMessageUtils.ERROR();
         } else {
+            UploadFile parse = JSON.parseObject(result, UploadFile.class);
+            uploadFileService.insertRecord(parse.getFileId(), userId, mode);
             return RespMessageUtils.SUCCESS(result);
         }
     }

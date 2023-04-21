@@ -76,11 +76,11 @@ export default {
         method: 'get',
         dataType: 'json',
         success (resp) {
-          if (resp.result && resp.data != null) {
+          if (resp.result) {
             const url = resp.data.imageUrl
             const context = `<img src='${url}' style="width:100%;height: 100%;margin-top: -11.5px"/>`
             $('#photo').html(context)
-          } else {
+          } else if (!resp.result) {
             _this.$message.warning('账号不存在.')
           }
         },

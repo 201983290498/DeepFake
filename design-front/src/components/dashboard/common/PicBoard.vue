@@ -26,20 +26,31 @@ export default {
   data () {
     return {
       files: [],
-      user: JSON.parse(this.$store.state.data)
+      user: JSON.parse(this.$store.state.data),
+      zipImage: require('../../../assets/img/zip.jpeg')
     }
   },
   watch: {
     files: function () {
+      console.log(this.files)
       for (const item in this.files) {
         const file = this.files[item]
         const img = new Image()
-        img.src = file.fileLocation
-        img.setAttribute('crossOrigin', 'anonymous')
-        img.onload = function () {
-          console.log(img)
-          const base64 = common.drawDetections(img, JSON.parse(file.fileResults).rects)
-          $($('#picBoard .masonry-item img').get(item)).attr('src', base64)
+        if (!file.fileLocation.startsWith('http')) {
+          img.src = this.zipImage
+          img.setAttribute('crossOrigin', 'anonymous')
+          img.onload = function () {
+            console.log(file)
+            const base64 = common.drawText(img, file.fileLocation.substring(file.fileLocation.lastIndexOf('\\') + 1))
+            $($('#picBoard .masonry-item img').get(item)).attr('src', base64)
+          }
+        } else {
+          img.src = file.fileLocation
+          img.setAttribute('crossOrigin', 'anonymous')
+          img.onload = function () {
+            const base64 = common.drawDetections(img, JSON.parse(file.fileResults).rects)
+            $($('#picBoard .masonry-item img').get(item)).attr('src', base64)
+          }
         }
       }
     },

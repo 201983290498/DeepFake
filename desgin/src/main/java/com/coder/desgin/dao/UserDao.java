@@ -22,6 +22,9 @@ public interface UserDao extends BaseMapper<User> {
     @Select("select a.*, b.image_url as imageUrl from usr_tbl a, image b where a.image_id = b.image_id and (username = #{param1} or user_id = #{param1} or email = #{param1})")
     User selectOne(String account);
 
+    @Select("select * from usr_tbl where (username = #{param1} or user_id = #{param1} or email = #{param1})")
+    User selectOneOnlyAccout(String account);
+
     /**
      * 根据邮箱查找用户
      * @param email 邮箱

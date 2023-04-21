@@ -65,7 +65,8 @@ export default {
         data: {
           fileName: imgs.fileName,
           md5: imgs.md5,
-          mode: _this.mode
+          mode: _this.mode,
+          userId: imgs.userId
         },
         success: function (response) {
           if (response.result) {
@@ -118,7 +119,8 @@ export default {
         data: {
           fileName: zipFile.fileName,
           md5: zipFile.md5,
-          mode: _this.mode
+          mode: _this.mode,
+          userId: zipFile.userId
         },
         success: function (response) {
           if (response.result) {

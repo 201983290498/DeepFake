@@ -32,7 +32,7 @@ public interface FileService {
      * @return 返回检测url
      * @throws IOException 检测文本生成错误
      */
-    String detectZip(String filePath, UploadFile file) throws IOException;
+    String detectZip(String filePath, UploadFile file, String userEmail) throws IOException;
 
 
     /**
@@ -79,6 +79,13 @@ public interface FileService {
     void insertRecord(String filePath, UploadFile baseFile, String result) throws FileNotFoundException;
 
     /**
+     * 插入检测记录和用户Id, 如果用户不存在相关检录，则创建默认记录，然后插入项目记录对应
+     * @param fileId 文件Id
+     * @param userId 用户Id
+     */
+    void insertRecord(Long fileId, String userId, String mode);
+
+    /**
      * 检测项目
      * @param fileInfoVO 文件信息
      * @param finalFilePath 文件的路径
@@ -90,11 +97,12 @@ public interface FileService {
      * @param uploadFile 需要上传的文件
      * @return 返回检测文本的地址
      */
-    String detectZipWithFile(UploadFile uploadFile) throws FileNotFoundException;
+    String detectZipWithFile(UploadFile uploadFile, String email) throws FileNotFoundException;
 
     /**
      * 传输文件版本的检测
      * @param uploadFile 需要上传的文件
      */
     void detectProjectWithFile(UploadFile uploadFile, TempFileInfoVO fileInfoVO, String filePath) throws FileNotFoundException;
+
 }

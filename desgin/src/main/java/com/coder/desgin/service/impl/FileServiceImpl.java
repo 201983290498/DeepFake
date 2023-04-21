@@ -7,12 +7,14 @@ import com.alipay.api.internal.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.coder.common.util.*;
 import com.coder.desgin.dao.FileDao;
+import com.coder.desgin.dao.UserDao;
 import com.coder.desgin.entity.DetectorRect;
 import com.coder.desgin.entity.ImgDetectorResult;
 import com.coder.desgin.entity.BaseFile;
 import com.coder.desgin.entity.TempFileInfoVO;
 import com.coder.desgin.entity.mysql.Image;
 import com.coder.desgin.entity.mysql.UploadFile;
+import com.coder.desgin.entity.mysql.User;
 import com.coder.desgin.mq.producer.JavaEmailProducer;
 import com.coder.desgin.mq.producer.RecordProducer;
 import com.coder.desgin.mq.producer.RedisProducer;
@@ -52,10 +54,12 @@ public class FileServiceImpl implements FileService {
     private final RecordProducer recordProducer;
     private final RedisProducer redisAsynHandler;
 
+    private final UserDao userdao;
+
     @Value("${oss.server.url.prefix}")
     private String urlPrefix;
 
-    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer, RedisProducer redisAsynHandler) {
+    public FileServiceImpl(HttpUtil httpUtil, FileDao fileDao, RedisUtil redis, ImageService imageService, JavaEmailProducer javaEmail, RecordProducer recordProducer, RedisProducer redisAsynHandler, UserDao userdao) {
         this.httpUtil = httpUtil;
         this.fileDao = fileDao;
         this.redisUtil = redis;
@@ -63,6 +67,7 @@ public class FileServiceImpl implements FileService {
         this.emailAsynHandler = javaEmail;
         this.recordProducer = recordProducer;
         this.redisAsynHandler = redisAsynHandler;
+        this.userdao = userdao;
     }
 
     @Override
@@ -91,13 +96,14 @@ public class FileServiceImpl implements FileService {
     @Override
     public String detectZip(BaseFile file, Boolean sendFile, HttpServletRequest request) throws IOException{
         // zipPath 解压文件夹的路径
+        User user = userdao.selectOneOnlyAccout(file.getUserId());
         if (sendFile) { // 本地不处理
             String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
             UploadFile uploadFile = new UploadFile(file);
             uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
             String result = JSON.toJSONString(detectFile2(file));
             String detectTextPath = mkResultText(result, "./" );
-            emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+            emailAsynHandler.sendEmailMsg("file", user.getEmail(), detectTextPath);
             // 1. 检测结果上传
             Image image = imageService.insertOneByFile(new File(detectTextPath));
             insertRecord("on computer server", uploadFile, image.getImageUrl());
@@ -106,18 +112,18 @@ public class FileServiceImpl implements FileService {
             String zipPath = ZipUtil.base64ToFile(file.getBase64(), file.getFileName(), request);
             UploadFile uploadFile = new UploadFile(file);
             uploadFile.setFileMd5(Md5Util.getMd5(new File(zipPath))); // 文件的md5
-            return detectZip(zipPath, uploadFile);
+            return detectZip(zipPath, uploadFile, user.getEmail());
         }
     }
 
     @Override
-    public String detectZip(@NotNull String filePath, UploadFile file) throws IOException{
+    public String detectZip(@NotNull String filePath, UploadFile file, String userEmail) throws IOException{
         String unZipPath = filePath.substring(0, filePath.lastIndexOf("."));
         unZipPath = unZipPath + "/" + unZipPath.substring(Math.max(unZipPath.lastIndexOf("\\"), filePath.lastIndexOf("\\")) + 1);
         unZipPath = ZipUtil.unZip(filePath, unZipPath);
         String result = JSON.toJSONString(detectFile(unZipPath, file.getMode()));
         String detectTextPath = mkResultText(result, unZipPath.substring(0, unZipPath.lastIndexOf('\\')));
-        emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+        emailAsynHandler.sendEmailMsg("file", userEmail, detectTextPath);
         // 1. 检测结果上传
         Image image = imageService.insertOneByFile(new File(detectTextPath));
         insertRecord(filePath, file, image.getImageUrl());
@@ -200,10 +206,10 @@ public class FileServiceImpl implements FileService {
      * @return 返回检测文本的地址
      */
     @Override
-    public String detectZipWithFile(UploadFile uploadFile) throws FileNotFoundException {
+    public String detectZipWithFile(UploadFile uploadFile, String email) throws FileNotFoundException {
         String result = JSON.toJSONString(detectFile2(uploadFile));
         String detectTextPath = mkResultText(result, "./");
-        emailAsynHandler.sendEmailMsg("file", "1023668958@qq.com", detectTextPath);
+        emailAsynHandler.sendEmailMsg("file", email, detectTextPath);
         // 1. 检测结果上传
         Image image = imageService.insertOneByFile(new File(detectTextPath));
         insertRecord("on computer server", uploadFile, image.getImageUrl());
@@ -249,12 +255,32 @@ public class FileServiceImpl implements FileService {
             if (list.size() != 0) {
                 UploadFile file = list.get(0);
                 redisAsynHandler.sendMsg(md5+mode, JSON.toJSONString(file), null);
-                return JSON.toJSONString(file);
+                String results = JSON.toJSONString(file);
+//                if (results.startsWith("http")) {
+//                    sendEmailByUrl(result);
+//                }
+                return results;
             } else {
                 return null;
             }
         } else {
             return result;
+        }
+    }
+
+    /**
+     * 根据url发送过检测文本
+     * @param result 检测结果
+     */
+    private void sendEmailByUrl(String result) {
+        String filePath = "./" + UUID.randomUUID().toString().substring(0,10) + ".txt";
+        String line;
+        try {
+            Writer writer = new FileWriter(filePath);
+            InputStreamReader inputStreamReader = imageService.downloadByUrl(result);
+//            emailAsynHandler.sendEmailMsg("file", user.getEmail(), new File(filePath).getAbsolutePath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -269,6 +295,17 @@ public class FileServiceImpl implements FileService {
     @Override
     public void insertRecord(String filePath, UploadFile baseFile, String detectResult) throws FileNotFoundException {
         recordProducer.sendRecordMsg(filePath,baseFile, detectResult);
+    }
+
+    /**
+     * 插入检测记录和用户Id, 如果用户不存在相关检录，则创建默认记录，然后插入项目记录对应
+     *
+     * @param fileId 文件Id
+     * @param userId 用户Id
+     */
+    @Override
+    public void insertRecord(Long fileId, String userId, String mode) {
+        recordProducer.sendRecordMsg(fileId, userId, mode);
     }
 
     /**
